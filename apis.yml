@@ -3,10 +3,10 @@ url: >-
   https://raw.githubusercontent.com/api-evangelist/canopy/refs/heads/main/apis.yml
 name: Canopy Connect
 tags:
-  - Insurance
-  - Property
   - Casualty
   - Financial Services
+  - Insurance
+  - Property
 type: Index
 image: https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg
 access: 3rd-Party
@@ -21,9 +21,9 @@ apis:
   - aid: canopy:canopy-connect-api
     name: Canopy Connect API
     tags:
+      - Casualty
       - Insurance
       - Property
-      - Casualty
     humanURL: https://www.usecanopy.com/api
     properties:
       - url: https://www.usecanopy.com/api
