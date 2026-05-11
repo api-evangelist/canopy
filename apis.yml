@@ -91,6 +91,18 @@ common:
     url: https://www.usecanopy.com/about
   - type: Careers
     url: https://www.usecanopy.com/careers
+  - type: Integrations
+    url: https://www.usecanopy.com/integrations
+integrations:
+  - name: PL Rating
+  - name: Applied Epic®
+  - name: EZLynx
+  - name: HawkSoft
+  - name: AgencyZoom
+  - name: Encompass by ICE
+  - name: TSD Rental
+  - name: CDK
+  - name: Cox Automotive
 maintainers:
   - FN: Kin Lane
     email: kin@apievangelist.com
