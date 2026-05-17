@@ -11,7 +11,7 @@ description: >-
   manual verification workflows used across mortgage lending, auto finance,
   insurance carriers, and embedded insurance products.
 type: Index
-x-type: company
+kind: company
 position: Consumer
 access: 3rd-Party
 image: https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg
@@ -81,9 +81,9 @@ common:
     url: https://www.usecanopy.com/api
   - type: Security
     url: https://www.usecanopy.com/security
-  - type: Privacy Policy
+  - type: PrivacyPolicy
     url: https://www.usecanopy.com/legal/privacy
-  - type: Terms of Service
+  - type: TermsOfService
     url: https://www.usecanopy.com/legal/terms
   - type: Blog
     url: https://www.usecanopy.com/blog
