@@ -73,6 +73,10 @@ apis:
       - Embedded insurance in consumer applications
       - Commercial insurance verification
 common:
+  - type: GitHubOrganization
+    url: https://github.com/CanopyTax
+  - type: LinkedIn
+    url: https://www.linkedin.com/company/canopy-connect
   - type: Website
     url: https://www.usecanopy.com/
   - type: Documentation
