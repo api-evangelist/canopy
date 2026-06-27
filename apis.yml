@@ -47,7 +47,7 @@ apis:
         url: https://www.usecanopy.com/api
       - type: Website
         url: https://www.usecanopy.com/
-      - type: SDK
+      - type: SDKs
         url: https://www.usecanopy.com/api
       - type: Security
         url: https://www.usecanopy.com/security

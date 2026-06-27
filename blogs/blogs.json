@@ -3,16 +3,12 @@
   "feeds": [
     {
       "source": "https://www.usecanopy.com/blog",
-      "feed_url": "https://www.usecanopy.com/blog",
-      "title": "",
-      "saved": 0,
-      "method": "none"
-    },
-    {
-      "source": "https://www.usecanopy.com/legal/terms",
-      "error": "HTTPError"
+      "feed_url": "",
+      "saved": 1,
+      "method": "agent-scrape"
     }
   ],
-  "post_count": 0,
-  "fetched": "2026-06-14T20:42:17Z"
+  "fetched": "2026-06-27T12:30:19Z",
+  "post_count": 11,
+  "agent_pulled": "2026-06-27"
 }
