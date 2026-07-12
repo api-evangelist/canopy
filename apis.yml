@@ -73,6 +73,10 @@ apis:
       - Embedded insurance in consumer applications
       - Commercial insurance verification
 common:
+  - type: VulnerabilityDisclosure
+    url: security/canopy-vulnerability-disclosure.yml
+  - type: DomainSecurity
+    url: security/canopy-domain-security.yml
   - type: GitHubOrganization
     url: https://github.com/CanopyTax
   - type: LinkedIn
