@@ -2,13 +2,11 @@
   "repo": "canopy",
   "feeds": [
     {
-      "source": "https://www.usecanopy.com/blog",
-      "feed_url": "",
-      "saved": 1,
-      "method": "agent-scrape"
+      "source": "https://www.usecanopy.com/legal/terms",
+      "error": "HTTPError"
     }
   ],
-  "fetched": "2026-06-27T12:30:19Z",
+  "fetched": "2026-07-11T11:50:51Z",
   "post_count": 11,
   "agent_pulled": "2026-06-27"
 }
