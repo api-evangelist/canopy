@@ -30,6 +30,14 @@ image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/canopy.png
 tags:
   - Auto Insurance
   - Casualty
+  - Financial-Services
+  - Homeowners Insurance
+  - Insurance
+  - Insurance Verification
+  - Property
+tags_raw:
+  - Auto Insurance
+  - Casualty
   - Financial Services
   - Homeowners Insurance
   - Insurance
