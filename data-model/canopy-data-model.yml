@@ -1,0 +1,459 @@
+generated: '2026-09-05'
+method: derived
+source: openapi/canopy-openapi.json (components.schemas $ref graph + *_id reference fields)
+provider: Canopy Connect
+providerId: canopy
+root_entity: Pull
+summary: 'The Canopy Connect data model is rooted on the Pull - one consumer authorisation against one
+  carrier account. Everything else hangs off it: the policies retrieved, the drivers, vehicles, dwellings
+  and locations those policies cover, the coverages and premiums on each, the claims/loss events, the
+  documents and policy forms produced, and the enrichment records looked up alongside. Monitoring, ServicingAction
+  and PolicyCheck are the three lifecycle objects that operate ON a Pull. Widget (a link) and Team are
+  the tenancy objects above it.'
+identifier_convention:
+  style: uuid
+  fields: snake_case *_id (pull_id, team_id, widget_id, monitoring_id, servicing_action_id, document_id,
+    policy_form_id)
+  prefixes: null
+  note: Identifiers are bare UUIDs with no type prefix, so an id alone does not say what it points at.
+entity_count: 48
+relationship_count: 56
+entities:
+- name: Pull
+  fields: 42
+  id_fields:
+  - parent_pull_id
+  - pull_id
+  - team_id
+  - widget_id
+- name: Policy
+  fields: 37
+  id_fields:
+  - policy_id
+- name: LifePolicyDetails
+  fields: 26
+  id_fields:
+  - life_policy_details_id
+  - policy_id
+  - pull_id
+- name: Vehicle
+  fields: 22
+  id_fields:
+  - vehicle_id
+- name: LocationCoverage
+  fields: 21
+  id_fields:
+  - location_coverage_id
+- name: VehicleCoverage
+  fields: 17
+  id_fields:
+  - premium_group_id
+  - vehicle_coverage_id
+- name: VehicleDriver
+  fields: 17
+  id_fields:
+  - driver_id
+- name: CommercialNamedInsured
+  fields: 16
+  id_fields:
+  - address_id
+  - commercial_named_insured_id
+  - location_id
+- name: Driver
+  fields: 15
+  id_fields:
+  - driver_id
+- name: Claim
+  fields: 15
+  id_fields:
+  - address_id
+  - claim_id
+  - driver_id
+  - dwelling_id
+  - policy_id
+  - vehicle_id
+- name: Dwelling
+  fields: 14
+  id_fields:
+  - dwelling_id
+- name: DwellingCoverage
+  fields: 13
+  id_fields:
+  - dwelling_coverage_id
+- name: Widget
+  fields: 13
+  id_fields:
+  - widget_id
+- name: LifePolicyBeneficiary
+  fields: 12
+  id_fields:
+  - life_policy_beneficiary_id
+  - named_insured_id
+  - policy_id
+  - pull_id
+- name: NamedInsured
+  fields: 11
+  id_fields:
+  - named_insured_id
+- name: PolicyCheckVehicleSetting
+  fields: 11
+  id_fields: []
+- name: WebhookBody
+  fields: 10
+  id_fields:
+  - pull_id
+  - team_id
+  - widget_id
+- name: LossEvent
+  fields: 9
+  id_fields:
+  - loss_event_id
+  - policy_id
+- name: Location
+  fields: 8
+  id_fields:
+  - location_id
+- name: AgentInfo
+  fields: 7
+  id_fields:
+  - address_id
+  - agent_info_id
+- name: Document
+  fields: 7
+  id_fields:
+  - document_id
+  - policy_id
+- name: PolicyForm
+  fields: 7
+  id_fields:
+  - policy_form_id
+- name: LifePolicyRider
+  fields: 7
+  id_fields:
+  - life_policy_rider_id
+  - policy_id
+  - pull_id
+- name: DrivingRecord
+  fields: 6
+  id_fields:
+  - driver_id
+  - driving_record_id
+- name: Monitoring
+  fields: 6
+  id_fields:
+  - latest_pull_id
+  - monitoring_id
+- name: AdditionalInterest
+  fields: 6
+  id_fields:
+  - additional_interest_id
+- name: ServicingAction
+  fields: 6
+  id_fields:
+  - servicing_action_id
+- name: LocationOperation
+  fields: 6
+  id_fields:
+  - location_operation_id
+- name: AnswerField
+  fields: 5
+  id_fields:
+  - consumer_flow_section_field_id
+- name: FileUpload
+  fields: 5
+  id_fields:
+  - file_id
+- name: Agent
+  fields: 5
+  id_fields:
+  - agent_id
+- name: Mortgagee
+  fields: 5
+  id_fields:
+  - mortgagee_id
+- name: PullAssignee
+  fields: 4
+  id_fields:
+  - agent_id
+- name: PullFunnel
+  fields: 3
+  id_fields: []
+- name: Address
+  fields: 3
+  id_fields:
+  - address_id
+- name: EnrichmentHousehold
+  fields: 3
+  id_fields:
+  - household_id
+- name: MonitoringEvent
+  fields: 3
+  id_fields: []
+- name: PolicyCheckDwellingSetting
+  fields: 3
+  id_fields: []
+- name: PremiumGroup
+  fields: 3
+  id_fields:
+  - premium_group_id
+- name: LifePolicy
+  fields: 3
+  id_fields: []
+- name: ValidationCompleteBody
+  fields: 3
+  id_fields:
+  - document_validation_id
+- name: AnswerSection
+  fields: 2
+  id_fields:
+  - consumer_flow_section_id
+- name: EnrichmentDriverLicense
+  fields: 2
+  id_fields:
+  - driver_license_id
+- name: EnrichmentDrivingRecordIq
+  fields: 2
+  id_fields:
+  - driving_record_iq_id
+- name: EnrichmentPropertyData
+  fields: 2
+  id_fields: []
+- name: PropertyData
+  fields: 2
+  id_fields:
+  - dwelling_id
+  - property_data_id
+- name: PolicyCheck
+  fields: 2
+  id_fields: []
+- name: PolicyCheckPullVehicleSetting
+  fields: 2
+  id_fields: []
+relationships:
+- from: Pull
+  to: status
+  via: status
+  kind: has_one
+- from: Pull
+  to: Policy
+  via: policies
+  kind: has_many
+- from: Pull
+  to: Driver
+  via: drivers
+  kind: has_many
+- from: Pull
+  to: Document
+  via: documents
+  kind: has_many
+- from: Pull
+  to: Address
+  via: addresses
+  kind: has_many
+- from: Pull
+  to: Claim
+  via: claims
+  kind: has_many
+- from: Pull
+  to: DrivingRecord
+  via: driving_records
+  kind: has_many
+- from: Pull
+  to: LossEvent
+  via: loss_events
+  kind: has_many
+- from: Pull
+  to: AgentInfo
+  via: agents
+  kind: has_many
+- from: Pull
+  to: AnswerSection
+  via: answers
+  kind: has_many
+- from: Pull
+  to: PullFunnel
+  via: funnel
+  kind: has_one
+- from: PullFunnel
+  to: PullAssignee
+  via: assignee
+  kind: has_one
+- from: Policy
+  to: PolicyCheck
+  via: policy_check
+  kind: has_one
+- from: Policy
+  to: Dwelling
+  via: dwellings
+  kind: has_many
+- from: Policy
+  to: Location
+  via: locations
+  kind: has_many
+- from: Policy
+  to: Vehicle
+  via: vehicles
+  kind: has_many
+- from: Policy
+  to: CommercialNamedInsured
+  via: commercial_named_insureds
+  kind: has_many
+- from: Policy
+  to: NamedInsured
+  via: named_insureds
+  kind: has_many
+- from: Policy
+  to: AdditionalInterest
+  via: additional_interests
+  kind: has_many
+- from: Policy
+  to: LifePolicy
+  via: life
+  kind: has_one
+- from: Policy
+  to: PolicyForm
+  via: forms_and_endorsements
+  kind: has_many
+- from: Policy
+  to: PremiumGroup
+  via: premium_groups
+  kind: has_many
+- from: AnswerField
+  to: FileUpload
+  via: value
+  kind: has_one
+- from: AnswerSection
+  to: AnswerField
+  via: fields
+  kind: has_many
+- from: Driver
+  to: gender
+  via: gender
+  kind: has_one
+- from: Driver
+  to: marital_status
+  via: marital_status
+  kind: has_one
+- from: Driver
+  to: education
+  via: education
+  kind: has_one
+- from: EnrichmentHousehold
+  to: driver_license
+  via: drivers
+  kind: has_many
+- from: Vehicle
+  to: Address
+  via: garaging_address
+  kind: has_one
+- from: Vehicle
+  to: Address
+  via: lien_holder_address
+  kind: has_one
+- from: Vehicle
+  to: VehicleCoverage
+  via: coverages
+  kind: has_many
+- from: Vehicle
+  to: VehicleDriver
+  via: drivers
+  kind: has_many
+- from: VehicleCoverage
+  to: propertyNames
+  via: name
+  kind: has_one
+- from: Dwelling
+  to: Address
+  via: address
+  kind: has_one
+- from: Dwelling
+  to: DwellingCoverage
+  via: coverages
+  kind: has_many
+- from: Dwelling
+  to: Mortgagee
+  via: mortgagees
+  kind: has_many
+- from: Dwelling
+  to: Address
+  via: mortgagee_address
+  kind: has_one
+- from: Dwelling
+  to: PropertyData
+  via: property_data
+  kind: has_one
+- from: Mortgagee
+  to: Address
+  via: mortgagee_address
+  kind: has_one
+- from: AdditionalInterest
+  to: Address
+  via: additional_interest_address
+  kind: has_one
+- from: ServicingAction
+  to: additionalProperties
+  via: confirmation_data
+  kind: has_one
+- from: ServicingAction
+  to: propertyNames
+  via: confirmation_data
+  kind: has_one
+- from: LifePolicy
+  to: LifePolicyDetails
+  via: life_policy_details
+  kind: has_one
+- from: LifePolicy
+  to: LifePolicyRider
+  via: life_policy_riders
+  kind: has_many
+- from: LifePolicy
+  to: LifePolicyBeneficiary
+  via: life_policy_beneficiaries
+  kind: has_many
+- from: LifePolicyDetails
+  to: Address
+  via: policy_owner_address
+  kind: has_one
+- from: LifePolicyDetails
+  to: Address
+  via: policy_payor_address
+  kind: has_one
+- from: Location
+  to: Address
+  via: address
+  kind: has_one
+- from: Location
+  to: LocationCoverage
+  via: coverages
+  kind: has_many
+- from: Location
+  to: LocationOperation
+  via: operations
+  kind: has_many
+- from: Location
+  to: Mortgagee
+  via: mortgagees
+  kind: has_many
+- from: Location
+  to: PropertyData
+  via: property_data
+  kind: has_one
+- from: Widget
+  to: Agent
+  via: agents
+  kind: has_many
+- from: WebhookBody
+  to: Driver
+  via: data
+  kind: has_one
+- from: WebhookBody
+  to: ValidationCompleteBody
+  via: data
+  kind: has_one
+- from: WebhookBody
+  to: AnswerSection
+  via: data
+  kind: has_one
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

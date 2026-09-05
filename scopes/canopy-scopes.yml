@@ -1,0 +1,102 @@
+generated: '2026-09-05'
+method: searched
+source: https://docs.usecanopy.com/reference/apps-api-requests#scopes
+docs: https://docs.usecanopy.com/reference/apps-api-requests
+provider: Canopy Connect
+providerId: canopy
+flow: authorizationCode
+pkce: required
+authorization_url: https://app.usecanopy.com/oauth2/authorize
+note: >-
+  These scopes govern Canopy Connect Apps - third-party integrations acting on
+  another Team's behalf with a Bearer access token. They do NOT apply to HTTP
+  Basic calls against your own Team, which are unscoped. The scopes are
+  documented only on the Apps "Making API Requests" page; the published OpenAPI
+  declares no oauth2 securityScheme at all, so no operation in the spec carries
+  a scope requirement. The operation mapping below is transcribed from the
+  provider's own scope table and joined to operationIds in
+  openapi/canopy-openapi.json.
+scope_count: 12
+scopes:
+  - name: read:pulls
+    description: Read Pulls, list Pulls, and download the documents attached to a Pull.
+    operations:
+      - get-pull-by-id
+      - get-pulls
+      - get-document-by-id
+      - download-document-by-id
+      - post-pull-policy-check
+      - get-pull-policy-check-pdf
+  - name: read:policy_checks
+    description: Read Policy Check settings and evaluate/read Policy Check results.
+    operations:
+      - post-pull-policy-check
+      - get-pull-policy-check-pdf
+      - get-policy-check-team-settings
+  - name: write:policy_checks
+    description: Configure the Team's Policy Check settings and run a Policy Check on a Pull.
+    operations:
+      - post-pull-policy-check
+      - post-policy-check-team-settings
+  - name: read:webhooks
+    description: List webhooks. An App can only see webhooks it created itself.
+    operations:
+      - get-webhooks
+  - name: write:webhooks
+    description: Create, update and delete webhooks. An App can only modify webhooks it created itself.
+    operations:
+      - post-webhooks
+      - patch-webhook
+      - delete-webhook
+  - name: read:widgets
+    description: List widgets (links) and read a single widget.
+    operations:
+      - get-widgets
+      - get-widgetId
+  - name: write:widgets
+    description: Create, update and delete widgets, and upload a widget logo or icon.
+    operations:
+      - post-widgets
+      - patch-widgetId
+      - delete-widgetId
+      - put-widgetId-logo
+      - put-widgetId-icon
+  - name: read:driver_license_lookup
+    description: Call the driver licence enrichment lookup.
+    operations:
+      - get-enrichment-driverlicense
+  - name: read:driving_record_iq_lookup
+    description: Call the driving-record IQ enrichment lookup.
+    operations:
+      - get-enrichment-drivingrecordiq
+  - name: read:household_lookup
+    description: Call the household enrichment lookup.
+    operations:
+      - get-enrichment-household
+  - name: read:property_lookup
+    description: Call the ad-hoc property data lookup.
+    operations:
+      - get-property-data
+  - name: write:whitelabel
+    description: >-
+      Drive the white-label flows - collect consent, create and authenticate a
+      Pull, submit MFA/identity verification, mint reconnect tokens, and confirm
+      servicing actions.
+    operations:
+      - post-consent
+      - post-consent-and-connect
+      - post-connect
+      - post-idv
+      - post-idvoptions
+      - post-reconnect-token
+      - post-servicing-action
+uncovered_operations_note: >-
+  The provider's scope table covers 31 of the 54 published operations. The
+  Teams API, Monitorings API, Servicings API (list/create/read), Policy Search
+  API, Policy Forms API, Carriers, /tos, /health and
+  post-consent-and-documents appear in the OpenAPI but not in the Apps scope
+  table, which means they are reachable only with Basic (own-Team) credentials
+  as documented today.
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

@@ -1,0 +1,89 @@
+generated: '2026-09-05'
+method: searched
+source: https://registry.npmjs.org/ + https://docs.usecanopy.com/reference/using-the-sdk + https://docs.usecanopy.com/reference/components-getting-started
+provider: Canopy Connect
+providerId: canopy
+description: >-
+  First-party Canopy Connect client distributions. Canopy Connect ships two
+  browser/mobile embed products rather than server-side API SDKs: the Canopy
+  Connect SDK (a hosted widget loader served from cdn.usecanopy.com) and Canopy
+  Connect Components (a tokenizing UI element library served from
+  components.usecanopy.com, with an npm loader package). There is no first-party
+  server SDK for the REST API in any language registry we probed - the
+  Authentication guide shows raw cURL/Node/Python HTTP Basic examples instead.
+registries_probed:
+  - registry: npm
+    endpoint: https://registry.npmjs.org/-/v1/search?text=canopy-connect
+    result: 2 first-party packages under the @canopyconnect scope
+  - registry: pypi
+    endpoint: https://pypi.org/pypi/canopy-connect/json
+    status: 404
+    result: none
+  - registry: rubygems
+    endpoint: https://rubygems.org/api/v1/gems/canopy_connect.json
+    status: 404
+    result: none
+packages:
+  - name: '@canopyconnect/components'
+    registry: npm
+    url: https://www.npmjs.com/package/@canopyconnect/components
+    official: true
+    language: javascript
+    version: 1.0.0-beta.1
+    published: '2025-09-02'
+    license: ISC
+    description: Canopy Connect Components loading utility - npm loader for the tokenizing UI element library.
+    homepage: https://docs.usecanopy.com/reference/components-getting-started
+    note: >-
+      Only ever published as a beta; 1.0.0-beta.1 is both the `beta` and the
+      `latest` dist-tag. Registry metadata read 2026-09-05 from
+      https://registry.npmjs.org/@canopyconnect/components.
+  - name: '@canopyconnect/react-native-sdk'
+    registry: npm
+    url: https://www.npmjs.com/package/@canopyconnect/react-native-sdk
+    official: true
+    language: javascript
+    platform: react-native
+    version: 1.1.1
+    published: '2022-02-28'
+    license: BSD
+    description: React Native SDK for Canopy Connect.
+    note: >-
+      DECAY SIGNAL: last publish 2022-02-28, more than four years before the
+      OpenAPI it wraps was last updated (documentation.json, updated
+      2026-08-28). The docs still link a React Native implementation example
+      (https://docs.usecanopy.com/reference/react-native-implementation).
+      Registry metadata read 2026-09-05 from
+      https://registry.npmjs.org/@canopyconnect/react-native-sdk.
+  - name: canopy-connect.js
+    registry: cdn
+    url: https://cdn.usecanopy.com/v2/canopy-connect.js
+    official: true
+    language: javascript
+    version: null
+    published: null
+    description: Canopy Connect SDK widget loader, distributed only from the vendor CDN.
+    note: >-
+      Checked 2026-09-05: HTTP 200, 26208 bytes. No registry metadata endpoint
+      exists for this distribution and the URL pins only the major version
+      (`/v2/`), so the exact build a consumer receives floats to latest and
+      cannot be determined from the URL. The docs explicitly forbid Subresource
+      Integrity pinning ("Do not use Subresource Integrity (SRI) verification in
+      the script tag... Using a Subresource Integrity check will fail when we
+      deploy updates"), so a consumer has no way to know which build they are
+      running either.
+  - name: cc-components.js
+    registry: cdn
+    url: https://components.usecanopy.com/v1/cc-components.js
+    official: true
+    language: javascript
+    version: null
+    published: null
+    description: Canopy Connect Components UMD bundle, distributed from the vendor CDN.
+    note: >-
+      Checked 2026-09-05: HTTP 200, 27785 bytes. Major-version-pinned (`/v1/`)
+      only; unpinned to a build, and SRI is likewise forbidden by the docs.
+community_packages: []
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

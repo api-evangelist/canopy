@@ -1,0 +1,1112 @@
+generated: '2026-09-05'
+method: derived
+source: openapi/canopy-openapi.json
+provider: Canopy Connect
+providerId: canopy
+note: Inventory of the examples Canopy Connect ships INSIDE its own OpenAPI. No example was authored here
+  and none was copied out - this file records where they are so the contract can be judged on whether
+  a caller can see a real payload before calling. Response examples are near-universal; request-body examples
+  are the gap.
+summary:
+  response_examples: 145
+  request_examples: 11
+  schemas_with_examples: 1
+  schemas_total: 48
+schemas_with_examples:
+- ServicingAction
+examples:
+- operationId: get-pull-by-id
+  method: GET
+  path: /teams/{teamId}/pulls/{pullId}
+  status: '200'
+  media_type: application/json
+  name: Personal Example Response
+  location: response
+- operationId: get-pull-by-id
+  method: GET
+  path: /teams/{teamId}/pulls/{pullId}
+  status: '200'
+  media_type: application/json
+  name: Commercial Example Response
+  location: response
+- operationId: get-pull-by-id
+  method: GET
+  path: /teams/{teamId}/pulls/{pullId}
+  status: '400'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: get-pull-by-id
+  method: GET
+  path: /teams/{teamId}/pulls/{pullId}
+  status: '401'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: get-pull-by-id
+  method: GET
+  path: /teams/{teamId}/pulls/{pullId}
+  status: '403'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: patch-pull-by-id
+  method: PATCH
+  path: /teams/{teamId}/pulls/{pullId}
+  status: '200'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: get-pulls
+  method: GET
+  path: /teams/{teamId}/pulls
+  status: '200'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: get-pulls
+  method: GET
+  path: /teams/{teamId}/pulls
+  status: '400'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: get-pulls
+  method: GET
+  path: /teams/{teamId}/pulls
+  status: '401'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: get-pulls
+  method: GET
+  path: /teams/{teamId}/pulls
+  status: '403'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: get-document-by-id
+  method: GET
+  path: /teams/{teamId}/pulls/{pullId}/documents/{documentId}/pdf
+  status: '200'
+  media_type: application/pdf
+  name: Example Response
+  location: response
+- operationId: get-document-by-id
+  method: GET
+  path: /teams/{teamId}/pulls/{pullId}/documents/{documentId}/pdf
+  status: '400'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: get-document-by-id
+  method: GET
+  path: /teams/{teamId}/pulls/{pullId}/documents/{documentId}/pdf
+  status: '401'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: get-document-by-id
+  method: GET
+  path: /teams/{teamId}/pulls/{pullId}/documents/{documentId}/pdf
+  status: '404'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: download-document-by-id
+  method: GET
+  path: /teams/{teamId}/pulls/{pullId}/documents/{documentId}
+  status: '302'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: download-document-by-id
+  method: GET
+  path: /teams/{teamId}/pulls/{pullId}/documents/{documentId}
+  status: '400'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: download-document-by-id
+  method: GET
+  path: /teams/{teamId}/pulls/{pullId}/documents/{documentId}
+  status: '401'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: download-document-by-id
+  method: GET
+  path: /teams/{teamId}/pulls/{pullId}/documents/{documentId}
+  status: '404'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: download-file-by-id
+  method: GET
+  path: /teams/{teamId}/pulls/{pullId}/answers/{answerId}/files/{fileId}
+  status: '302'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: download-file-by-id
+  method: GET
+  path: /teams/{teamId}/pulls/{pullId}/answers/{answerId}/files/{fileId}
+  status: '400'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: download-file-by-id
+  method: GET
+  path: /teams/{teamId}/pulls/{pullId}/answers/{answerId}/files/{fileId}
+  status: '401'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: download-file-by-id
+  method: GET
+  path: /teams/{teamId}/pulls/{pullId}/answers/{answerId}/files/{fileId}
+  status: '404'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: post-pull-policy-check
+  method: POST
+  path: /teams/{teamId}/pulls/{pullId}/policyCheck
+  status: '400'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: post-pull-policy-check
+  method: POST
+  path: /teams/{teamId}/pulls/{pullId}/policyCheck
+  status: '401'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: post-pull-policy-check
+  method: POST
+  path: /teams/{teamId}/pulls/{pullId}/policyCheck
+  status: '403'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: post-pull-policy-check
+  method: POST
+  path: /teams/{teamId}/pulls/{pullId}/policyCheck
+  status: '404'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: get-pull-policy-check-pdf
+  method: GET
+  path: /teams/{teamId}/pulls/{pullId}/policyCheck/pdf
+  status: '200'
+  media_type: application/pdf
+  name: Example Response
+  location: response
+- operationId: get-pull-policy-check-pdf
+  method: GET
+  path: /teams/{teamId}/pulls/{pullId}/policyCheck/pdf
+  status: '400'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: get-pull-policy-check-pdf
+  method: GET
+  path: /teams/{teamId}/pulls/{pullId}/policyCheck/pdf
+  status: '401'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: get-pull-policy-check-pdf
+  method: GET
+  path: /teams/{teamId}/pulls/{pullId}/policyCheck/pdf
+  status: '403'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: get-pull-policy-check-pdf
+  method: GET
+  path: /teams/{teamId}/pulls/{pullId}/policyCheck/pdf
+  status: '404'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: post-consent
+  method: POST
+  path: /consent
+  status: '200'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: post-consent
+  method: POST
+  path: /consent
+  status: '400'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: post-consent
+  method: POST
+  path: /consent
+  status: '401'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: post-consent
+  method: POST
+  path: /consent
+  status: '404'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: get-webhooks
+  method: GET
+  path: /teams/{teamId}/webhooks
+  status: '200'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: get-webhooks
+  method: GET
+  path: /teams/{teamId}/webhooks
+  status: '401'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: get-webhooks
+  method: GET
+  path: /teams/{teamId}/webhooks
+  status: '403'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: post-webhooks
+  method: POST
+  path: /teams/{teamId}/webhooks
+  status: '200'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: post-webhooks
+  method: POST
+  path: /teams/{teamId}/webhooks
+  status: '401'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: post-webhooks
+  method: POST
+  path: /teams/{teamId}/webhooks
+  status: '403'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: patch-webhook
+  method: PATCH
+  path: /teams/{teamId}/webhooks/{webhookId}
+  status: '200'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: patch-webhook
+  method: PATCH
+  path: /teams/{teamId}/webhooks/{webhookId}
+  status: '400'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: patch-webhook
+  method: PATCH
+  path: /teams/{teamId}/webhooks/{webhookId}
+  status: '401'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: patch-webhook
+  method: PATCH
+  path: /teams/{teamId}/webhooks/{webhookId}
+  status: '403'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: delete-webhook
+  method: DELETE
+  path: /teams/{teamId}/webhooks/{webhookId}
+  status: '200'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: delete-webhook
+  method: DELETE
+  path: /teams/{teamId}/webhooks/{webhookId}
+  status: '400'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: delete-webhook
+  method: DELETE
+  path: /teams/{teamId}/webhooks/{webhookId}
+  status: '401'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: delete-webhook
+  method: DELETE
+  path: /teams/{teamId}/webhooks/{webhookId}
+  status: '403'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: post-monitoring
+  method: POST
+  path: /teams/{teamId}/monitorings
+  status: '401'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: post-monitoring
+  method: POST
+  path: /teams/{teamId}/monitorings
+  status: '403'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: patch-monitoring
+  method: PATCH
+  path: /teams/{teamId}/monitorings/{monitoringId}
+  status: '401'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: patch-monitoring
+  method: PATCH
+  path: /teams/{teamId}/monitorings/{monitoringId}
+  status: '403'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: delete-monitoring
+  method: DELETE
+  path: /teams/{teamId}/monitorings/{monitoringId}
+  status: '401'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: delete-monitoring
+  method: DELETE
+  path: /teams/{teamId}/monitorings/{monitoringId}
+  status: '403'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: get-monitoring
+  method: GET
+  path: /teams/{teamId}/monitorings/{monitoringId}
+  status: '401'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: get-monitoring
+  method: GET
+  path: /teams/{teamId}/monitorings/{monitoringId}
+  status: '403'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: get-monitoring-events
+  method: GET
+  path: /teams/{teamId}/monitorings/{monitoringId}/events
+  status: '200'
+  media_type: application/json
+  name: New vehicle added
+  location: response
+- operationId: get-monitoring-events
+  method: GET
+  path: /teams/{teamId}/monitorings/{monitoringId}/events
+  status: '200'
+  media_type: application/json
+  name: Coverage change
+  location: response
+- operationId: get-monitoring-events
+  method: GET
+  path: /teams/{teamId}/monitorings/{monitoringId}/events
+  status: '200'
+  media_type: application/json
+  name: Policy renewing with higher premium
+  location: response
+- operationId: get-monitoring-events
+  method: GET
+  path: /teams/{teamId}/monitorings/{monitoringId}/events
+  status: '200'
+  media_type: application/json
+  name: Claim falls off the account
+  location: response
+- operationId: get-monitoring-events
+  method: GET
+  path: /teams/{teamId}/monitorings/{monitoringId}/events
+  status: '200'
+  media_type: application/json
+  name: Driving record falls off the account
+  location: response
+- operationId: get-policy-form-by-id
+  method: GET
+  path: /policyforms/{policyFormId}/pdf
+  status: '200'
+  media_type: application/pdf
+  name: Example Response
+  location: response
+- operationId: get-policy-form-by-id
+  method: GET
+  path: /policyforms/{policyFormId}/pdf
+  status: '400'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: get-policy-form-by-id
+  method: GET
+  path: /policyforms/{policyFormId}/pdf
+  status: '404'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: download-policy-form-by-id
+  method: GET
+  path: /teams/{teamId}/policyForms/{policyFormId}
+  status: '302'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: download-policy-form-by-id
+  method: GET
+  path: /teams/{teamId}/policyForms/{policyFormId}
+  status: '400'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: download-policy-form-by-id
+  method: GET
+  path: /teams/{teamId}/policyForms/{policyFormId}
+  status: '401'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: download-policy-form-by-id
+  method: GET
+  path: /teams/{teamId}/policyForms/{policyFormId}
+  status: '404'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: get-tos
+  method: GET
+  path: /tos
+  status: '200'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: post-consent-and-connect
+  method: POST
+  path: /widget/pull/consentAndConnect
+  status: '200'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: post-consent-and-connect
+  method: POST
+  path: /widget/pull/consentAndConnect
+  status: '400'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: post-consent-and-connect
+  method: POST
+  path: /widget/pull/consentAndConnect
+  status: '401'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: post-consent-and-connect
+  method: POST
+  path: /widget/pull/consentAndConnect
+  status: '404'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: post-consent-and-connect
+  method: POST
+  path: /widget/pull/consentAndConnect
+  status: null
+  media_type: application/json
+  name: SERVICING
+  location: request
+- operationId: post-consent-and-connect
+  method: POST
+  path: /widget/pull/consentAndConnect
+  status: null
+  media_type: application/json
+  name: PULLING_DATA
+  location: request
+- operationId: post-consent-and-documents
+  method: POST
+  path: /widget/pull/consentAndDocuments
+  status: '200'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: post-consent-and-documents
+  method: POST
+  path: /widget/pull/consentAndDocuments
+  status: '400'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: post-consent-and-documents
+  method: POST
+  path: /widget/pull/consentAndDocuments
+  status: '401'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: post-consent-and-documents
+  method: POST
+  path: /widget/pull/consentAndDocuments
+  status: '404'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: post-connect
+  method: POST
+  path: /widget/pull/{pullId}/connect
+  status: '200'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: post-connect
+  method: POST
+  path: /widget/pull/{pullId}/connect
+  status: '400'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: post-connect
+  method: POST
+  path: /widget/pull/{pullId}/connect
+  status: '403'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: post-connect
+  method: POST
+  path: /widget/pull/{pullId}/connect
+  status: '404'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: get-carriers
+  method: GET
+  path: /carriers
+  status: '200'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: get-carriers
+  method: GET
+  path: /carriers
+  status: '401'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: get-carrier
+  method: GET
+  path: /carriers/{carrierId}
+  status: '200'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: post-idv
+  method: POST
+  path: /widget/pull/{pullId}/idv
+  status: '200'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: post-idv
+  method: POST
+  path: /widget/pull/{pullId}/idv
+  status: '400'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: post-idv
+  method: POST
+  path: /widget/pull/{pullId}/idv
+  status: '403'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: post-idv
+  method: POST
+  path: /widget/pull/{pullId}/idv
+  status: '404'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: post-idvoptions
+  method: POST
+  path: /widget/pull/{pullId}/idvoptions
+  status: '200'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: post-idvoptions
+  method: POST
+  path: /widget/pull/{pullId}/idvoptions
+  status: '400'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: post-idvoptions
+  method: POST
+  path: /widget/pull/{pullId}/idvoptions
+  status: '403'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: post-idvoptions
+  method: POST
+  path: /widget/pull/{pullId}/idvoptions
+  status: '404'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: post-reconnect-token
+  method: POST
+  path: /widget/pull/reconnectToken
+  status: '403'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: post-servicings
+  method: POST
+  path: /teams/{teamId}/servicings
+  status: '200'
+  media_type: application/json
+  name: Example 1
+  location: response
+- operationId: post-servicings
+  method: POST
+  path: /teams/{teamId}/servicings
+  status: '401'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: post-servicings
+  method: POST
+  path: /teams/{teamId}/servicings
+  status: '403'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: post-servicings
+  method: POST
+  path: /teams/{teamId}/servicings
+  status: null
+  media_type: application/json
+  name: ADD_VEHICLE
+  location: request
+- operationId: post-servicings
+  method: POST
+  path: /teams/{teamId}/servicings
+  status: null
+  media_type: application/json
+  name: ADD_MORTGAGEE
+  location: request
+- operationId: post-servicings
+  method: POST
+  path: /teams/{teamId}/servicings
+  status: null
+  media_type: application/json
+  name: EDIT_MORTGAGEE
+  location: request
+- operationId: post-servicings
+  method: POST
+  path: /teams/{teamId}/servicings
+  status: null
+  media_type: application/json
+  name: REMOVE_MORTGAGEE
+  location: request
+- operationId: get-servicing
+  method: GET
+  path: /teams/{teamId}/servicings/{servicingActionId}
+  status: '401'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: get-servicing
+  method: GET
+  path: /teams/{teamId}/servicings/{servicingActionId}
+  status: '403'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: post-servicing-action
+  method: POST
+  path: /widget/pull/{pullId}/servicingAction
+  status: '200'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: post-servicing-action
+  method: POST
+  path: /widget/pull/{pullId}/servicingAction
+  status: '400'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: post-servicing-action
+  method: POST
+  path: /widget/pull/{pullId}/servicingAction
+  status: '403'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: post-servicing-action
+  method: POST
+  path: /widget/pull/{pullId}/servicingAction
+  status: '404'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: get-health
+  method: GET
+  path: /health
+  status: '200'
+  media_type: application/json
+  name: 200 Example Response
+  location: response
+- operationId: get-health
+  method: GET
+  path: /health
+  status: '500'
+  media_type: application/json
+  name: 500 Example Response
+  location: response
+- operationId: get-property-data
+  method: GET
+  path: /teams/{teamId}/enrich/propertyData
+  status: '200'
+  media_type: application/json
+  name: 200 Example Response
+  location: response
+- operationId: get-property-data
+  method: GET
+  path: /teams/{teamId}/enrich/propertyData
+  status: '400'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: get-property-data
+  method: GET
+  path: /teams/{teamId}/enrich/propertyData
+  status: '404'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: post-policy-search
+  method: POST
+  path: /teams/{teamId}/policySearch
+  status: '200'
+  media_type: application/json
+  name: Success Response
+  location: response
+- operationId: post-policy-search
+  method: POST
+  path: /teams/{teamId}/policySearch
+  status: '400'
+  media_type: application/json
+  name: Invalid Search Type
+  location: response
+- operationId: post-policy-search
+  method: POST
+  path: /teams/{teamId}/policySearch
+  status: '400'
+  media_type: application/json
+  name: Invalid Public Alias
+  location: response
+- operationId: post-policy-search
+  method: POST
+  path: /teams/{teamId}/policySearch
+  status: '400'
+  media_type: application/json
+  name: API Key Environment Mismatch
+  location: response
+- operationId: post-policy-search
+  method: POST
+  path: /teams/{teamId}/policySearch
+  status: '400'
+  media_type: application/json
+  name: Invalid Insurance Provider
+  location: response
+- operationId: post-policy-search
+  method: POST
+  path: /teams/{teamId}/policySearch
+  status: '400'
+  media_type: application/json
+  name: Invalid Policy Lookup Data
+  location: response
+- operationId: post-policy-search
+  method: POST
+  path: /teams/{teamId}/policySearch
+  status: '403'
+  media_type: application/json
+  name: No Policy Lookup Access
+  location: response
+- operationId: post-policy-search
+  method: POST
+  path: /teams/{teamId}/policySearch
+  status: '500'
+  media_type: application/json
+  name: Internal Server Error
+  location: response
+- operationId: post-policy-search
+  method: POST
+  path: /teams/{teamId}/policySearch
+  status: null
+  media_type: application/json
+  name: Auto-Owners Auto ID Card Search by policy number and zip
+  location: request
+- operationId: post-policy-search
+  method: POST
+  path: /teams/{teamId}/policySearch
+  status: null
+  media_type: application/json
+  name: Farmers Auto ID Card Search by name, zip, and date of birth
+  location: request
+- operationId: post-policy-search
+  method: POST
+  path: /teams/{teamId}/policySearch
+  status: null
+  media_type: application/json
+  name: Farmers Auto ID Card Search by policy number and zip
+  location: request
+- operationId: post-policy-search
+  method: POST
+  path: /teams/{teamId}/policySearch
+  status: null
+  media_type: application/json
+  name: Progressive Auto Policy Search by VIN
+  location: request
+- operationId: post-policy-search
+  method: POST
+  path: /teams/{teamId}/policySearch
+  status: null
+  media_type: application/json
+  name: USAA Home Policy Search by street address, zip, and policy number
+  location: request
+- operationId: get-policy-check-team-settings
+  method: GET
+  path: /teams/{teamId}/policyChecks/settings
+  status: '200'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: get-policy-check-team-settings
+  method: GET
+  path: /teams/{teamId}/policyChecks/settings
+  status: '401'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: get-policy-check-team-settings
+  method: GET
+  path: /teams/{teamId}/policyChecks/settings
+  status: '403'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: post-policy-check-team-settings
+  method: POST
+  path: /teams/{teamId}/policyChecks/settings
+  status: '200'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: post-policy-check-team-settings
+  method: POST
+  path: /teams/{teamId}/policyChecks/settings
+  status: '400'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: post-policy-check-team-settings
+  method: POST
+  path: /teams/{teamId}/policyChecks/settings
+  status: '401'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: post-policy-check-team-settings
+  method: POST
+  path: /teams/{teamId}/policyChecks/settings
+  status: '403'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: get-widgets
+  method: GET
+  path: /teams/{teamId}/widgets
+  status: '200'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: get-widgets
+  method: GET
+  path: /teams/{teamId}/widgets
+  status: '400'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: get-widgets
+  method: GET
+  path: /teams/{teamId}/widgets
+  status: '401'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: get-widgets
+  method: GET
+  path: /teams/{teamId}/widgets
+  status: '403'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: post-widgets
+  method: POST
+  path: /teams/{teamId}/widgets
+  status: '400'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: post-widgets
+  method: POST
+  path: /teams/{teamId}/widgets
+  status: '401'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: post-widgets
+  method: POST
+  path: /teams/{teamId}/widgets
+  status: '403'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: get-widgetId
+  method: GET
+  path: /teams/{teamId}/widgets/{widgetId}
+  status: '400'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: get-widgetId
+  method: GET
+  path: /teams/{teamId}/widgets/{widgetId}
+  status: '401'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: get-widgetId
+  method: GET
+  path: /teams/{teamId}/widgets/{widgetId}
+  status: '403'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: patch-widgetId
+  method: PATCH
+  path: /teams/{teamId}/widgets/{widgetId}
+  status: '400'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: patch-widgetId
+  method: PATCH
+  path: /teams/{teamId}/widgets/{widgetId}
+  status: '401'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: patch-widgetId
+  method: PATCH
+  path: /teams/{teamId}/widgets/{widgetId}
+  status: '403'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: delete-widgetId
+  method: DELETE
+  path: /teams/{teamId}/widgets/{widgetId}
+  status: '400'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: delete-widgetId
+  method: DELETE
+  path: /teams/{teamId}/widgets/{widgetId}
+  status: '401'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: delete-widgetId
+  method: DELETE
+  path: /teams/{teamId}/widgets/{widgetId}
+  status: '403'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: put-widgetId-logo
+  method: PUT
+  path: /teams/{teamId}/widgets/{widgetId}/logo
+  status: '400'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: put-widgetId-logo
+  method: PUT
+  path: /teams/{teamId}/widgets/{widgetId}/logo
+  status: '401'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: put-widgetId-logo
+  method: PUT
+  path: /teams/{teamId}/widgets/{widgetId}/logo
+  status: '403'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: put-widgetId-icon
+  method: PUT
+  path: /teams/{teamId}/widgets/{widgetId}/icon
+  status: '400'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: put-widgetId-icon
+  method: PUT
+  path: /teams/{teamId}/widgets/{widgetId}/icon
+  status: '401'
+  media_type: application/json
+  name: Example Response
+  location: response
+- operationId: put-widgetId-icon
+  method: PUT
+  path: /teams/{teamId}/widgets/{widgetId}/icon
+  status: '403'
+  media_type: application/json
+  name: Example Response
+  location: response
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

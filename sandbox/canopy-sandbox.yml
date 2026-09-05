@@ -1,0 +1,211 @@
+generated: '2026-09-05'
+method: searched
+source: https://docs.usecanopy.com/reference/sandbox-credentials
+provider: Canopy Connect
+providerId: canopy
+summary: 'Canopy Connect runs a full parallel sandbox environment rather than a dry-run flag. Sandbox
+  and production are separated at the KEY level and at the LINK level: a sandbox API key only reads data
+  submitted on a sandbox widget/link, a production key only reads production data, and mixing them returns
+  400 INCORRECT_API_KEY_TYPE. The provider publishes a large, openly documented catalogue of magic test
+  carrier credentials that drive named scenarios - MFA challenges, locked accounts, provider errors, life/commercial/flood
+  policy mixes, compliant vs non-compliant limits for Policy Check testing, and stable data for diffing.'
+environments:
+- name: sandbox
+  key_type: Sandbox API Key
+  console: https://app.usecanopy.com/dashboard/settings/api-settings
+  note: Sandbox keys work only against sandbox links/widgets. Free of charge on the API Sandbox plan.
+- name: production
+  key_type: Production API Key
+  note: Production keys cannot access data submitted on sandbox links.
+enablement:
+  self_serve: false
+  note: Creating a sandbox link is NOT fully self-serve. The provider instructs you to create a widget
+    at https://app.usecanopy.com/dashboard/customize and then email support@usecanopy.com with the subject
+    "Covert widget to sandbox" including the widget URL. That is a human step between an agent and a working
+    test environment.
+  source: https://docs.usecanopy.com/reference/sandbox-credentials
+test_credential_count: 42
+test_credentials:
+- username: user_good
+  password: pass_good
+  description: SFA with auto and home policies.
+- username: user_mfa
+  password: pass_good
+  description: MFA (With options) - Submit `000000` as the MFA code to hit the bad MFA code flow - Submit
+    `000001` as the MFA code to hit the login error message flow - All other codes are considered good
+- username: user_optionless_mfa
+  password: pass_good
+  description: MFA (Without options) - Submit `000000` as the MFA code to hit the bad MFA code flow -
+    Submit `000001` as the MFA code to hit the login error message flow - All other codes are considered
+    good
+- username: user_good_commercial
+  password: pass_good
+  description: SFA with commercial policies.
+- username: user_good_flood
+  password: pass_good
+  description: SFA with flood and home policies.
+- username: user_good_flood_only
+  password: pass_good
+  description: SFA with flood policy only (no home policy).
+- username: user_good_flood_expiring
+  password: pass_good
+  description: SFA with flood and home policies that expire in 15 days.
+- username: user_good_flood_expired
+  password: pass_good
+  description: SFA with flood and home policies that expired 15 days ago.
+- username: user_good_discover
+  password: pass_good
+  description: SFA with flood and home policies. When paired with `Monitoring`, the subsequent monitoring
+    pull adds a Discover Bank mortgagee to the flood policy so a `MONITORING_EVENTS` webhook fires with
+    a mortgagee-change event.
+- username: user_adams
+  password: pass_good
+  description: SFA with realistic flood and home policies. Static data that matches PDF dec pages.
+- username: user_locked
+  password: pass_good
+  description: Will result in NOT_AUTHENTICATED with a login_error_message set as an example locked error
+    message.
+- username: user_unactivated
+  password: pass_good
+  description: Will result in NOT_AUTHENTICATED with a login_error_message set as an example unactivated
+    error message.
+- username: user_good_expensive
+  password: pass_good
+  description: SFA and has dwelling coverage premiums that are 2.45x more than user_good.
+- username: user_good_underinsured
+  password: pass_good
+  description: SFA & has a higher home Coverage A limit.
+- username: user_good_home
+  password: pass_good
+  description: SFA with home policy only.
+- username: user_good_home_no_pd
+  password: pass_good
+  description: SFA with home policy only. No `PropertyData` is returned.
+- username: user_good_auto
+  password: pass_good
+  description: SFA with auto policy only.
+- username: user_good_auto_compliant
+  password: pass_good
+  description: SFA with auto policy only. Limits are set to high values and deductibles to low values.
+    Useful for testing Policy Check compliance rules.
+- username: user_good_auto_noncompliant
+  password: pass_good
+  description: SFA with auto policy only. Limits are set to low values and deductibles to high values.
+    Useful for testing Policy Check compliance rules.
+- username: user_good_partial_auto
+  password: pass_good
+  description: SFA with auto and home policies. The auto policy is partial and missing `VehicleCoverages`.
+- username: user_good_landlord
+  password: pass_good
+  description: SFA with landlord policy
+- username: user_good_no_policies
+  password: pass_good
+  description: SFA with no policies or policy-related data. Will still return profile-related data.
+- username: user_provider_error
+  password: <any>
+  description: Will result in PROVIDER_ERROR status which can be detected using the `ERROR` webhook
+- username: user_internal_error
+  password: <any>
+  description: Will result in INTERNAL_ERROR status which can be detected using the `ERROR` webhook
+- username: user_good_complete
+  password: pass_good
+  description: SFA with many different combinations of policies, vehicles, dwellings, coverages, and endorsements.
+- username: user_good_complete_mfa
+  password: pass_good
+  description: 'Same policy/entity mix as `user_good_complete`, but gated by an MFA challenge (same MFA
+    rules as `user_mfa`: `000000` = bad code, `000001` = login error, any other code = good).'
+- username: user_good_complete_active
+  password: pass_good
+  description: Same as `user_good_complete`, but the second auto policy is `ACTIVE` instead of `CANCELLED`.
+- username: user_good_transportation
+  password: pass_good
+  description: SFA with commercial auto and commercial inland marine policies.
+- username: user_good_life
+  password: pass_good
+  description: SFA with term life and whole life policies.
+- username: user_good_term_life
+  password: pass_good
+  description: SFA with term life policy.
+- username: user_good_whole_life
+  password: pass_good
+  description: SFA with whole life policy.
+- username: user_good_universal_life
+  password: pass_good
+  description: SFA with universal life policy.
+- username: user_good_agent
+  password: pass_good
+  description: 'SFA modeled after an agent-portal pull (`PULL_TYPES.AGENT`): multi-named-insured account,
+    unpaid billing, and richer servicing datums (policy billing accounts, payments, transactions, notices).
+    When paired with `Monitoring`, the subsequent monitoring pull emits `MONITORING_EVENTS` diffs.'
+- username: user_good_diffs
+  password: pass_good
+  description: SFA with auto and home policies. Data is stable across pulls (effective dates and premiums
+    do not drift), so subsequent `Monitoring` pulls produce deterministic `MONITORING_EVENTS` diffs.
+- username: user_standard
+  password: pass_good
+  description: SFA with auto, home, umbrella, recreational vehicle, and flood policies.
+- username: user_good_rater
+  password: pass_good
+  description: 'SFA with auto and home policies, tuned for comparative-rating workflows: detailed per-coverage
+    premiums and endorsements populated.'
+- username: user_random_policy_number
+  password: pass_good
+  description: SFA with auto and home policies. Carrier policy numbers are randomized on every pull.
+- username: user_good_tx
+  password: pass_good
+  description: SFA with auto and home policies located in Texas (TX driver's license state and property
+    address). Returns no claims or driving record data.
+- username: user_consumer_data
+  password: pass_good
+  description: SFA with auto and home policies. Includes consumer-supplied profile data alongside carrier-sourced
+    data.
+- username: user_consumer_only
+  password: pass_good
+  description: SFA that returns only consumer profile data (no policies, vehicles, or dwellings). Used
+    to demonstrate the manual-entry pull type.
+- username: user_servicing_verification
+  password: pass_good
+  description: SFA with auto and home policies plus a pre-verified `ServicingAction`. Use to demo the
+    Servicing product without running a live verification.
+- username: user_bad
+  password: <any>
+  description: Forces `NOT_AUTHENTICATED` regardless of password. Primarily useful in the Policy Lookup
+    flow, which has no password field; in widget flows the "ALL OTHER USERNAMES" row below already covers
+    this.
+fallback:
+  username: ALL OTHER USERNAMES
+  password: ALL OTHER PASSWORDS
+  description: Will result in bad credentials.
+magic_values:
+- field: MFA code
+  value: '000000'
+  effect: Bad-MFA-code flow
+  applies_to:
+  - user_mfa
+  - user_optionless_mfa
+  - user_good_complete_mfa
+- field: MFA code
+  value: '000001'
+  effect: Login error message flow
+  applies_to:
+  - user_mfa
+  - user_optionless_mfa
+  - user_good_complete_mfa
+- field: MFA code
+  value: any other value
+  effect: Accepted as a good code
+  applies_to:
+  - user_mfa
+  - user_optionless_mfa
+  - user_good_complete_mfa
+time_simulation:
+  supported: false
+  note: No test clock. Time-dependent scenarios are covered instead by fixed-outcome users (user_good_flood_expiring
+    = expires in 15 days, user_good_flood_expired = expired 15 days ago).
+caveats:
+- The provider states these are sample cases and advises building your own JSON mocks if you need more
+  realistic or unique data.
+- Sandbox credentials are rejected on production widgets/links.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

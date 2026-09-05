@@ -1,0 +1,141 @@
+generated: '2026-09-05'
+method: searched
+source: >-
+  https://docs.usecanopy.com/reference/about-webhooks +
+  https://docs.usecanopy.com/reference/webhooks-api +
+  openapi/canopy-openapi.json (components.schemas.WebhookBody)
+provider: Canopy Connect
+providerId: canopy
+asyncapi_spec_published: false
+asyncapi_note: >-
+  Canopy Connect publishes NO AsyncAPI document. Probed 2026-09-05: no
+  /asyncapi.yaml or /asyncapi.json on any host, nothing in the docs index
+  (https://docs.usecanopy.com/llms.txt), and the GitHub org (github.com/usecanopy)
+  holds a single unrelated fork. The event surface is real and well documented in
+  prose and in the OpenAPI's WebhookBody schema, so it is captured here as a
+  webhook catalog rather than fabricated as an AsyncAPI document.
+transport:
+  protocol: https
+  method: POST
+  direction: canopy -> subscriber
+  subscriber_endpoint: caller-supplied hookUrl
+  signing:
+    published: false
+    note: >-
+      No webhook signature scheme, shared secret, timestamp header or replay
+      window is documented anywhere. A subscriber has no published way to verify
+      that a POST to its hookUrl came from Canopy Connect. This is the largest
+      gap in the event surface.
+  retries:
+    published: false
+    note: No retry, backoff or dead-letter policy is documented.
+management:
+  console: https://app.usecanopy.com/dashboard/settings
+  api:
+    list: get-webhooks
+    create: post-webhooks
+    update: patch-webhook
+    delete: delete-webhook
+  create_fields:
+    - name: hookUrl
+      type: string
+      format: uri
+      description: The URL that webhook requests will go to.
+    - name: eventTypes
+      type: array
+      description: The event types that will trigger the webhook request.
+  subscribable_via_api:
+    - COMPLETE
+    - POLICIES_AVAILABLE
+    - POLICY_AVAILABLE
+    - AUTH_STATUS
+    - VALIDATION_COMPLETE
+  divergence_note: >-
+    The POST /webhooks request body accepts only five event types, while the
+    docs list nine subscribable events and the WebhookBody schema enumerates
+    nine event_type values. MONITORING_RECONNECT, DATA_UPDATED,
+    SERVICING_WAITING_FOR_CONSUMER_CONFIRMATION and MONITORING_EVENTS cannot be
+    subscribed through the API as specified - they appear reachable only through
+    the dashboard. Recorded as observed; not resolved.
+payload:
+  schema: openapi/canopy-openapi.json#/components/schemas/WebhookBody
+  common_fields:
+    - pull_id
+    - team_id
+    - widget_id
+    - status
+    - event_type
+    - meta_data
+    - account_identifier
+    - is_monitored
+    - monitoring
+    - data
+  pull_status_enum:
+    - STARTED
+    - QUEUED
+    - DOCUMENT_PARSING
+    - PROCESSING
+    - IDENTITY_VERIFICATION_OPTIONS
+    - IDENTITY_VERIFICATION
+    - GETTING_CONSUMERS
+    - PULLING_DATA
+    - SERVICING
+    - WAITING_FOR_CONSUMER_CONFIRMATION
+    - SUBMITTING_CONFIRMATION
+    - NOT_AUTHENTICATED
+    - INTERNAL_ERROR
+    - PROVIDER_ERROR
+    - VALIDATION_ERROR
+    - SUCCESS
+    - INCOMPLETE
+  follow_up: >-
+    Each event carries a pull_id; the subscriber calls GET
+    /teams/{teamId}/pulls/{pullId} (get-pull-by-id) to fetch the full record.
+event_count: 10
+events:
+  - name: AUTH_STATUS
+    docs: https://docs.usecanopy.com/reference/webhook-event-auth-status
+    description: Triggered when a Pull transitions to a new authentication state.
+    api_subscribable: true
+  - name: POLICY_AVAILABLE
+    docs: https://docs.usecanopy.com/reference/webhook-event-policy-available
+    description: Triggered when the policy data for one insurance policy becomes available.
+    api_subscribable: true
+  - name: POLICIES_AVAILABLE
+    docs: https://docs.usecanopy.com/reference/webhook-event-policies-available
+    description: Fires once per Pull when policy data for all policies is available. Does not include documents.
+    api_subscribable: true
+  - name: COMPLETE
+    docs: https://docs.usecanopy.com/reference/webhook-event-complete
+    description: Fires once per Pull, once all information including documents is available.
+    api_subscribable: true
+  - name: ERROR
+    docs: https://docs.usecanopy.com/reference/webhook-event-error
+    description: Triggered when a Pull encounters an error while running.
+    api_subscribable: false
+  - name: MONITORING_RECONNECT
+    docs: https://docs.usecanopy.com/reference/monitoring_reconnect
+    description: Triggered when a Monitoring Pull requires user input to complete authentication.
+    api_subscribable: false
+  - name: DATA_UPDATED
+    docs: https://docs.usecanopy.com/reference/data_updated
+    description: Triggered when data on a Pull is updated or added (driver added/updated, contact updated, and similar in-flow edits).
+    api_subscribable: false
+  - name: SERVICING_WAITING_FOR_CONSUMER_CONFIRMATION
+    docs: https://docs.usecanopy.com/reference/servicing_waiting_for_consumer_confirmation
+    description: Triggered when a ServicingAction has been processed and is waiting for confirmation.
+    api_subscribable: false
+  - name: MONITORING_EVENTS
+    docs: https://docs.usecanopy.com/reference/webhook-event-monitoring-events
+    description: Triggered when a Monitoring Pull has run and changes were identified against the previous Pull.
+    api_subscribable: false
+  - name: VALIDATION_COMPLETE
+    docs: null
+    description: >-
+      Present in the OpenAPI (WebhookBody.event_type and the POST /webhooks
+      eventTypes enum) with a dedicated ValidationCompleteBody schema, but not
+      listed on the Using Webhooks docs page.
+    api_subscribable: true
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

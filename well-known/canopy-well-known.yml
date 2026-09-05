@@ -1,0 +1,100 @@
+generated: '2026-09-05'
+method: probed
+source: live GET of the named /.well-known/ paths on every host this record knows
+note: >-
+  Probed 2026-09-05 against the registrable domain, www, the OpenAPI servers[]
+  host (app.usecanopy.com), the docs host (docs.usecanopy.com) and the CDN
+  hosts. Exactly ONE real document is served: an RFC 9727 API catalog
+  (application/linkset+json) on the docs host, which names the canonical
+  OpenAPI at https://docs.usecanopy.com/openapi/documentation.json. Every
+  /.well-known/* path on app.usecanopy.com answers HTTP 200 with the same
+  10058-byte single-page-app HTML shell - that is a catch-all route, not a
+  document, and is recorded here as a miss.
+hosts:
+  - host: usecanopy.com
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+      - path: /.well-known/openid-configuration
+        status: 404
+      - path: /.well-known/oauth-authorization-server
+        status: 404
+      - path: /.well-known/oauth-protected-resource
+        status: 404
+      - path: /.well-known/api-catalog
+        status: 404
+      - path: /.well-known/ai-plugin.json
+        status: 404
+      - path: /.well-known/agent-card.json
+        status: 404
+      - path: /.well-known/agent.json
+        status: 404
+  - host: www.usecanopy.com
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+      - path: /.well-known/openid-configuration
+        status: 404
+      - path: /.well-known/oauth-authorization-server
+        status: 404
+      - path: /.well-known/oauth-protected-resource
+        status: 404
+      - path: /.well-known/api-catalog
+        status: 404
+      - path: /.well-known/ai-plugin.json
+        status: 404
+      - path: /.well-known/agent-card.json
+        status: 404
+      - path: /.well-known/agent.json
+        status: 404
+  - host: docs.usecanopy.com
+    documents:
+      - path: /.well-known/api-catalog
+        status: 200
+        file: well-known/canopy-api-catalog.json
+        content_type: application/linkset+json; charset=utf-8
+        note: >-
+          RFC 9727 linkset. service-desc ->
+          https://docs.usecanopy.com/openapi/documentation.json
+          (application/vnd.oai.openapi+json); service-doc ->
+          https://docs.usecanopy.com/reference (text/html).
+      - path: /.well-known/security.txt
+        status: 404
+      - path: /.well-known/openid-configuration
+        status: 404
+      - path: /.well-known/oauth-authorization-server
+        status: 404
+      - path: /.well-known/oauth-protected-resource
+        status: 404
+      - path: /.well-known/ai-plugin.json
+        status: 404
+      - path: /.well-known/agent-card.json
+        status: 404
+      - path: /.well-known/agent.json
+        status: 404
+  - host: app.usecanopy.com
+    documents:
+      - path: /.well-known/security.txt
+        status: 200
+        note: HTML SPA shell (10058 bytes), not a document - catch-all route. Treated as a miss.
+      - path: /.well-known/openid-configuration
+        status: 200
+        note: HTML SPA shell, not a document. Treated as a miss.
+      - path: /.well-known/oauth-authorization-server
+        status: 200
+        note: HTML SPA shell, not a document. Treated as a miss.
+      - path: /.well-known/oauth-protected-resource
+        status: 200
+        note: HTML SPA shell, not a document. Treated as a miss.
+      - path: /.well-known/api-catalog
+        status: 200
+        note: HTML SPA shell, not a document. Treated as a miss.
+      - path: /.well-known/ai-plugin.json
+        status: 200
+        note: HTML SPA shell, not a document. Treated as a miss.
+      - path: /.well-known/agent-card.json
+        status: 200
+        note: HTML SPA shell, not a document. Treated as a miss.
+      - path: /.well-known/agent.json
+        status: 200
+        note: HTML SPA shell, not a document. Treated as a miss.

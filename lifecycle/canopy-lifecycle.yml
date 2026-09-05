@@ -1,0 +1,85 @@
+generated: '2026-09-05'
+method: searched
+source: >-
+  https://docs.usecanopy.com/reference/getting-started +
+  openapi/canopy-openapi.json + live probe of
+  https://app.usecanopy.com/api/v1.0.0/health
+provider: Canopy Connect
+providerId: canopy
+versioning:
+  scheme: url-path
+  current: v1.0.0
+  base_url: https://app.usecanopy.com/api/v1.0.0
+  spec_version: 1.0.0
+  note: >-
+    The version is embedded in the base path (/api/v1.0.0) and mirrored in
+    info.version of the OpenAPI. No version header, no date-based pinning, and
+    no published policy describing how a new version would be introduced or how
+    long v1.0.0 will be supported.
+  policy_published: false
+deprecation:
+  policy_published: false
+  sunset_header: false
+  deprecation_header: false
+  rfc8594: false
+  mechanism: >-
+    Deprecation is expressed inside the OpenAPI (deprecated: true) and repeated
+    in prose at the top of each affected reference page, which names the exact
+    replacement operation. No Sunset or Deprecation response header is
+    documented, and no removal date is published for either deprecated
+    operation.
+  deprecated_operations:
+    - operationId: get-document-by-id
+      method: GET
+      path: /teams/{teamId}/pulls/{pullId}/documents/{documentId}/pdf
+      replaced_by: download-document-by-id
+      docs: https://docs.usecanopy.com/reference/get-document-by-id
+      reason: >-
+        Replaced by GET /teams/{teamId}/pulls/{pullId}/documents/{documentId},
+        which 302-redirects to a short-lived signed URL instead of streaming the
+        file through the API.
+      removal_date: null
+    - operationId: get-policy-form-by-id
+      method: GET
+      path: /policyforms/{policyFormId}/pdf
+      replaced_by: download-policy-form-by-id
+      docs: https://docs.usecanopy.com/reference/get-policy-form-by-id
+      reason: >-
+        Replaced by GET /teams/{teamId}/policyForms/{policyFormId}, which
+        302-redirects to a short-lived signed URL.
+      removal_date: null
+status:
+  status_page: null
+  status_page_note: >-
+    No status page found. status.usecanopy.com does not resolve (NXDOMAIN,
+    probed 2026-09-05) and neither the marketing site nor the docs link a
+    Statuspage/Instatus-style incident feed.
+  health_endpoint:
+    url: https://app.usecanopy.com/api/v1.0.0/health
+    operationId: get-health
+    authenticated: false
+    probed: '2026-09-05'
+    status: 200
+    body: '{"healthy":true}'
+    note: >-
+      The only availability signal Canopy Connect publishes is this
+      unauthenticated health endpoint. It returns {"healthy": true} on 200 and
+      {"healthy": false} on 500. There is no incident history, no component
+      breakdown and no subscribe mechanism.
+sla:
+  published: false
+  note: >-
+    A "customized MSA with SLA" is listed as an API Enterprise (Scale) tier
+    feature on https://www.usecanopy.com/api/api-plans, but no SLA numbers,
+    uptime target or credit schedule are published anywhere public.
+changelog:
+  published: false
+  note: >-
+    No dated API changelog. docs.usecanopy.com/changelog returns 404 and
+    www.usecanopy.com/changelog returns 404 (probed 2026-09-05). The only
+    change signal is the ReadMe apiDefinitions metadata, which records
+    documentation.json created 2025-11-03 and last updated 2026-08-28, plus a
+    per-page updatedAt in each docs markdown file.
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

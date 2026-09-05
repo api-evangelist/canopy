@@ -1,0 +1,55 @@
+generated: '2026-09-05'
+method: probed
+source: https://docs.usecanopy.com/mcp
+provider: Canopy Connect
+providerId: canopy
+name: Canopy Connect Documentation MCP Server
+description: >-
+  Canopy Connect runs a hosted, remote MCP server on its documentation host.
+  The docs platform advertises it in its own configuration (`mcp_server_card:
+  true`, `webmcp: true`) and the endpoint answers a plain GET with
+  "This URL can only be accessed with a MCP client." A JSON-RPC
+  `initialize` POST returns HTTP 401 with
+  {"jsonrpc":"2.0","error":{"code":-32001,"message":"Authorization required"}},
+  so the live tool manifest is authorization-gated and could not be
+  enumerated anonymously.
+status: published
+deployment:
+  mode: remote
+  endpoint: https://docs.usecanopy.com/mcp
+  auth: oauth
+  verified: probed
+probes:
+  - url: https://docs.usecanopy.com/mcp
+    method: GET
+    status: 200
+    body: This URL can only be accessed with a MCP client.
+  - url: https://docs.usecanopy.com/mcp
+    method: POST
+    rpc: initialize
+    status: 401
+    body: '{"jsonrpc":"2.0","error":{"code":-32001,"message":"Authorization required"},"id":null}'
+  - url: https://docs.usecanopy.com/mcp
+    method: POST
+    rpc: tools/list
+    status: 401
+    note: same Authorization required challenge; tool inputSchemas require authenticated introspection.
+  - url: https://docs.usecanopy.com/.well-known/oauth-authorization-server
+    status: 404
+  - url: https://docs.usecanopy.com/.well-known/oauth-protected-resource
+    status: 404
+tools:
+  status: gated
+  note: >-
+    NOT ENUMERATED. The tool list is behind the same authorization challenge as
+    every other MCP method on this endpoint, and no anonymous fallback manifest
+    is published (the docs llms.txt is a page index, not a tool list). Nothing
+    is asserted here about tool names or input schemas; an authenticated
+    tools/list is required to record them.
+related:
+  openapi: openapi/canopy-openapi.json
+  llms_txt: https://docs.usecanopy.com/llms.txt
+  api_catalog: https://docs.usecanopy.com/.well-known/api-catalog
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

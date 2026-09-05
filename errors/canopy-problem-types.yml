@@ -1,0 +1,434 @@
+generated: '2026-09-05'
+method: derived
+source: openapi/canopy-openapi.json (4xx/5xx response schemas) + https://docs.usecanopy.com/reference/authentication-guide
+provider: Canopy Connect
+providerId: canopy
+format: vendor
+rfc9457: false
+envelope:
+  media_type: application/json
+  shape: '{"error": "<CODE>"}'
+  fields:
+  - name: error
+    type: string
+    description: A single machine-readable SCREAMING_SNAKE_CASE code. There is no human-readable message,
+      no detail field, no type URI and no trace/request id in the documented envelope.
+  note: Not RFC 9457 problem+json. Content-Type is application/json and the body carries exactly one field.
+statuses:
+- status: 400
+  meaning: Validation or business-rule rejection. Carries the widest code vocabulary.
+- status: 401
+  meaning: Missing, malformed or invalid credentials.
+- status: 403
+  meaning: Authenticated but not permitted, or the Team subscription is inactive.
+- status: 404
+  meaning: Resource not found, or no data available for the lookup.
+- status: 500
+  meaning: 'Internal error. GET /health instead returns {"healthy": false} on 500.'
+code_count: 48
+codes:
+- code: ALREADY_EXISTS
+  status: 400
+  operations:
+  - patch-widgetId
+  - post-widgets
+  operation_count: 2
+- code: ALREADY_RECONNECTED
+  status: 400
+  operations:
+  - post-reconnect-token
+  operation_count: 1
+- code: CONSENT_LANGUAGE_TOO_LONG
+  status: 400
+  operations:
+  - post-consent
+  - post-consent-and-connect
+  - post-consent-and-documents
+  operation_count: 3
+- code: COULD_NOT_CREATE
+  status: 400
+  operations:
+  - post-consent-and-documents
+  operation_count: 1
+- code: CURRENTLY_REFRESHING
+  status: 400
+  operations:
+  - post-monitoring-refresh
+  operation_count: 1
+- code: DOCUMENT_UPLOAD_DISABLED
+  status: 400
+  operations:
+  - post-consent-and-documents
+  operation_count: 1
+- code: FORBIDDEN
+  status: 403
+  operations:
+  - create-team
+  - get-policy-check-team-settings
+  - get-pull-policy-check-pdf
+  - post-policy-check-team-settings
+  - post-policy-search
+  - post-pull-policy-check
+  operation_count: 6
+- code: INCORRECT_API_KEY_TYPE
+  status: 400
+  operations:
+  - delete-monitoring
+  - delete-widgetId
+  - get-monitoring
+  - get-widgetId
+  - patch-monitoring
+  - patch-pull-by-id
+  - patch-widgetId
+  - post-consent-and-connect
+  - post-consent-and-documents
+  - post-monitoring
+  - post-policy-search
+  - post-reconnect-token
+  - put-widgetId-icon
+  - put-widgetId-logo
+  operation_count: 14
+- code: INTERNAL_ERROR
+  status: 500
+  operations:
+  - post-policy-search
+  operation_count: 1
+- code: INTERVAL_TOO_SHORT
+  status: 400
+  operations:
+  - patch-monitoring
+  operation_count: 1
+- code: INVALID_ACTION
+  status: 400
+  operations:
+  - post-idv
+  - post-idvoptions
+  - post-servicing-action
+  operation_count: 3
+- code: INVALID_ADDRESS
+  status: 400
+  operations:
+  - get-property-data
+  operation_count: 1
+- code: INVALID_AGENT_ID
+  status: 400
+  operations:
+  - patch-widgetId
+  - post-widgets
+  operation_count: 2
+- code: INVALID_CONSENT_LANGUAGE
+  status: 400
+  operations:
+  - post-consent
+  - post-consent-and-connect
+  - post-consent-and-documents
+  operation_count: 3
+- code: INVALID_EVENT_TYPE
+  status: 400
+  operations:
+  - patch-webhook
+  - post-webhooks
+  operation_count: 2
+- code: INVALID_IMAGE
+  status: 400
+  operations:
+  - put-widgetId-icon
+  - put-widgetId-logo
+  operation_count: 2
+- code: INVALID_INPUT
+  status: 400
+  operations:
+  - get-pull-policy-check-pdf
+  - get-servicing
+  - get-servicings
+  - patch-pull-by-id
+  - patch-widgetId
+  - post-connect
+  - post-idv
+  - post-idvoptions
+  - post-monitoring
+  - post-policy-check-team-settings
+  - post-policy-search
+  - post-pull-policy-check
+  - post-servicing-action
+  - post-servicings
+  - post-widgets
+  - put-widgetId-icon
+  - put-widgetId-logo
+  operation_count: 17
+- code: INVALID_INTERVAL
+  status: 400
+  operations:
+  - patch-monitoring
+  operation_count: 1
+- code: INVALID_IS_ACTIVE
+  status: 400
+  operations:
+  - patch-webhook
+  operation_count: 1
+- code: INVALID_MONITORING_ID
+  status: 400
+  operations:
+  - delete-monitoring
+  - get-monitoring
+  - patch-monitoring
+  operation_count: 3
+- code: INVALID_PASSWORD
+  status: 400
+  operations:
+  - post-consent-and-connect
+  operation_count: 1
+- code: INVALID_POLICY_LOOKUP_DATA
+  status: 400
+  operations:
+  - post-policy-search
+  operation_count: 1
+- code: INVALID_PRIVACY_POLICY_TERM_ID
+  status: 404
+  operations:
+  - post-consent
+  - post-consent-and-connect
+  - post-consent-and-documents
+  operation_count: 3
+- code: INVALID_PUBLIC_ALIAS
+  status: 400
+  operations:
+  - post-consent-and-connect
+  - post-consent-and-documents
+  - post-policy-search
+  operation_count: 3
+- code: INVALID_RECONNECT_TOKEN
+  status: 400
+  operations:
+  - post-reconnect-token
+  operation_count: 1
+- code: INVALID_SERVICING_ACTIONS
+  status: 400
+  operations:
+  - post-consent-and-connect
+  operation_count: 1
+- code: INVALID_STATUS
+  status: 400
+  operations:
+  - get-carrier
+  operation_count: 1
+- code: INVALID_STOP_AFTER
+  status: 400
+  operations:
+  - patch-monitoring
+  operation_count: 1
+- code: INVALID_THIRDFIELD
+  status: 400
+  operations:
+  - post-consent-and-connect
+  operation_count: 1
+- code: INVALID_URL
+  status: 400
+  operations:
+  - post-webhooks
+  operation_count: 1
+- code: INVALID_USERNAME
+  status: 400
+  operations:
+  - post-consent-and-connect
+  - post-servicings
+  operation_count: 2
+- code: INVALID_WEBHOOK_ID
+  status: 400
+  operations:
+  - delete-webhook
+  - patch-webhook
+  operation_count: 2
+- code: MISSING_DEVICE_IDENTIFIER
+  status: 400
+  operations:
+  - post-consent
+  - post-consent-and-connect
+  - post-consent-and-documents
+  operation_count: 3
+- code: MISSING_SERVICING_ACTIONS
+  status: 400
+  operations:
+  - post-consent-and-connect
+  operation_count: 1
+- code: MONITORING_INACTIVE
+  status: 400
+  operations:
+  - post-monitoring-refresh
+  - post-reconnect-token
+  operation_count: 2
+- code: NEWER_PULL_AVAILABLE
+  status: 400
+  operations:
+  - post-reconnect-token
+  operation_count: 1
+- code: NOT_FOUND
+  status:
+  - 400
+  - 404
+  operations:
+  - delete-monitoring
+  - delete-team
+  - delete-widgetId
+  - download-document-by-id
+  - download-file-by-id
+  - download-policy-form-by-id
+  - get-carrier
+  - get-document-by-id
+  - get-monitoring
+  - get-policy-form-by-id
+  - get-pull-by-id
+  - get-pull-policy-check-pdf
+  - get-servicing
+  - get-widgetId
+  - patch-monitoring
+  - patch-pull-by-id
+  - patch-webhook
+  - patch-widgetId
+  - post-connect
+  - post-idv
+  - post-idvoptions
+  - post-monitoring
+  - post-monitoring-refresh
+  - post-pull-policy-check
+  - post-reconnect-token
+  - post-servicing-action
+  - post-servicings
+  - put-widgetId-icon
+  - put-widgetId-logo
+  operation_count: 29
+- code: NO_PROPERTY_DATA
+  status: 404
+  operations:
+  - get-property-data
+  operation_count: 1
+- code: PULL_NOT_SUCCESS
+  status: 400
+  operations:
+  - post-monitoring
+  operation_count: 1
+- code: PULL_NOT_SUPPORTED
+  status: 400
+  operations:
+  - post-monitoring
+  - post-monitoring-refresh
+  - post-reconnect-token
+  operation_count: 3
+- code: PULL_TOO_OLD
+  status: 400
+  operations:
+  - post-monitoring
+  - post-servicings
+  operation_count: 2
+- code: SUBSCRIPTION_INACTIVE
+  status: 403
+  operations:
+  - delete-monitoring
+  - delete-team
+  - delete-widgetId
+  - get-monitoring
+  - get-monitorings
+  - get-pull-by-id
+  - get-pulls
+  - get-servicing
+  - get-servicings
+  - get-widgetId
+  - get-widgets
+  - patch-monitoring
+  - patch-pull-by-id
+  - patch-widgetId
+  - post-monitoring
+  - post-servicings
+  - post-widgets
+  - put-widgetId-icon
+  - put-widgetId-logo
+  operation_count: 19
+- code: UNAUTHORIZED
+  status:
+  - 401
+  - 403
+  operations:
+  - delete-monitoring
+  - delete-webhook
+  - delete-widgetId
+  - download-document-by-id
+  - download-file-by-id
+  - download-policy-form-by-id
+  - get-carriers
+  - get-document-by-id
+  - get-monitoring
+  - get-monitorings
+  - get-policy-check-team-settings
+  - get-pull-by-id
+  - get-pull-policy-check-pdf
+  - get-pulls
+  - get-servicing
+  - get-servicings
+  - get-webhooks
+  - get-widgetId
+  - get-widgets
+  - patch-monitoring
+  - patch-pull-by-id
+  - patch-webhook
+  - patch-widgetId
+  - post-connect
+  - post-consent
+  - post-consent-and-connect
+  - post-consent-and-documents
+  - post-idv
+  - post-idvoptions
+  - post-monitoring
+  - post-policy-check-team-settings
+  - post-pull-policy-check
+  - post-reconnect-token
+  - post-servicing-action
+  - post-servicings
+  - post-webhooks
+  - post-widgets
+  - put-widgetId-icon
+  - put-widgetId-logo
+  operation_count: 39
+- code: UNSUPPORTED_CARRIER
+  status: 400
+  operations:
+  - post-reconnect-token
+  operation_count: 1
+- code: UNSUPPORTED_INSURER
+  status: 400
+  operations:
+  - post-connect
+  - post-consent-and-connect
+  - post-consent-and-documents
+  operation_count: 3
+- code: VALIDATION_ERROR
+  status: 400
+  operations:
+  - download-document-by-id
+  - download-file-by-id
+  - download-policy-form-by-id
+  - get-document-by-id
+  - get-policy-form-by-id
+  - get-pull-by-id
+  - get-pulls
+  - get-widgets
+  operation_count: 8
+- code: WIDGET_LIMIT_EXCEEDED
+  status: 400
+  operations:
+  - post-widgets
+  operation_count: 1
+- code: WIDGET_RESTRICTED_API_KEY
+  status: 400
+  operations:
+  - post-widgets
+  operation_count: 1
+gaps:
+- No 429 response is declared on any operation and no rate-limit code exists in the vocabulary, so an
+  agent has no documented signal for throttling.
+- The envelope carries no human-readable message or remediation text, so every code must be looked up
+  out of band.
+- No request/correlation id is returned on an error, so failures cannot be reported back to support by
+  reference.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

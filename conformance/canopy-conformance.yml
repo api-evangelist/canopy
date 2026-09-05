@@ -1,0 +1,133 @@
+generated: '2026-09-05'
+method: searched
+source: >-
+  openapi/canopy-openapi.json +
+  https://docs.usecanopy.com/reference/apps-authorization +
+  https://www.usecanopy.com/company/is-canopy-connect-safe +
+  https://www.usecanopy.com/security +
+  https://docs.usecanopy.com/.well-known/api-catalog
+provider: Canopy Connect
+providerId: canopy
+conformance:
+  - id: openapi-3.1
+    conforms: true
+    evidence: >-
+      openapi/canopy-openapi.json declares openapi 3.1.0 with 42 paths, 54
+      operations, 48 component schemas, unique operationIds on every operation
+      and tags on every operation. Served first-party at
+      https://docs.usecanopy.com/openapi/documentation.json.
+  - id: rfc9727-api-catalog
+    conforms: true
+    evidence: >-
+      https://docs.usecanopy.com/.well-known/api-catalog returns HTTP 200
+      application/linkset+json with a service-desc link to the OpenAPI and a
+      service-doc link to the reference (probed 2026-09-05).
+  - id: oauth2
+    conforms: true
+    evidence: >-
+      https://docs.usecanopy.com/reference/apps-authorization documents an
+      RFC 6749 authorization-code flow at
+      https://app.usecanopy.com/oauth2/authorize with response_type=code,
+      state, and query/fragment/form_post response modes. Twelve named scopes
+      are published at
+      https://docs.usecanopy.com/reference/apps-api-requests#scopes.
+    caveat: >-
+      Not declared in the OpenAPI - the published spec carries only BasicAuth,
+      so an OAuth-capable client cannot discover the flow from the contract.
+  - id: rfc7636-pkce
+    conforms: true
+    evidence: >-
+      "We enforce the use of Proof Key for Code Exchange (PKCE) to protect the
+      integrity of the OAuth 2.0 authorization flow." S256 and plain challenge
+      methods both accepted; S256 strongly recommended.
+      https://docs.usecanopy.com/reference/apps-authorization
+  - id: rfc7617-http-basic
+    conforms: true
+    evidence: >-
+      components.securitySchemes.BasicAuth (type http, scheme basic) applied
+      globally via security[]; documented at
+      https://docs.usecanopy.com/reference/authentication-guide with the exact
+      header form Authorization: Basic base64(client_id:client_secret).
+  - id: oidc
+    conforms: false
+    evidence: >-
+      No /.well-known/openid-configuration on any host (404 on usecanopy.com,
+      www.usecanopy.com and docs.usecanopy.com; app.usecanopy.com returns the
+      SPA shell for every path). No id_token, no OIDC scopes.
+  - id: rfc9457-problem-details
+    conforms: false
+    evidence: >-
+      Errors are application/json with a single-field vendor envelope
+      {"error": "<CODE>"} across all 48 documented codes. No type/title/status/
+      detail/instance members and no application/problem+json media type
+      anywhere in the spec.
+  - id: idempotency
+    conforms: false
+    evidence: >-
+      No Idempotency-Key header or equivalent on any of the 19 mutating
+      operations, and no docs page describing replay-safe retries. See
+      conventions/canopy-conventions.yml (idempotency.coverage = none).
+  - id: pagination
+    conforms: partial
+    evidence: >-
+      limit/offset with a documented default (10) and maximum (100) on
+      get-pulls only, plus since/before date filters. No total, no next/prev
+      link, no cursor, and no paging parameters on the other collection
+      endpoints.
+  - id: rfc8594-sunset
+    conforms: false
+    evidence: >-
+      Two operations are marked deprecated: true with a named replacement in
+      prose, but no Sunset or Deprecation response header is documented and no
+      removal date is published. See lifecycle/canopy-lifecycle.yml.
+  - id: rfc9116-security-txt
+    conforms: false
+    evidence: >-
+      /.well-known/security.txt returns 404 on usecanopy.com, www and docs
+      (probed 2026-09-05), even though a responsible-disclosure policy and a
+      security@usecanopy.com contact are published in HTML at
+      https://www.usecanopy.com/security.
+  - id: soc2-type2
+    conforms: true
+    category: compliance
+    evidence: >-
+      "We are SOC II Type 2 Certified, following strict information security
+      policies and procedures." -
+      https://www.usecanopy.com/company/is-canopy-connect-safe
+    caveat: No report, auditor, audit period or trust-center portal is published.
+  - id: tls1.2-minimum
+    conforms: true
+    category: compliance
+    evidence: >-
+      "The API is served over HTTPS TLS version 1.2 and higher... HTTP and
+      HTTPS with TLS versions below 1.2 are not supported."
+      (https://docs.usecanopy.com/reference/getting-started). Site material
+      claims TLS 1.3+ and 256-bit AES at rest; live probe 2026-09-05 measured
+      TLSv1.3 with HSTS max-age 31536000 on www.usecanopy.com and
+      app.usecanopy.com.
+domain_standards:
+  market: property & casualty insurance data exchange
+  declared_in_contract: false
+  probed:
+    - standard: ACORD (AL3 / ACORD XML / ACORD Data Standards)
+      found: false
+      note: >-
+        The obvious domain standard for P&C data interchange. No ACORD
+        namespace, message type, or schema reference appears anywhere in the
+        OpenAPI, and the docs never name ACORD. Canopy's 48 component schemas
+        are an entirely bespoke vocabulary (Pull, Policy, Dwelling,
+        DwellingCoverage, VehicleCoverage, PremiumGroup, LossEvent).
+    - standard: NAIC / state filing identifiers
+      found: false
+    - standard: FHIR / SCIM / OData / OpenRTB / ActivityPub / OAI-PMH
+      found: false
+      note: Not applicable to this market; probed only to close the domain-standard sweep.
+  conclusion: >-
+    Canopy Connect declares no domain standard in its contract. This is
+    recorded as an honest absence, not a penalty - the value proposition is
+    explicitly that Canopy normalises 400+ carriers into ITS OWN schema, so a
+    consumer integrates against the Canopy vocabulary rather than an industry
+    one.
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

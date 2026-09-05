@@ -1,0 +1,93 @@
+generated: '2026-09-05'
+method: searched
+source: >-
+  https://docs.usecanopy.com/reference/using-the-sdk +
+  https://docs.usecanopy.com/reference/components-getting-started
+provider: Canopy Connect
+providerId: canopy
+description: >-
+  Canopy Connect's primary integration surface is client-side, not server-side.
+  Two distinct embeddable products are published: the Canopy Connect SDK (a
+  hosted modal widget that runs the whole consent-and-connect flow) and Canopy
+  Connect Components (individual credential input fields that tokenize the
+  consumer's carrier username/password in the browser so those credentials never
+  touch the integrator's server). Components is the lower-level product - you
+  submit the returned tokens to POST /consentAndConnect or POST /connect
+  yourself.
+families:
+  - name: Canopy Connect SDK
+    kind: hosted-modal-widget
+    docs: https://docs.usecanopy.com/reference/using-the-sdk
+    reference: https://docs.usecanopy.com/reference/sdk-reference-documentation
+    loader:
+      type: script-tag
+      url: https://cdn.usecanopy.com/v2/canopy-connect.js
+      global: CanopyConnect
+      pinned: false
+      sri: forbidden
+      sri_note: >-
+        The provider explicitly instructs integrators NOT to use Subresource
+        Integrity, because SRI checks break when Canopy deploys SDK updates.
+    entrypoint: 'CanopyConnect.create({ publicAlias, pullMetaData })'
+    methods:
+      - handler.open()
+    concepts:
+      - name: publicAlias
+        description: The per-link identifier - the segment after /c/ in a widget URL (e.g. `demo` in https://app.usecanopy.com/c/demo).
+      - name: pullMetaData
+        description: Arbitrary integrator-supplied object attached to the resulting Pull, used to correlate a Pull to your own user record.
+    native_implementations:
+      - platform: swift
+        docs: https://docs.usecanopy.com/reference/swift-implementation
+        note: Example Swift Playground project.
+      - platform: kotlin
+        docs: https://docs.usecanopy.com/reference/kotlin-implementation
+        note: Example Android app.
+      - platform: react-native
+        docs: https://docs.usecanopy.com/reference/react-native-implementation
+        package: '@canopyconnect/react-native-sdk'
+        note: npm package last published 2022-02-28 - see packages/canopy-packages.yml.
+    examples:
+      - https://codepen.io/MarcL01/pen/bGmEbor
+      - https://codepen.io/MarcL01/pen/YzJWrRm
+  - name: Canopy Connect Components
+    kind: tokenizing-field-library
+    docs: https://docs.usecanopy.com/reference/components-getting-started
+    reference: https://docs.usecanopy.com/reference/components-reference-documentation
+    customization: https://docs.usecanopy.com/reference/components-customization
+    loader:
+      type: script-tag
+      module_format: UMD
+      url: https://components.usecanopy.com/v1/cc-components.js
+      global: CanopyConnectComponents
+      amd: Uses RequireJS/AMD when defined, otherwise attaches to window.
+      npm_package: '@canopyconnect/components'
+      pinned: false
+      sri: forbidden
+    entrypoint: 'CanopyConnectComponents.form(options)'
+    fields:
+      - username
+      - password
+      - thirdfield
+    methods:
+      - form.components
+      - field.mount(selector)
+      - form.submit()
+    events:
+      - ready
+    returns:
+      shape: '{ errors, tokens }'
+      note: >-
+        form.submit() returns tokenized credentials; the integrator posts those
+        tokens to POST /consentAndConnect (post-consent-and-connect) or POST
+        /connect (post-connect). Credentials never reach the integrator's
+        server in plaintext.
+    examples:
+      - https://codepen.io/MarcL01/pen/VwEGXzW
+related_operations:
+  - post-consent-and-connect
+  - post-connect
+  - post-consent
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

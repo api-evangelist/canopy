@@ -1,0 +1,63 @@
+generated: '2026-09-05'
+method: generated
+source: openapi/canopy-openapi.json + https://docs.usecanopy.com/ - every operationId in every skill was
+  grepped out of the spec, none invented
+provider: Canopy Connect
+providerId: canopy
+note: 'Canopy Connect publishes no skills/ or AGENTS.md of its own (probed 2026-09-05: docs.usecanopy.com/skills,
+  /AGENTS.md, /agents.md and /.well-known/skills.json all 404). These three are API Evangelist-authored
+  packaged skills for the marquee flows.'
+skill_count: 3
+skills:
+- file: skills/canopy-collect-insurance-data.md
+  name: canopy-collect-insurance-data
+  description: Collect a consumer's property & casualty insurance data through Canopy Connect - obtain
+    consent, authenticate against the carrier, handle MFA, and retrieve the structured Pull once the carrier
+    data lands.
+  operations:
+  - get-tos
+  - post-consent
+  - get-carriers
+  - get-carrier
+  - post-consent-and-connect
+  - post-connect
+  - post-idvoptions
+  - post-idv
+  - post-webhooks
+  - get-pull-by-id
+  - download-document-by-id
+  operation_count: 11
+- file: skills/canopy-monitor-policy-changes.md
+  name: canopy-monitor-policy-changes
+  description: Keep a Canopy Connect insurance connection live - create a Monitoring on an existing Pull,
+    refresh it on a schedule or on demand, read what changed between refreshes, and reconnect it when
+    the carrier demands re-authentication.
+  operations:
+  - post-monitoring
+  - get-monitorings
+  - get-monitoring
+  - patch-monitoring
+  - delete-monitoring
+  - post-monitoring-refresh
+  - get-monitoring-events
+  - get-monitoring-reconnect-token
+  - post-reconnect-token
+  - get-pull-by-id
+  operation_count: 10
+- file: skills/canopy-run-policy-checks.md
+  name: canopy-run-policy-checks
+  description: Verify a consumer's coverage against your own requirements with Canopy Connect Policy Checks
+    - configure the team-wide rules, evaluate them against a Pull, and produce the PDF and policy forms
+    that evidence the result.
+  operations:
+  - get-policy-check-team-settings
+  - post-policy-check-team-settings
+  - post-pull-policy-check
+  - get-pull-policy-check-pdf
+  - download-policy-form-by-id
+  - get-pull-by-id
+  - post-policy-search
+  operation_count: 7
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

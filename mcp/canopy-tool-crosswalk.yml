@@ -1,0 +1,255 @@
+generated: '2026-09-05'
+method: derived
+source: openapi/canopy-openapi.json + probed https://docs.usecanopy.com/mcp
+provider: Canopy Connect
+providerId: canopy
+note: 'Canopy Connect ships BOTH a REST OpenAPI (54 operations) and a hosted remote MCP server (https://docs.usecanopy.com/mcp).
+  The MCP tool manifest is authorization-gated - tools/list returns -32001 "Authorization required" -
+  so no tool could be bound to a backing operationId. Nothing is guessed here: crosswalk[] is deliberately
+  empty and every REST operation is listed as rest_only until an authenticated tools/list can be run.
+  There is no GraphQL surface.'
+surfaces:
+  openapi:
+    file: openapi/canopy-openapi.json
+    url: https://docs.usecanopy.com/openapi/documentation.json
+    gated: false
+    operations: 54
+  graphql:
+    endpoint: null
+    gated: null
+    note: no GraphQL surface published or discoverable
+  mcp:
+    url: https://docs.usecanopy.com/mcp
+    gated: true
+    auth: oauth
+    note: initialize and tools/list both return HTTP 401 Authorization required
+crosswalk: []
+mcp_only: []
+rest_only:
+- operationId: get-pull-by-id
+  method: GET
+  path: /teams/{teamId}/pulls/{pullId}
+  tag: Pulls API
+- operationId: patch-pull-by-id
+  method: PATCH
+  path: /teams/{teamId}/pulls/{pullId}
+  tag: Pulls API
+- operationId: get-pulls
+  method: GET
+  path: /teams/{teamId}/pulls
+  tag: Pulls API
+- operationId: get-document-by-id
+  method: GET
+  path: /teams/{teamId}/pulls/{pullId}/documents/{documentId}/pdf
+  tag: Pulls API
+- operationId: download-document-by-id
+  method: GET
+  path: /teams/{teamId}/pulls/{pullId}/documents/{documentId}
+  tag: Pulls API
+- operationId: download-file-by-id
+  method: GET
+  path: /teams/{teamId}/pulls/{pullId}/answers/{answerId}/files/{fileId}
+  tag: Pulls API
+- operationId: post-pull-policy-check
+  method: POST
+  path: /teams/{teamId}/pulls/{pullId}/policyCheck
+  tag: Pulls API
+- operationId: get-pull-policy-check-pdf
+  method: GET
+  path: /teams/{teamId}/pulls/{pullId}/policyCheck/pdf
+  tag: Pulls API
+- operationId: post-consent
+  method: POST
+  path: /consent
+  tag: Consent API
+- operationId: get-webhooks
+  method: GET
+  path: /teams/{teamId}/webhooks
+  tag: Webhooks API
+- operationId: post-webhooks
+  method: POST
+  path: /teams/{teamId}/webhooks
+  tag: Webhooks API
+- operationId: patch-webhook
+  method: PATCH
+  path: /teams/{teamId}/webhooks/{webhookId}
+  tag: Webhooks API
+- operationId: delete-webhook
+  method: DELETE
+  path: /teams/{teamId}/webhooks/{webhookId}
+  tag: Webhooks API
+- operationId: get-monitorings
+  method: GET
+  path: /teams/{teamId}/monitorings
+  tag: Monitorings API
+- operationId: post-monitoring
+  method: POST
+  path: /teams/{teamId}/monitorings
+  tag: Monitorings API
+- operationId: patch-monitoring
+  method: PATCH
+  path: /teams/{teamId}/monitorings/{monitoringId}
+  tag: Monitorings API
+- operationId: delete-monitoring
+  method: DELETE
+  path: /teams/{teamId}/monitorings/{monitoringId}
+  tag: Monitorings API
+- operationId: get-monitoring
+  method: GET
+  path: /teams/{teamId}/monitorings/{monitoringId}
+  tag: Monitorings API
+- operationId: get-monitoring-reconnect-token
+  method: GET
+  path: /teams/{teamId}/monitorings/{monitoringId}/reconnectToken
+  tag: Monitorings API
+- operationId: post-monitoring-refresh
+  method: POST
+  path: /teams/{teamId}/monitorings/{monitoringId}/refresh
+  tag: Monitorings API
+- operationId: get-monitoring-events
+  method: GET
+  path: /teams/{teamId}/monitorings/{monitoringId}/events
+  tag: Monitorings API
+- operationId: get-policy-form-by-id
+  method: GET
+  path: /policyforms/{policyFormId}/pdf
+  tag: Policy Forms API
+- operationId: download-policy-form-by-id
+  method: GET
+  path: /teams/{teamId}/policyForms/{policyFormId}
+  tag: Policy Forms API
+- operationId: get-tos
+  method: GET
+  path: /tos
+  tag: Whitelabel API
+- operationId: post-consent-and-connect
+  method: POST
+  path: /widget/pull/consentAndConnect
+  tag: Whitelabel API
+- operationId: post-consent-and-documents
+  method: POST
+  path: /widget/pull/consentAndDocuments
+  tag: Whitelabel API
+- operationId: post-connect
+  method: POST
+  path: /widget/pull/{pullId}/connect
+  tag: Whitelabel API
+- operationId: get-carriers
+  method: GET
+  path: /carriers
+  tag: Whitelabel API
+- operationId: get-carrier
+  method: GET
+  path: /carriers/{carrierId}
+  tag: Whitelabel API
+- operationId: post-idv
+  method: POST
+  path: /widget/pull/{pullId}/idv
+  tag: Whitelabel API
+- operationId: post-idvoptions
+  method: POST
+  path: /widget/pull/{pullId}/idvoptions
+  tag: Whitelabel API
+- operationId: post-reconnect-token
+  method: POST
+  path: /widget/pull/reconnectToken
+  tag: Whitelabel API
+- operationId: get-servicings
+  method: GET
+  path: /teams/{teamId}/servicings
+  tag: Servicings API
+- operationId: post-servicings
+  method: POST
+  path: /teams/{teamId}/servicings
+  tag: Servicings API
+- operationId: get-servicing
+  method: GET
+  path: /teams/{teamId}/servicings/{servicingActionId}
+  tag: Servicings API
+- operationId: post-servicing-action
+  method: POST
+  path: /widget/pull/{pullId}/servicingAction
+  tag: Whitelabel API
+- operationId: get-health
+  method: GET
+  path: /health
+  tag: Misc API
+- operationId: get-property-data
+  method: GET
+  path: /teams/{teamId}/enrich/propertyData
+  tag: Enrichment API
+- operationId: get-enrichment-driverlicense
+  method: GET
+  path: /teams/{teamId}/enrich/driverLicense
+  tag: Enrichment API
+- operationId: get-enrichment-drivingrecordiq
+  method: GET
+  path: /teams/{teamId}/enrich/drivingRecordIq
+  tag: Enrichment API
+- operationId: get-enrichment-household
+  method: GET
+  path: /teams/{teamId}/enrich/household
+  tag: Enrichment API
+- operationId: post-policy-search
+  method: POST
+  path: /teams/{teamId}/policySearch
+  tag: Policy Search API
+- operationId: get-policy-check-team-settings
+  method: GET
+  path: /teams/{teamId}/policyChecks/settings
+  tag: Policy Check Team Setting API
+- operationId: post-policy-check-team-settings
+  method: POST
+  path: /teams/{teamId}/policyChecks/settings
+  tag: Policy Check Team Setting API
+- operationId: get-widgets
+  method: GET
+  path: /teams/{teamId}/widgets
+  tag: Widgets API
+- operationId: post-widgets
+  method: POST
+  path: /teams/{teamId}/widgets
+  tag: Widgets API
+- operationId: get-widgetId
+  method: GET
+  path: /teams/{teamId}/widgets/{widgetId}
+  tag: Widgets API
+- operationId: patch-widgetId
+  method: PATCH
+  path: /teams/{teamId}/widgets/{widgetId}
+  tag: Widgets API
+- operationId: delete-widgetId
+  method: DELETE
+  path: /teams/{teamId}/widgets/{widgetId}
+  tag: Widgets API
+- operationId: put-widgetId-logo
+  method: PUT
+  path: /teams/{teamId}/widgets/{widgetId}/logo
+  tag: Widgets API
+- operationId: put-widgetId-icon
+  method: PUT
+  path: /teams/{teamId}/widgets/{widgetId}/icon
+  tag: Widgets API
+- operationId: get-team
+  method: GET
+  path: /teams/{teamId}
+  tag: Teams API
+- operationId: delete-team
+  method: DELETE
+  path: /teams/{teamId}
+  tag: Teams API
+- operationId: create-team
+  method: POST
+  path: /teams
+  tag: Teams API
+coverage:
+  rest_operations: 54
+  mcp_tools_known: 0
+  bound: 0
+  mcp_only: 0
+  rest_only: 54
+  binding_confidence: none
+  reason: mcp-tools-list-auth-gated
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

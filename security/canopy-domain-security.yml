@@ -1,11 +1,17 @@
-generated: '2026-07-11'
+generated: '2026-09-05'
 method: probed
 source: live DNS/TLS/HTTP probes of apis.yml + OpenAPI hosts
 hosts:
 - host: www.usecanopy.com
   https: true
   tls_version: TLSv1.3
-  cert_expires: Oct  2 09:57:51 2026 GMT
+  cert_expires: Nov 30 16:02:52 2026 GMT
+  hsts: true
+  hsts_max_age: 31536000
+- host: app.usecanopy.com
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Nov 13 23:59:59 2026 GMT
   hsts: true
   hsts_max_age: 31536000
 domains:

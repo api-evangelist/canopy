@@ -1,0 +1,265 @@
+generated: '2026-09-05'
+method: searched
+source: >-
+  https://docs.usecanopy.com/reference/authentication-guide,
+  https://docs.usecanopy.com/reference/about-webhooks,
+  https://docs.usecanopy.com/reference/pulls-api-downloading-files,
+  https://docs.usecanopy.com/reference/apps-api-requests, and derived from
+  openapi/canopy-openapi.json
+provider: Canopy Connect
+providerId: canopy
+spec: openapi/canopy-openapi.json
+base_url: https://app.usecanopy.com/api/v1.0.0
+transport:
+  https_only: true
+  min_tls: '1.2'
+  note: >-
+    "The API is served over HTTPS TLS version 1.2 and higher... HTTP and HTTPS
+    with TLS versions below 1.2 are not supported."
+auth:
+  style: http-basic
+  header: 'Authorization: Basic <base64(client_id:client_secret)>'
+  alternate: x-canopy-client-id / x-canopy-client-secret headers (own-Team calls only)
+  oauth_apps: 'Authorization: Bearer <access_token> - Apps acting on another Team'
+  detail: authentication/canopy-authentication.yml
+idempotency:
+  supported: false
+  coverage: none
+  header: null
+  scope: []
+  retention: null
+  evidence: >-
+    No Idempotency-Key (or equivalent) header appears anywhere in
+    openapi/canopy-openapi.json - no parameter, no header, no securityScheme,
+    no vendor extension - and no Canopy Connect docs page describes replay
+    protection, request keys, or safe retry semantics. Searched the docs index
+    at https://docs.usecanopy.com/llms.txt (123 pages) and the full OpenAPI on
+    2026-09-05.
+    The closest thing to replay protection is a business-rule guard rather than
+    an idempotency mechanism: POST /monitorings/:monitoringId/refresh rejects a
+    duplicate in-flight refresh with 400 CURRENTLY_REFRESHING, and POST
+    /webhooks rejects a duplicate registration with 400 ALREADY_EXISTS. Those
+    protect two specific resources; they do not make the mutating surface
+    replay-safe.
+  mutating_operations: 19
+  note: >-
+    An agent retrying a timed-out POST /widget/pull/consentAndConnect, POST
+    /policySearch or POST /servicings has no published way to avoid creating a
+    second Pull, a second billable search, or a second servicing action.
+pagination:
+  style: limit-offset
+  applies_to:
+    - get-pulls
+  parameters:
+    - name: limit
+      in: query
+      type: integer
+      default: 10
+      minimum: 1
+      maximum: 100
+    - name: offset
+      in: query
+      type: integer
+    - name: since
+      in: query
+      type: string
+      format: date-time
+      description: Filter by Pulls that occurred since the supplied date (inclusive).
+    - name: before
+      in: query
+      type: string
+      format: date-time
+      description: Filter by Pulls that occurred before the supplied date (inclusive).
+  response_fields: []
+  cursor: false
+  note: >-
+    Offset pagination on the Pulls list only. No total count, no next/prev link
+    and no cursor are returned, so a client cannot tell whether more pages
+    exist without requesting one. Other collection endpoints (GET /monitorings,
+    GET /webhooks, GET /widgets, GET /servicings) declare no paging parameters
+    at all.
+filtering:
+  supported: true
+  note: >-
+    GET /monitorings filters by Pull ID or status; GET /pulls filters by a
+    since/before date window. There is no generic filter grammar.
+field_expansion:
+  supported: false
+  note: No expand/fields/sparse-fieldset parameter exists on any operation.
+metadata:
+  supported: true
+  mechanism: pullMetaData
+  note: >-
+    The SDK handler accepts an arbitrary pullMetaData object
+    (CanopyConnect.create({ publicAlias, pullMetaData })) that is attached to
+    the resulting Pull, which is how a caller correlates a Pull to its own user
+    record.
+  source: https://docs.usecanopy.com/reference/using-the-sdk
+request_tracing:
+  request_id: false
+  correlation_header: null
+  note: >-
+    No request-id, trace-id or correlation header is documented on any request
+    or response, and the error envelope carries no identifier. A failed call
+    cannot be reported back to Canopy support by reference.
+versioning:
+  style: url-path
+  current: v1.0.0
+  detail: lifecycle/canopy-lifecycle.yml
+error_envelope:
+  media_type: application/json
+  shape: '{"error": "<CODE>"}'
+  rfc9457: false
+  code_count: 48
+  detail: errors/canopy-problem-types.yml
+rate_limit_signaling:
+  published: false
+  headers: []
+  status_on_exhaustion: null
+  note: >-
+    No rate limit is documented, no 429 is declared on any of the 54
+    operations, and no X-RateLimit-*/RateLimit-*/Retry-After header appears in
+    the spec or the docs. Detail in rate-limits/canopy-rate-limits.yml.
+async_and_events:
+  model: webhook-callback
+  note: >-
+    The Pull lifecycle is asynchronous. A caller starts a Pull, then learns of
+    progress through webhook events (AUTH_STATUS, POLICY_AVAILABLE,
+    POLICIES_AVAILABLE, COMPLETE, ERROR, DATA_UPDATED, MONITORING_RECONNECT,
+    MONITORING_EVENTS, SERVICING_WAITING_FOR_CONSUMER_CONFIRMATION) rather than
+    by polling. Detail in asyncapi/canopy-webhooks.yml.
+file_delivery:
+  pattern: 302-redirect-to-signed-url
+  note: >-
+    Document, policy-form and consumer-file downloads respond with a 302 to a
+    short-lived signed URL, and return that same URL in a JSON body so a client
+    can read it instead of following the redirect. The superseded *_pdf
+    operations streamed bytes through the API and are deprecated.
+  source: https://docs.usecanopy.com/reference/pulls-api-downloading-files
+dry_run_mode:
+  supported: false
+  substitute: sandbox
+  note: >-
+    There is no dry-run/preview/validate-only flag on any operation. Canopy
+    substitutes a full parallel sandbox environment with its own key type and
+    43 published test credentials - see sandbox/canopy-sandbox.yml. That lets an
+    agent rehearse a flow in a separate environment, but it cannot rehearse a
+    call against production data.
+reversibility:
+  grade: documented
+  applies: true
+  summary: >-
+    Four of the five resource families Canopy Connect lets you create have a
+    real reversal operation, and the Pull archive flag is a symmetric toggle.
+    NOT ONE of them carries a published time window, retention period, or
+    statement of what reversal actually does to the underlying data - so this
+    grades `documented`, not `verified`. The consequential write in this API is
+    also the one with no reversal at all: a Pull is a real credentialed
+    retrieval of a consumer's insurance data from a carrier, and nothing in the
+    published surface un-does it.
+  write_surfaces:
+    - operation: post-webhooks
+      creates: Webhook
+      reversal: delete-webhook
+      reversal_method: DELETE /teams/{teamId}/webhooks/{webhookId}
+      window: null
+      window_source: null
+      note: Full delete. An App may only delete webhooks it created itself.
+    - operation: post-widgets
+      creates: Widget (link)
+      reversal: delete-widgetId
+      reversal_method: DELETE /teams/{teamId}/widgets/{widgetId}
+      window: null
+      window_source: null
+      note: >-
+        Full delete. No documented statement of whether Pulls already collected
+        through that widget survive it.
+    - operation: post-monitoring
+      creates: Monitoring (recurring carrier refresh)
+      reversal: delete-monitoring
+      reversal_method: DELETE /teams/{teamId}/monitorings/{monitoringId}
+      window: null
+      window_source: null
+      note: >-
+        The provider describes this as "stop/pause a Monitoring", not delete.
+        patch-monitoring can also set status, stop_after_date or next_pull_date,
+        so a Monitoring can be wound back without being destroyed. The only
+        published time constraint is forward-looking, not a reversal window:
+        interval must be >= 30 days and next_pull_date must be >= 30 days after
+        the latest Pull.
+    - operation: create-team
+      creates: Team
+      reversal: delete-team
+      reversal_method: DELETE /teams/{teamId}
+      window: null
+      window_source: null
+      note: >-
+        Described as "deprovision a team". No published statement of whether
+        deprovisioning is recoverable, or what happens to the Team's Pulls.
+    - operation: patch-pull-by-id
+      creates: null
+      reversal: patch-pull-by-id
+      reversal_method: PATCH /teams/{teamId}/pulls/{pullId} with is_archived
+      window: null
+      window_source: null
+      note: >-
+        Symmetric toggle - the only field the operation accepts is the boolean
+        is_archived, so archiving is reversed by the same call. Effectively
+        self-reversing.
+    - operation: post-consent-and-connect
+      creates: Pull (a live credentialed retrieval from the carrier)
+      reversal: null
+      window: null
+      window_source: null
+      note: >-
+        NO REVERSAL. Nothing in the published surface cancels an in-flight Pull
+        or deletes a completed one. An agent that fires this cannot take it
+        back; it can only archive the resulting Pull.
+    - operation: post-consent-and-documents
+      creates: Pull from uploaded documents
+      reversal: null
+      window: null
+      window_source: null
+      note: NO REVERSAL. Same as post-consent-and-connect.
+    - operation: post-policy-search
+      creates: Credential-less policy search (billable lookup)
+      reversal: null
+      window: null
+      window_source: null
+      note: NO REVERSAL and no cancel. Nothing documents whether a search can be voided.
+    - operation: post-servicings
+      creates: ServicingAction against a live carrier policy
+      reversal: null
+      window: null
+      window_source: null
+      note: >-
+        NO REVERSAL OPERATION. A ServicingAction changes a real policy at the
+        carrier (e.g. ADD_MORTGAGEE). The status enum is one-directional
+        (QUEUED -> IN_PROGRESS -> ... -> SUCCESS) with no CANCELLED or REVERSED
+        state, and there is no DELETE. This is the highest-consequence write in
+        the API and the least reversible.
+    - operation: post-policy-check-team-settings
+      creates: Team-wide Policy Check configuration
+      reversal: post-policy-check-team-settings
+      reversal_method: POST /teams/{teamId}/policyChecks/settings with the prior configuration
+      window: null
+      window_source: null
+      note: >-
+        Overwrite-in-place. Reversible only if the caller saved the previous
+        settings first via get-policy-check-team-settings; the provider keeps no
+        history and offers no restore.
+  gaps:
+    - No reversal window, retention period or grace period is stated anywhere for any operation.
+    - No cancel path for an in-flight Pull, policy search or ServicingAction.
+    - No soft-delete/restore semantics documented for any DELETE.
+cross_links:
+  errors: errors/canopy-problem-types.yml
+  lifecycle: lifecycle/canopy-lifecycle.yml
+  authentication: authentication/canopy-authentication.yml
+  scopes: scopes/canopy-scopes.yml
+  rate_limits: rate-limits/canopy-rate-limits.yml
+  sandbox: sandbox/canopy-sandbox.yml
+  webhooks: asyncapi/canopy-webhooks.yml
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

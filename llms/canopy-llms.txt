@@ -1,0 +1,123 @@
+# Canopy Connect Documentation
+
+> Canopy Connect's API is the fastest way to collect and verify insurance information.
+
+Append .md to any documentation page URL to get its markdown version.
+
+## API Reference
+- [Sandbox Credentials](https://docs.usecanopy.com/reference/sandbox-credentials.md)
+- [Creating Your App](https://docs.usecanopy.com/reference/apps-create.md)
+- [Dashboard UI Send To](https://docs.usecanopy.com/reference/dashboard-ui-send-to.md)
+- [GET /tos](https://docs.usecanopy.com/reference/get-tos.md): Used to retrieve the current terms of service version number and the html content of the terms of service. When presenting consent to the customer you may either link to https://usecanopy.com/privacy or show them the terms html.
+- [POST /consentAndConnect](https://docs.usecanopy.com/reference/post-consent-and-connect.md): Used to verify consent, create a pull, and start the authentication. Use [/connect](https://docs-ent.usecanopy.com/reference/post-connect) for reauthentication
+- [POST /consentAndDocuments](https://docs.usecanopy.com/reference/post-consent-and-documents.md): Used to verify consent, create a pull, and upload documents.
+- [POST /connect](https://docs.usecanopy.com/reference/post-connect.md): Used to reauthenticate a pull when its status is `NOT_AUTHENTICATED`
+- [GET /carriers](https://docs.usecanopy.com/reference/get-carriers.md): Used to retrieve a list of supported carriers. It also includes various attributes to aid in UI
+- [GET /carriers/:carrierId](https://docs.usecanopy.com/reference/get-carrier.md): Used to retrieve a single supported carrier.
+- [POST /idv](https://docs.usecanopy.com/reference/post-idv.md): Used to submit a mfa code when a pull has a status of `IDENTITY_VERIFICATION`
+- [POST /idvoptions](https://docs.usecanopy.com/reference/post-idvoptions.md): Used to select a mfa option when a pull has a status of `IDENTITY_VERIFICATION_OPTIONS`
+- [POST /reconnectToken](https://docs.usecanopy.com/reference/post-reconnect-token.md): Used to reconnect to a monitored pull that requires input from the user
+- [POST /servicingAction](https://docs.usecanopy.com/reference/post-servicing-action.md): Used to submit confirmation for a `ServicingAction` on a `Pull`.
+- [How to use Consent API](https://docs.usecanopy.com/reference/how-to-use-consent-api-1.md)
+- [POST /consent](https://docs.usecanopy.com/reference/post-consent.md): This page will help you get started with Consent API.
+- [GET /propertyData](https://docs.usecanopy.com/reference/get-property-data.md): Look up property data for a given address. Your plan must include ad-hoc property data lookups in order to access this API. For more information, contact your Canopy Connect representative.
+- [GET /driverLicense](https://docs.usecanopy.com/reference/get-enrichment-driverlicense.md)
+- [GET /drivingRecordIq](https://docs.usecanopy.com/reference/get-enrichment-drivingrecordiq.md)
+- [GET /household](https://docs.usecanopy.com/reference/get-enrichment-household.md)
+- [GET /health](https://docs.usecanopy.com/reference/get-health.md): Get the current health of the Canopy Connect service.
+- [How to use Monitoring](https://docs.usecanopy.com/reference/how-to-use-monitoring-1.md)
+- [GET /monitorings](https://docs.usecanopy.com/reference/get-monitorings.md): List all Monitorings, optionally filtered by Pull ID or status. A Monitoring represents an ongoing connection to an insurance account, used for refreshing information on a connected insurance account.
+- [POST /monitorings](https://docs.usecanopy.com/reference/post-monitoring.md): Refresh the data on an insurance account. Create a Monitoring to refresh insurance account data on a fixed interval, or refresh on-demand.
+- [PATCH /monitorings/:monitoringId](https://docs.usecanopy.com/reference/patch-monitoring.md): Update a Monitoring to change the refresh interval, next refresh date, stop date or status. A Monitoring represents an ongoing connection to an insurance account, used for refreshing information on a connected insurance account.
+- [DELETE /monitorings/:monitoringId](https://docs.usecanopy.com/reference/delete-monitoring.md): Used to stop/pause a Monitoring. A Monitoring represents an ongoing connection to an insurance account, used for refreshing information on a connected insurance account.
+- [GET /monitorings/:monitoringId](https://docs.usecanopy.com/reference/get-monitoring.md): Fetch a monitoring. A Monitoring represents an ongoing connection to an insurance account, used for refreshing information on a connected insurance account.
+- [GET /monitorings/:monitoringId/reconnectToken](https://docs.usecanopy.com/reference/get-monitoring-reconnect-token.md): Used to generate a reconnect token for a monitoring
+- [POST /monitorings/:monitoringId/refresh](https://docs.usecanopy.com/reference/post-monitoring-refresh.md): Initiate a refresh of the data on a connected insurance account on-demand. A Monitoring represents an ongoing connection to an insurance account, used for refreshing information on a connected insurance account.
+- [GET /monitorings/:monitoringId/events](https://docs.usecanopy.com/reference/get-monitoring-events.md): Used to get the events between the two most recent Pulls of a monitored insurance account. Your plan must include monitoring events in order to access this API. For more information, contact your Canopy Connect representative.
+- [GET /:policyFormId](https://docs.usecanopy.com/reference/download-policy-form-by-id.md): Download a policy form PDF. Your plan must include policy forms in order to access this API in production. For more information, contact your Canopy Connect representative.  The endpoint responds with a `302` redirect to a short-lived, signed URL where the file bytes are hosted. The same URL is also returned in a JSON response body, so you can read it directly instead of following the redirect. See the [Downloading Files](https://docs.usecanopy.com/reference/pulls-api-downloading-files) guide for details.
+- [GET /policyforms/:policyFormId/pdf](https://docs.usecanopy.com/reference/get-policy-form-by-id.md): **Deprecated.** Use [`GET /teams/{teamId}/policyForms/{policyFormId}`](https://docs.usecanopy.com/reference/download-policy-form-by-id) instead, which redirects to a short-lived, signed URL rather than streaming the file through the API.  Used to download a policy form PDF. Your plan must include policy forms in order to access this API in production. For more information, contact your Canopy Connect representative.
+- [GET /policyChecks/settings](https://docs.usecanopy.com/reference/get-policy-check-team-settings.md): Fetch the Policy Check settings on your Canopy Connect account. This shows which Policy Checks are configured. All configured Policy Checks are run on every submission.
+- [POST /policyChecks/settings](https://docs.usecanopy.com/reference/post-policy-check-team-settings.md): Configure the Policy Checks on your Canopy Connect account. All configured Policy Checks are run on every submission.
+- [Downloading Files](https://docs.usecanopy.com/reference/pulls-api-downloading-files.md)
+- [GET /:documentId](https://docs.usecanopy.com/reference/download-document-by-id.md): Download a document from a Pull. This is the `download_url` returned on each [Document](https://docs.usecanopy.com/reference/schemas-document).  The endpoint responds with a `302` redirect to a short-lived, signed URL where the file bytes are hosted. The same URL is also returned in a JSON response body, so you can read it directly instead of following the redirect. See the [Downloading Files](https://docs.usecanopy.com/reference/pulls-api-downloading-files) guide for details.
+- [GET /:documentId/pdf](https://docs.usecanopy.com/reference/get-document-by-id.md): **Deprecated.** Use [`GET /teams/{teamId}/pulls/{pullId}/documents/{documentId}`](https://docs.usecanopy.com/reference/download-document-by-id) instead, which is the `download_url` returned on each Document.  Download a pdf document from a pull.
+- [GET /:fileId](https://docs.usecanopy.com/reference/download-file-by-id.md): Download a consumer-uploaded file from a Pull. This is the `download_url` returned on each [FileUpload](https://docs.usecanopy.com/reference/schemas-fileupload) in a `FILE_UPLOAD` answer field.  The endpoint responds with a `302` redirect to a short-lived, signed URL where the file bytes are hosted. The same URL is also returned in a JSON response body, so you can read it directly instead of following the redirect. See the [Downloading Files](https://docs.usecanopy.com/reference/pulls-api-downloading-files) guide for details.
+- [POST /policyCheck](https://docs.usecanopy.com/reference/post-pull-policy-check.md): Evaluate Policy Check on pull
+- [GET /policyCheck/pdf](https://docs.usecanopy.com/reference/get-pull-policy-check-pdf.md): Download a Policy Check PDF from a pull
+- [GET /pulls](https://docs.usecanopy.com/reference/get-pulls.md): Used to get a list of pulls
+- [GET /pulls/:pullId](https://docs.usecanopy.com/reference/get-pull-by-id.md): Used to get all of the available data for a pull
+- [PATCH /pulls/:pullId](https://docs.usecanopy.com/reference/patch-pull-by-id.md): Used to edit a pull
+- [How to use Servicing](https://docs.usecanopy.com/reference/how-to-use-servicing-1.md)
+- [GET /servicings](https://docs.usecanopy.com/reference/get-servicings.md): Used to get all `ServicingActions`.
+- [POST /servicings](https://docs.usecanopy.com/reference/post-servicings.md): Used to create `ServicingActions` using the credentials + consent from an existing `Pull`.   If you are collecting credentials + consent for a new `Pull`, use [POST /consentAndConnect](https://docs.usecanopy.com/reference/post-consent-and-connect).
+- [GET /servicings/:servicingActionId](https://docs.usecanopy.com/reference/get-servicing.md): Used to get a `ServicingAction`.
+- [GET /:teamId](https://docs.usecanopy.com/reference/get-team.md): Used to get information about the current team
+- [DELETE /:teamId](https://docs.usecanopy.com/reference/delete-team.md): Used to deprovision a team
+- [POST /teams](https://docs.usecanopy.com/reference/create-team.md): Used to provision a team
+- [GET /widgets](https://docs.usecanopy.com/reference/get-widgets.md): Used to get all available widgets
+- [Webhooks API](https://docs.usecanopy.com/reference/webhooks-api.md)
+- [GET /webhooks](https://docs.usecanopy.com/reference/get-webhooks.md): Used to get all available webhooks
+- [POST /webhooks](https://docs.usecanopy.com/reference/post-webhooks.md): Used to create a webhook
+- [PATCH /webhooks/:webhookId](https://docs.usecanopy.com/reference/patch-webhook.md): Used to update a webhook
+- [DELETE /webhooks/:webhookId](https://docs.usecanopy.com/reference/delete-webhook.md): Used to delete a webhook
+- [POST /widgets](https://docs.usecanopy.com/reference/post-widgets.md): Used to create a widget
+- [GET /:widgetId](https://docs.usecanopy.com/reference/get-widgetid.md): Used to get a widget
+- [PATCH /:widgetId](https://docs.usecanopy.com/reference/patch-widgetid.md): Used to edit a widget
+- [DELETE /:widgetId](https://docs.usecanopy.com/reference/delete-widgetid.md): Used to delete a widget
+- [PUT /:widgetId/logo](https://docs.usecanopy.com/reference/put-widgetid-logo.md): Used to stream logo upload for a widget
+- [PUT /:widgetId/icon](https://docs.usecanopy.com/reference/put-widgetid-icon.md): Used to stream icon upload for a widget
+- [How to use Policy Search API](https://docs.usecanopy.com/reference/how-to-use-policy-search-api.md)
+- [POST /policySearch](https://docs.usecanopy.com/reference/post-policy-search.md): Initiates a new credential-less insurance policy search. Supports Auto insurance policy search, Home insurance policy search, and Auto ID Card search.
+- [Reference Documentation](https://docs.usecanopy.com/reference/sdk-reference-documentation.md)
+- [Swift implementation](https://docs.usecanopy.com/reference/swift-implementation.md): Example Swift Playground project
+- [Kotlin implementation](https://docs.usecanopy.com/reference/kotlin-implementation.md): Example Android app
+- [React Native implementation](https://docs.usecanopy.com/reference/react-native-implementation.md): Example React Native implementation
+- [Using Webhooks](https://docs.usecanopy.com/reference/about-webhooks.md)
+- [AUTH_STATUS](https://docs.usecanopy.com/reference/webhook-event-auth-status.md)
+- [POLICY_AVAILABLE](https://docs.usecanopy.com/reference/webhook-event-policy-available.md)
+- [POLICIES_AVAILABLE](https://docs.usecanopy.com/reference/webhook-event-policies-available.md)
+- [COMPLETE](https://docs.usecanopy.com/reference/webhook-event-complete.md)
+- [ERROR](https://docs.usecanopy.com/reference/webhook-event-error.md)
+- [MONITORING_RECONNECT](https://docs.usecanopy.com/reference/monitoring_reconnect.md)
+- [DATA_UPDATED](https://docs.usecanopy.com/reference/data_updated.md)
+- [SERVICING_WAITING_FOR_CONSUMER_CONFIRMATION](https://docs.usecanopy.com/reference/servicing_waiting_for_consumer_confirmation.md)
+- [MONITORING_EVENTS](https://docs.usecanopy.com/reference/webhook-event-monitoring-events.md)
+- [AdditionalInterest](https://docs.usecanopy.com/reference/schemas-additionalinterest.md)
+- [Address](https://docs.usecanopy.com/reference/schemas-address.md)
+- [Agent](https://docs.usecanopy.com/reference/schemas-agent.md)
+- [AnswerField](https://docs.usecanopy.com/reference/schemas-answerfield.md)
+- [AnswerSection](https://docs.usecanopy.com/reference/schemas-answersection.md)
+- [Claim](https://docs.usecanopy.com/reference/schemas-claim.md)
+- [CommercialNamedInsured](https://docs.usecanopy.com/reference/schemas-commercialnamedinsured.md)
+- [Driver](https://docs.usecanopy.com/reference/schemas-driver.md)
+- [Dwelling](https://docs.usecanopy.com/reference/schemas-dwelling.md)
+- [DwellingCoverage](https://docs.usecanopy.com/reference/schemas-dwellingcoverage.md)
+- [EnrichmentDriverLicense](https://docs.usecanopy.com/reference/schemas-enrichmentdriverlicense.md)
+- [EnrichmentDrivingRecordIq](https://docs.usecanopy.com/reference/schemas-enrichmentdrivingrecordiq.md)
+- [EnrichmentHousehold](https://docs.usecanopy.com/reference/schemas-enrichmenthousehold.md)
+- [EnrichmentPropertyData](https://docs.usecanopy.com/reference/schemas-enrichmentpropertydata.md)
+- [FileUpload](https://docs.usecanopy.com/reference/schemas-fileupload.md)
+- [LifePolicy](https://docs.usecanopy.com/reference/schemas-lifepolicy.md)
+- [LifePolicyBeneficiary](https://docs.usecanopy.com/reference/schemas-lifepolicybeneficiary.md)
+- [LifePolicyDetails](https://docs.usecanopy.com/reference/schemas-lifepolicydetails.md)
+- [LifePolicyRider](https://docs.usecanopy.com/reference/schemas-lifepolicyrider.md)
+- [Location](https://docs.usecanopy.com/reference/schemas-location.md)
+- [LocationCoverage](https://docs.usecanopy.com/reference/schemas-locationcoverage.md)
+- [LocationOperation](https://docs.usecanopy.com/reference/schemas-locationoperation.md)
+- [LossEvent](https://docs.usecanopy.com/reference/schemas-lossevent.md)
+- [MonitoringEvent](https://docs.usecanopy.com/reference/schemas-monitoringevent.md)
+- [NamedInsured](https://docs.usecanopy.com/reference/schemas-namedinsured.md)
+- [Policy](https://docs.usecanopy.com/reference/schemas-policy.md)
+- [PolicyCheck](https://docs.usecanopy.com/reference/schemas-policycheck.md)
+- [PolicyCheckDwellingSetting](https://docs.usecanopy.com/reference/schemas-policycheckdwellingsetting.md)
+- [PolicyCheckPullVehicleSetting](https://docs.usecanopy.com/reference/schemas-policycheckpullvehiclesetting.md)
+- [PolicyCheckVehicleSetting](https://docs.usecanopy.com/reference/schemas-policycheckvehiclesetting.md)
+- [PolicyForm](https://docs.usecanopy.com/reference/schemas-policyform.md)
+- [PremiumGroup](https://docs.usecanopy.com/reference/schemas-premiumgroup.md)
+- [Pull](https://docs.usecanopy.com/reference/schemas-pull.md)
+- [PullAssignee](https://docs.usecanopy.com/reference/schemas-pullassignee.md)
+- [PullFunnel](https://docs.usecanopy.com/reference/schemas-pullfunnel.md)
+- [ValidationCompleteBody](https://docs.usecanopy.com/reference/schemas-validationcompletebody.md)
+- [VehicleCoverage](https://docs.usecanopy.com/reference/schemas-vehiclecoverage.md)
+- [VehicleDriver](https://docs.usecanopy.com/reference/schemas-vehicledriver.md)
+- [Widget](https://docs.usecanopy.com/reference/schemas-widget.md)

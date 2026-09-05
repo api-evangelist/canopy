@@ -1,0 +1,91 @@
+generated: '2026-09-05'
+method: searched
+source: https://docs.usecanopy.com/reference/authentication-guide
+docs:
+  - https://docs.usecanopy.com/reference/authentication-guide
+  - https://docs.usecanopy.com/reference/apps-authorization
+  - https://docs.usecanopy.com/reference/apps-api-requests
+spec: openapi/canopy-openapi.json
+summary:
+  types:
+    - http
+    - oauth2
+  primary: HTTP Basic (Client ID as username, Client Secret as password)
+  transport: HTTPS only; TLS 1.2 and above. HTTP and TLS below 1.2 are rejected.
+  key_management: https://app.usecanopy.com/dashboard/settings/api-settings
+  environments:
+    - name: sandbox
+      note: Sandbox API keys work only against sandbox links/widgets and cannot read production data.
+    - name: production
+      note: Production API keys work only against production links and cannot read sandbox data.
+schemes:
+  - name: BasicAuth
+    type: http
+    scheme: basic
+    declared_in: openapi/canopy-openapi.json
+    applied: global (security[] on the document root)
+    username: Client ID
+    password: Client Secret
+    header: 'Authorization: Basic <base64(client_id:client_secret)>'
+    description: >-
+      HTTP Basic authentication over HTTPS. Create the key pair in the Canopy
+      Connect dashboard under Settings > API. The Client Secret is shown once at
+      creation and cannot be re-retrieved; losing it requires creating a new key
+      with a new Client ID. Canopy explicitly warns the secret is server-side
+      only and must never be embedded in browser or mobile code.
+    alternate_headers:
+      - x-canopy-client-id
+      - x-canopy-client-secret
+    alternate_note: >-
+      The Apps guide states that x-canopy-client-id / x-canopy-client-secret are
+      an alternative to the Authorization header for calls against your own
+      Team, and that sending them alongside a Bearer token causes the
+      Authorization header to be ignored.
+    sources:
+      - openapi/canopy-openapi.json
+      - https://docs.usecanopy.com/reference/authentication-guide
+  - name: CanopyAppsOAuth2
+    type: oauth2
+    flow: authorizationCode
+    pkce: required
+    pkce_methods:
+      - S256
+      - plain
+    pkce_note: S256 strongly recommended by the provider; plain accepted.
+    authorization_url: https://app.usecanopy.com/oauth2/authorize
+    token_header: 'Authorization: Bearer <access_token>'
+    response_modes:
+      - query
+      - fragment
+      - form_post
+    state: supported and recommended (CSRF nonce / round-trip state)
+    scopes_artifact: scopes/canopy-scopes.yml
+    declared_in: docs only
+    description: >-
+      OAuth 2.0 authorization-code flow with mandatory PKCE, used by Canopy
+      Connect Apps to act on another Team's behalf. This flow is NOT declared in
+      the provider's published OpenAPI - the spec carries only BasicAuth - so it
+      is recorded here from the docs and mirrored in
+      overlays/canopy-openapi-overlay.yaml.
+    sources:
+      - https://docs.usecanopy.com/reference/apps-authorization
+      - https://docs.usecanopy.com/reference/apps-api-requests
+failures:
+  - status: 401
+    code: UNAUTHORIZED
+    meaning: Missing, malformed, or invalid credentials, or an inactive key.
+  - status: 403
+    code: FORBIDDEN
+    meaning: Authenticated but not permitted for this resource.
+  - status: 403
+    code: SUBSCRIPTION_INACTIVE
+    meaning: The Team's Canopy Connect subscription is not active.
+  - status: 400
+    code: INCORRECT_API_KEY_TYPE
+    meaning: A sandbox key was used against a production link, or vice versa.
+gaps:
+  - The OpenAPI declares no oauth2 securityScheme, so scope requirements are invisible to any generated client.
+  - No /.well-known/oauth-authorization-server or /.well-known/openid-configuration is served on any host (probed 2026-09-05, 404 on usecanopy.com, www and docs).
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

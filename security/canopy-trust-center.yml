@@ -1,0 +1,66 @@
+generated: '2026-09-05'
+method: searched
+source: https://www.usecanopy.com/company/is-canopy-connect-safe
+provider: Canopy Connect
+providerId: canopy
+trust_portal: null
+trust_portal_note: >-
+  No trust center portal. trust.usecanopy.com does not resolve (NXDOMAIN,
+  probed 2026-09-05) and no Vanta/Drata/SafeBase/Whistic-style portal is linked
+  from the site. Compliance is asserted in marketing prose on two public pages.
+pages:
+  - url: https://www.usecanopy.com/company/is-canopy-connect-safe
+    title: Is Canopy Connect Safe?
+    status: 200
+  - url: https://www.usecanopy.com/security
+    title: Security
+    status: 200
+  - url: https://www.usecanopy.com/resources/permissioned-data
+    title: Permissioned data
+certifications:
+  - name: SOC 2 Type 2
+    claimed: true
+    quote: We are SOC II Type 2 Certified, following strict information security policies and procedures.
+    source: https://www.usecanopy.com/company/is-canopy-connect-safe
+    report_available: false
+    auditor: null
+    audit_period: null
+    note: >-
+      Asserted in prose only. No report, no auditor name, no audit window, and
+      no NDA-gated request flow is published.
+controls:
+  - name: Encryption at rest
+    value: 256-bit AES
+    source: https://www.usecanopy.com/company/is-canopy-connect-safe
+  - name: Encryption in transit
+    value: TLS 1.3+
+    source: https://www.usecanopy.com/company/is-canopy-connect-safe
+  - name: SSL Labs grade
+    value: A+ (claimed)
+    source: https://www.usecanopy.com/company/is-canopy-connect-safe
+  - name: Infrastructure
+    value: Amazon Web Services
+    source: https://www.usecanopy.com/company/is-canopy-connect-safe
+  - name: Credential handling
+    value: >-
+      Canopy Connect states it never shares consumer login and password
+      information with any third party. Canopy Connect Components tokenizes
+      carrier credentials in the browser so they never reach the integrator's
+      server.
+    source: https://docs.usecanopy.com/reference/components-getting-started
+not_claimed:
+  - ISO 27001
+  - PCI DSS
+  - HIPAA
+  - FedRAMP
+  - GDPR certification
+  - CCPA attestation
+  - GLBA
+  - FCRA
+gaps:
+  - No subprocessor list published.
+  - No data-retention schedule published (custom retention is sold as an Enterprise tier feature).
+  - No penetration-test summary or vulnerability-management statement.
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

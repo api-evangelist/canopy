@@ -1,0 +1,68 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for the Canopy Connect API
+  version: 1.0.0
+extends: ../openapi/canopy-openapi.json
+x-provenance:
+  generated: '2026-09-05'
+  method: generated
+  source: >-
+    Derived from openapi/canopy-openapi.json plus the Canopy Connect docs
+    (authentication-guide, apps-api-requests, apps-authorization,
+    sandbox-credentials, about-webhooks). Captures API Evangelist annotations
+    only; the original specification is never mutated.
+actions:
+  - target: $.info
+    description: Record the machine-readable discovery surface and the OAuth App flow the base spec omits.
+    update:
+      x-apis-io-provider: canopy
+      x-api-catalog: https://docs.usecanopy.com/.well-known/api-catalog
+      x-llms-txt: https://docs.usecanopy.com/llms.txt
+      x-mcp-server: https://docs.usecanopy.com/mcp
+      x-documentation: https://docs.usecanopy.com/reference/getting-started
+  - target: $.components.securitySchemes
+    description: >-
+      Add the OAuth 2.0 Apps flow. The published spec declares only BasicAuth,
+      but https://docs.usecanopy.com/reference/apps-authorization documents an
+      authorization-code + PKCE flow at https://app.usecanopy.com/oauth2/authorize
+      with twelve named scopes, used by third-party Apps acting on another
+      Team's behalf.
+    update:
+      CanopyAppsOAuth2:
+        type: oauth2
+        description: >-
+          OAuth 2.0 authorization code flow with mandatory PKCE, used by Canopy
+          Connect Apps to call the API on behalf of another Team. Documented at
+          https://docs.usecanopy.com/reference/apps-authorization - not declared
+          in the provider's own OpenAPI.
+        flows:
+          authorizationCode:
+            authorizationUrl: https://app.usecanopy.com/oauth2/authorize
+            scopes:
+              read:pulls: Read Pulls and the documents attached to them
+              read:policy_checks: Read Policy Check settings and results
+              write:policy_checks: Configure Policy Checks and evaluate them on a Pull
+              read:webhooks: Read webhooks created by this App
+              write:webhooks: Create, update and delete webhooks created by this App
+              read:widgets: Read widgets (links)
+              write:widgets: Create, update, delete widgets and upload their logo/icon
+              read:driver_license_lookup: Call the driver licence enrichment lookup
+              read:driving_record_iq_lookup: Call the driving-record IQ enrichment lookup
+              read:household_lookup: Call the household enrichment lookup
+              read:property_lookup: Call the property data enrichment lookup
+              write:whitelabel: Drive the white-label consent, connect, IDV and servicing flows
+  - target: $.paths['/health'].get
+    description: Mark the health endpoint as the unauthenticated availability signal (verified live 2026-09-05, 200 {"healthy":true}).
+    update:
+      x-unauthenticated: true
+      x-availability-probe: https://app.usecanopy.com/api/v1.0.0/health
+  - target: $.paths['/teams/{teamId}/pulls/{pullId}/documents/{documentId}/pdf'].get
+    description: Record the documented replacement for this deprecated operation.
+    update:
+      x-replaced-by: download-document-by-id
+      x-deprecation-source: https://docs.usecanopy.com/reference/get-document-by-id
+  - target: $.paths['/policyforms/{policyFormId}/pdf'].get
+    description: Record the documented replacement for this deprecated operation.
+    update:
+      x-replaced-by: download-policy-form-by-id
+      x-deprecation-source: https://docs.usecanopy.com/reference/get-policy-form-by-id

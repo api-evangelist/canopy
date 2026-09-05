@@ -1,15 +1,11 @@
 aid: canopy
-url: >-
-  https://raw.githubusercontent.com/api-evangelist/canopy/refs/heads/main/apis.yml
+url: https://raw.githubusercontent.com/api-evangelist/canopy/refs/heads/main/apis.yml
 name: Canopy Connect
-description: >-
-  Canopy Connect is an insurance infrastructure platform that lets consumers
-  and businesses quickly and securely share property and casualty insurance
-  information through integrations with 400+ carriers covering 95%+ of the
-  U.S. auto and homeowners markets. The API returns structured policy,
-  driver, vehicle, claims, and property data in seconds, replacing
-  manual verification workflows used across mortgage lending, auto finance,
-  insurance carriers, and embedded insurance products.
+description: Canopy Connect is an insurance infrastructure platform that lets consumers and businesses
+  quickly and securely share property and casualty insurance information through integrations with 400+
+  carriers covering 95%+ of the U.S. auto and homeowners markets. The API returns structured policy, driver,
+  vehicle, claims, and property data in seconds, replacing manual verification workflows used across mortgage
+  lending, auto finance, insurance carriers, and embedded insurance products.
 type: Index
 kind: company
 deliveryModel:
@@ -39,109 +35,180 @@ position: Consuming
 access: 3rd-Party
 image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/canopy.png
 tags:
-  - Auto Insurance
-  - Casualty
-  - Financial-Services
-  - Homeowners Insurance
-  - Insurance
-  - Insurance Verification
-  - Property
+- Auto Insurance
+- Casualty
+- Financial-Services
+- Homeowners Insurance
+- Insurance
+- Insurance Verification
+- Property
 tags_raw:
-  - Auto Insurance
-  - Casualty
-  - Financial Services
-  - Homeowners Insurance
-  - Insurance
-  - Insurance Verification
-  - Property
+- Auto Insurance
+- Casualty
+- Financial Services
+- Homeowners Insurance
+- Insurance
+- Insurance Verification
+- Property
 created: '2024-07-02'
-modified: '2026-04-23'
+modified: '2026-09-05'
 specificationVersion: '0.23'
 apis:
-  - aid: canopy:canopy-connect-api
-    name: Canopy Connect API
-    description: >-
-      The Canopy Connect API returns structured property and casualty
-      insurance data directly from 400+ carriers in real time. Applications
-      can verify coverage, retrieve policy documents, pull driver and
-      vehicle details, and surface claims history in under a minute
-      instead of the typical 30-minute manual verification process.
-    humanURL: https://www.usecanopy.com/api
-    tags:
-      - Auto Insurance
-      - Casualty
-      - Insurance
-      - Insurance Verification
-      - Property
-    properties:
-      - type: Documentation
-        url: https://www.usecanopy.com/api
-      - type: Website
-        url: https://www.usecanopy.com/
-      - type: SDKs
-        url: https://www.usecanopy.com/api
-      - type: Security
-        url: https://www.usecanopy.com/security
-    x-features:
-      - 400+ insurance carrier integrations (95%+ market coverage)
-      - 96% auto insurance coverage, 91% homeowners coverage
-      - 500+ structured insurance data fields returned in seconds
-      - Policy details, coverage limits, and deductibles
-      - Driver information and licensed operators
-      - Vehicle data including VIN and coverage
-      - Claims history
-      - Property assessment data
-      - Policy document retrieval
-      - Drop-in SDK for rapid embedded integration
-      - SOC 2 Type 2 certified infrastructure
-      - 256-bit AES at rest, TLS 1.3+ in transit
-    x-use-cases:
-      - Mortgage lending insurance verification
-      - Loan servicing insurance monitoring
-      - Auto finance proof-of-insurance workflows
-      - Driver compliance monitoring
-      - Insurance carrier quoting and underwriting
-      - Embedded insurance in consumer applications
-      - Commercial insurance verification
-common:
-  - type: VulnerabilityDisclosure
-    url: security/canopy-vulnerability-disclosure.yml
-  - type: DomainSecurity
-    url: security/canopy-domain-security.yml
-  - type: GitHubOrganization
-    url: https://github.com/CanopyTax
-  - type: LinkedIn
-    url: https://www.linkedin.com/company/canopy-connect
+- aid: canopy:canopy-connect-api
+  name: Canopy Connect API
+  description: The Canopy Connect API returns structured property and casualty insurance data directly
+    from 400+ carriers in real time. Applications can verify coverage, retrieve policy documents, pull
+    driver and vehicle details, and surface claims history in under a minute instead of the typical 30-minute
+    manual verification process.
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/canopy.png
+  humanURL: https://www.usecanopy.com/api
+  tags:
+  - Auto Insurance
+  - Casualty
+  - Insurance
+  - Insurance Verification
+  - Property
+  properties:
+  - type: OpenAPI
+    url: openapi/canopy-openapi.json
+  - type: Documentation
+    url: https://docs.usecanopy.com/reference/getting-started
+  - type: APIReference
+    url: https://docs.usecanopy.com/reference
+  - type: GettingStarted
+    url: https://docs.usecanopy.com/reference/getting-started
   - type: Website
     url: https://www.usecanopy.com/
-  - type: Documentation
-    url: https://www.usecanopy.com/api
-  - type: Portal
-    url: https://www.usecanopy.com/api
+  - type: Authentication
+    url: authentication/canopy-authentication.yml
+  - type: OAuthScopes
+    url: scopes/canopy-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canopy-problem-types.yml
+  - type: Conventions
+    url: conventions/canopy-conventions.yml
+  - type: Conformance
+    url: conformance/canopy-conformance.yml
+  - type: DataModel
+    url: data-model/canopy-data-model.yml
+  - type: Examples
+    url: examples/canopy-examples.yml
+  - type: Lifecycle
+    url: lifecycle/canopy-lifecycle.yml
+  - type: RateLimits
+    url: rate-limits/canopy-rate-limits.yml
+  - type: Webhooks
+    url: asyncapi/canopy-webhooks.yml
+  - type: ToolCrosswalk
+    url: mcp/canopy-tool-crosswalk.yml
   - type: Security
     url: https://www.usecanopy.com/security
-  - type: PrivacyPolicy
-    url: https://www.usecanopy.com/legal/privacy
-  - type: TermsOfService
-    url: https://www.usecanopy.com/legal/terms
-  - type: Blog
-    url: https://www.usecanopy.com/blog
-  - type: About
-    url: https://www.usecanopy.com/about
-  - type: Careers
-    url: https://www.usecanopy.com/careers
-  - type: Integrations
-    url: https://www.usecanopy.com/integrations
+  x-features:
+  - 400+ insurance carrier integrations (95%+ market coverage)
+  - 96% auto insurance coverage, 91% homeowners coverage
+  - 500+ structured insurance data fields returned in seconds
+  - Policy details, coverage limits, and deductibles
+  - Driver information and licensed operators
+  - Vehicle data including VIN and coverage
+  - Claims history
+  - Property assessment data
+  - Policy document retrieval
+  - Drop-in SDK for rapid embedded integration
+  - SOC 2 Type 2 certified infrastructure
+  - 256-bit AES at rest, TLS 1.3+ in transit
+  x-use-cases:
+  - Mortgage lending insurance verification
+  - Loan servicing insurance monitoring
+  - Auto finance proof-of-insurance workflows
+  - Driver compliance monitoring
+  - Insurance carrier quoting and underwriting
+  - Embedded insurance in consumer applications
+  - Commercial insurance verification
+  baseURL: https://app.usecanopy.com/api/v1.0.0
+common:
+- type: Overlay
+  url: overlays/canopy-openapi-overlay.yaml
+- type: Packages
+  url: packages/canopy-packages.yml
+- type: SDKs
+  url: packages/canopy-packages.yml
+- type: Components
+  url: components/canopy-components.yml
+- type: Sandbox
+  url: sandbox/canopy-sandbox.yml
+- type: MCPServer
+  url: mcp/canopy-mcp.yml
+- type: AgentSkill
+  url: skills/_index.yml
+- type: LLMsTxt
+  url: llms/canopy-llms.txt
+- type: WellKnown
+  url: well-known/canopy-well-known.yml
+- type: APICatalog
+  url: https://docs.usecanopy.com/.well-known/api-catalog
+- type: Plans
+  url: plans/canopy-plans-pricing.yml
+- type: FinOps
+  url: finops/canopy-finops.yml
+- type: VulnerabilityDisclosure
+  url: security/canopy-vulnerability-disclosure.yml
+- type: Security
+  url: https://www.usecanopy.com/security
+- type: TrustCenter
+  url: security/canopy-trust-center.yml
+- type: Compliance
+  url: https://www.usecanopy.com/company/is-canopy-connect-safe
+- type: DomainSecurity
+  url: security/canopy-domain-security.yml
+- type: Website
+  url: https://www.usecanopy.com/
+- type: DeveloperPortal
+  url: https://www.usecanopy.com/api
+- type: Documentation
+  url: https://docs.usecanopy.com/reference/getting-started
+- type: APIReference
+  url: https://docs.usecanopy.com/reference
+- type: GettingStarted
+  url: https://docs.usecanopy.com/reference/getting-started
+- type: SignUp
+  url: https://www.usecanopy.com/api/developer-account
+- type: Login
+  url: https://dashboard.usecanopy.com/login
+- type: Pricing
+  url: https://www.usecanopy.com/api/api-plans
+- type: Support
+  url: https://help.usecanopy.com/en/
+- type: GitHubOrganization
+  url: https://github.com/usecanopy
+- type: LinkedIn
+  url: https://www.linkedin.com/company/canopy-connect
+- type: PrivacyPolicy
+  url: https://www.usecanopy.com/privacy
+- type: TermsOfService
+  url: https://www.usecanopy.com/terms
+- type: Blog
+  url: https://www.usecanopy.com/blog
+- type: About
+  url: https://www.usecanopy.com/company/about
+- type: Careers
+  url: https://www.usecanopy.com/company/careers
+- type: Integrations
+  url: https://www.usecanopy.com/integrations
 integrations:
-  - name: PL Rating
-  - name: Applied Epic®
-  - name: EZLynx
-  - name: HawkSoft
-  - name: AgencyZoom
-  - name: Encompass by ICE
-  - name: TSD Rental
-  - name: CDK
-  - name: Cox Automotive
+- name: PL Rating
+- name: Applied Epic®
+- name: EZLynx
+- name: HawkSoft
+- name: AgencyZoom
+- name: Encompass by ICE
+- name: TSD Rental
+- name: CDK
+- name: Cox Automotive
 maintainers:
-  - FN: Kin Lane
-    email: kin@apievangelist.com
+- FN: Kin Lane
+  email: kin@apievangelist.com
+x-enrichment:
+  date: '2026-09-05'
+  status: enriched
+  artifacts_added: 25
+  pass: local-v3
