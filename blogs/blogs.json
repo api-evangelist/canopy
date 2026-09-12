@@ -2,11 +2,14 @@
   "repo": "canopy",
   "feeds": [
     {
-      "source": "https://www.usecanopy.com/legal/terms",
-      "error": "HTTPError"
+      "source": "https://www.usecanopy.com/terms",
+      "feed_url": "https://www.usecanopy.com/terms",
+      "title": "",
+      "saved": 0,
+      "method": "none"
     }
   ],
-  "fetched": "2026-08-30T22:33:40Z",
+  "fetched": "2026-09-06T19:17:18Z",
   "post_count": 11,
   "agent_pulled": "2026-06-27",
   "feed_nature": "vendor-blog",
