@@ -54,23 +54,16 @@ created: '2024-07-02'
 modified: '2026-09-05'
 specificationVersion: '0.23'
 apis:
-- aid: canopy:canopy-connect-api
-  name: Canopy Connect API
-  description: The Canopy Connect API returns structured property and casualty insurance data directly
-    from 400+ carriers in real time. Applications can verify coverage, retrieve policy documents, pull
-    driver and vehicle details, and surface claims history in under a minute instead of the typical 30-minute
-    manual verification process.
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/canopy.png
+- aid: canopy:canopy-consent-api-api
+  name: Canopy Connect Consent API
+  description: Collect consent to skip the consent page in the SDK
   humanURL: https://www.usecanopy.com/api
+  baseURL: https://app.usecanopy.com/api/v1.0.0
   tags:
-  - Auto Insurance
-  - Casualty
-  - Insurance
-  - Insurance Verification
-  - Property
+  - Consent API
   properties:
   - type: OpenAPI
-    url: openapi/canopy-openapi.json
+    url: openapi/canopy-consent-api-api-openapi.yml
   - type: Documentation
     url: https://docs.usecanopy.com/reference/getting-started
   - type: APIReference
@@ -103,28 +96,512 @@ apis:
     url: mcp/canopy-tool-crosswalk.yml
   - type: Security
     url: https://www.usecanopy.com/security
-  x-features:
-  - 400+ insurance carrier integrations (95%+ market coverage)
-  - 96% auto insurance coverage, 91% homeowners coverage
-  - 500+ structured insurance data fields returned in seconds
-  - Policy details, coverage limits, and deductibles
-  - Driver information and licensed operators
-  - Vehicle data including VIN and coverage
-  - Claims history
-  - Property assessment data
-  - Policy document retrieval
-  - Drop-in SDK for rapid embedded integration
-  - SOC 2 Type 2 certified infrastructure
-  - 256-bit AES at rest, TLS 1.3+ in transit
-  x-use-cases:
-  - Mortgage lending insurance verification
-  - Loan servicing insurance monitoring
-  - Auto finance proof-of-insurance workflows
-  - Driver compliance monitoring
-  - Insurance carrier quoting and underwriting
-  - Embedded insurance in consumer applications
-  - Commercial insurance verification
+- aid: canopy:canopy-enrichment-api-api
+  name: Canopy Connect Enrichment API
+  description: Allows you to look up driver/household data
+  humanURL: https://www.usecanopy.com/api
   baseURL: https://app.usecanopy.com/api/v1.0.0
+  tags:
+  - Enrichment API
+  properties:
+  - type: OpenAPI
+    url: openapi/canopy-enrichment-api-api-openapi.yml
+  - type: Documentation
+    url: https://docs.usecanopy.com/reference/getting-started
+  - type: APIReference
+    url: https://docs.usecanopy.com/reference
+  - type: GettingStarted
+    url: https://docs.usecanopy.com/reference/getting-started
+  - type: Website
+    url: https://www.usecanopy.com/
+  - type: Authentication
+    url: authentication/canopy-authentication.yml
+  - type: OAuthScopes
+    url: scopes/canopy-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canopy-problem-types.yml
+  - type: Conventions
+    url: conventions/canopy-conventions.yml
+  - type: Conformance
+    url: conformance/canopy-conformance.yml
+  - type: DataModel
+    url: data-model/canopy-data-model.yml
+  - type: Examples
+    url: examples/canopy-examples.yml
+  - type: Lifecycle
+    url: lifecycle/canopy-lifecycle.yml
+  - type: RateLimits
+    url: rate-limits/canopy-rate-limits.yml
+  - type: Webhooks
+    url: asyncapi/canopy-webhooks.yml
+  - type: ToolCrosswalk
+    url: mcp/canopy-tool-crosswalk.yml
+  - type: Security
+    url: https://www.usecanopy.com/security
+- aid: canopy:canopy-misc-api-api
+  name: Canopy Connect Misc API
+  description: Collection of miscellaneous API routes
+  humanURL: https://www.usecanopy.com/api
+  baseURL: https://app.usecanopy.com/api/v1.0.0
+  tags:
+  - Misc API
+  properties:
+  - type: OpenAPI
+    url: openapi/canopy-misc-api-api-openapi.yml
+  - type: Documentation
+    url: https://docs.usecanopy.com/reference/getting-started
+  - type: APIReference
+    url: https://docs.usecanopy.com/reference
+  - type: GettingStarted
+    url: https://docs.usecanopy.com/reference/getting-started
+  - type: Website
+    url: https://www.usecanopy.com/
+  - type: Authentication
+    url: authentication/canopy-authentication.yml
+  - type: OAuthScopes
+    url: scopes/canopy-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canopy-problem-types.yml
+  - type: Conventions
+    url: conventions/canopy-conventions.yml
+  - type: Conformance
+    url: conformance/canopy-conformance.yml
+  - type: DataModel
+    url: data-model/canopy-data-model.yml
+  - type: Examples
+    url: examples/canopy-examples.yml
+  - type: Lifecycle
+    url: lifecycle/canopy-lifecycle.yml
+  - type: RateLimits
+    url: rate-limits/canopy-rate-limits.yml
+  - type: Webhooks
+    url: asyncapi/canopy-webhooks.yml
+  - type: ToolCrosswalk
+    url: mcp/canopy-tool-crosswalk.yml
+  - type: Security
+    url: https://www.usecanopy.com/security
+- aid: canopy:canopy-monitorings-api-api
+  name: Canopy Connect Monitorings API
+  description: Manage synced accounts
+  humanURL: https://www.usecanopy.com/api
+  baseURL: https://app.usecanopy.com/api/v1.0.0
+  tags:
+  - Monitorings API
+  properties:
+  - type: OpenAPI
+    url: openapi/canopy-monitorings-api-api-openapi.yml
+  - type: Documentation
+    url: https://docs.usecanopy.com/reference/getting-started
+  - type: APIReference
+    url: https://docs.usecanopy.com/reference
+  - type: GettingStarted
+    url: https://docs.usecanopy.com/reference/getting-started
+  - type: Website
+    url: https://www.usecanopy.com/
+  - type: Authentication
+    url: authentication/canopy-authentication.yml
+  - type: OAuthScopes
+    url: scopes/canopy-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canopy-problem-types.yml
+  - type: Conventions
+    url: conventions/canopy-conventions.yml
+  - type: Conformance
+    url: conformance/canopy-conformance.yml
+  - type: DataModel
+    url: data-model/canopy-data-model.yml
+  - type: Examples
+    url: examples/canopy-examples.yml
+  - type: Lifecycle
+    url: lifecycle/canopy-lifecycle.yml
+  - type: RateLimits
+    url: rate-limits/canopy-rate-limits.yml
+  - type: Webhooks
+    url: asyncapi/canopy-webhooks.yml
+  - type: ToolCrosswalk
+    url: mcp/canopy-tool-crosswalk.yml
+  - type: Security
+    url: https://www.usecanopy.com/security
+- aid: canopy:canopy-policy-check-team-setting-api-api
+  name: Canopy Connect Policy Check Team Setting API
+  description: Manage Policy Check team setting
+  humanURL: https://www.usecanopy.com/api
+  baseURL: https://app.usecanopy.com/api/v1.0.0
+  tags:
+  - Policy Check Team Setting API
+  properties:
+  - type: OpenAPI
+    url: openapi/canopy-policy-check-team-setting-api-api-openapi.yml
+  - type: Documentation
+    url: https://docs.usecanopy.com/reference/getting-started
+  - type: APIReference
+    url: https://docs.usecanopy.com/reference
+  - type: GettingStarted
+    url: https://docs.usecanopy.com/reference/getting-started
+  - type: Website
+    url: https://www.usecanopy.com/
+  - type: Authentication
+    url: authentication/canopy-authentication.yml
+  - type: OAuthScopes
+    url: scopes/canopy-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canopy-problem-types.yml
+  - type: Conventions
+    url: conventions/canopy-conventions.yml
+  - type: Conformance
+    url: conformance/canopy-conformance.yml
+  - type: DataModel
+    url: data-model/canopy-data-model.yml
+  - type: Examples
+    url: examples/canopy-examples.yml
+  - type: Lifecycle
+    url: lifecycle/canopy-lifecycle.yml
+  - type: RateLimits
+    url: rate-limits/canopy-rate-limits.yml
+  - type: Webhooks
+    url: asyncapi/canopy-webhooks.yml
+  - type: ToolCrosswalk
+    url: mcp/canopy-tool-crosswalk.yml
+  - type: Security
+    url: https://www.usecanopy.com/security
+- aid: canopy:canopy-policy-forms-api-api
+  name: Canopy Connect Policy Forms API
+  description: Used to get policy form data
+  humanURL: https://www.usecanopy.com/api
+  baseURL: https://app.usecanopy.com/api/v1.0.0
+  tags:
+  - Policy Forms API
+  properties:
+  - type: OpenAPI
+    url: openapi/canopy-policy-forms-api-api-openapi.yml
+  - type: Documentation
+    url: https://docs.usecanopy.com/reference/getting-started
+  - type: APIReference
+    url: https://docs.usecanopy.com/reference
+  - type: GettingStarted
+    url: https://docs.usecanopy.com/reference/getting-started
+  - type: Website
+    url: https://www.usecanopy.com/
+  - type: Authentication
+    url: authentication/canopy-authentication.yml
+  - type: OAuthScopes
+    url: scopes/canopy-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canopy-problem-types.yml
+  - type: Conventions
+    url: conventions/canopy-conventions.yml
+  - type: Conformance
+    url: conformance/canopy-conformance.yml
+  - type: DataModel
+    url: data-model/canopy-data-model.yml
+  - type: Examples
+    url: examples/canopy-examples.yml
+  - type: Lifecycle
+    url: lifecycle/canopy-lifecycle.yml
+  - type: RateLimits
+    url: rate-limits/canopy-rate-limits.yml
+  - type: Webhooks
+    url: asyncapi/canopy-webhooks.yml
+  - type: ToolCrosswalk
+    url: mcp/canopy-tool-crosswalk.yml
+  - type: Security
+    url: https://www.usecanopy.com/security
+- aid: canopy:canopy-policy-search-api-api
+  name: Canopy Connect Policy Search API
+  description: >-
+    Search verified Auto ID Cards, Auto insurance policies and Home insurance policies from major insurance
+    carriers without the need for login credentials.
+  humanURL: https://www.usecanopy.com/api
+  baseURL: https://app.usecanopy.com/api/v1.0.0
+  tags:
+  - Policy Search API
+  properties:
+  - type: OpenAPI
+    url: openapi/canopy-policy-search-api-api-openapi.yml
+  - type: Documentation
+    url: https://docs.usecanopy.com/reference/getting-started
+  - type: APIReference
+    url: https://docs.usecanopy.com/reference
+  - type: GettingStarted
+    url: https://docs.usecanopy.com/reference/getting-started
+  - type: Website
+    url: https://www.usecanopy.com/
+  - type: Authentication
+    url: authentication/canopy-authentication.yml
+  - type: OAuthScopes
+    url: scopes/canopy-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canopy-problem-types.yml
+  - type: Conventions
+    url: conventions/canopy-conventions.yml
+  - type: Conformance
+    url: conformance/canopy-conformance.yml
+  - type: DataModel
+    url: data-model/canopy-data-model.yml
+  - type: Examples
+    url: examples/canopy-examples.yml
+  - type: Lifecycle
+    url: lifecycle/canopy-lifecycle.yml
+  - type: RateLimits
+    url: rate-limits/canopy-rate-limits.yml
+  - type: Webhooks
+    url: asyncapi/canopy-webhooks.yml
+  - type: ToolCrosswalk
+    url: mcp/canopy-tool-crosswalk.yml
+  - type: Security
+    url: https://www.usecanopy.com/security
+- aid: canopy:canopy-pulls-api-api
+  name: Canopy Connect Pulls API
+  description: Get Pull data and download documents
+  humanURL: https://www.usecanopy.com/api
+  baseURL: https://app.usecanopy.com/api/v1.0.0
+  tags:
+  - Pulls API
+  properties:
+  - type: OpenAPI
+    url: openapi/canopy-pulls-api-api-openapi.yml
+  - type: Documentation
+    url: https://docs.usecanopy.com/reference/getting-started
+  - type: APIReference
+    url: https://docs.usecanopy.com/reference
+  - type: GettingStarted
+    url: https://docs.usecanopy.com/reference/getting-started
+  - type: Website
+    url: https://www.usecanopy.com/
+  - type: Authentication
+    url: authentication/canopy-authentication.yml
+  - type: OAuthScopes
+    url: scopes/canopy-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canopy-problem-types.yml
+  - type: Conventions
+    url: conventions/canopy-conventions.yml
+  - type: Conformance
+    url: conformance/canopy-conformance.yml
+  - type: DataModel
+    url: data-model/canopy-data-model.yml
+  - type: Examples
+    url: examples/canopy-examples.yml
+  - type: Lifecycle
+    url: lifecycle/canopy-lifecycle.yml
+  - type: RateLimits
+    url: rate-limits/canopy-rate-limits.yml
+  - type: Webhooks
+    url: asyncapi/canopy-webhooks.yml
+  - type: ToolCrosswalk
+    url: mcp/canopy-tool-crosswalk.yml
+  - type: Security
+    url: https://www.usecanopy.com/security
+- aid: canopy:canopy-servicings-api-api
+  name: Canopy Connect Servicings API
+  description: Manage servicing actions
+  humanURL: https://www.usecanopy.com/api
+  baseURL: https://app.usecanopy.com/api/v1.0.0
+  tags:
+  - Servicings API
+  properties:
+  - type: OpenAPI
+    url: openapi/canopy-servicings-api-api-openapi.yml
+  - type: Documentation
+    url: https://docs.usecanopy.com/reference/getting-started
+  - type: APIReference
+    url: https://docs.usecanopy.com/reference
+  - type: GettingStarted
+    url: https://docs.usecanopy.com/reference/getting-started
+  - type: Website
+    url: https://www.usecanopy.com/
+  - type: Authentication
+    url: authentication/canopy-authentication.yml
+  - type: OAuthScopes
+    url: scopes/canopy-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canopy-problem-types.yml
+  - type: Conventions
+    url: conventions/canopy-conventions.yml
+  - type: Conformance
+    url: conformance/canopy-conformance.yml
+  - type: DataModel
+    url: data-model/canopy-data-model.yml
+  - type: Examples
+    url: examples/canopy-examples.yml
+  - type: Lifecycle
+    url: lifecycle/canopy-lifecycle.yml
+  - type: RateLimits
+    url: rate-limits/canopy-rate-limits.yml
+  - type: Webhooks
+    url: asyncapi/canopy-webhooks.yml
+  - type: ToolCrosswalk
+    url: mcp/canopy-tool-crosswalk.yml
+  - type: Security
+    url: https://www.usecanopy.com/security
+- aid: canopy:canopy-teams-api-api
+  name: Canopy Connect Teams API
+  description: Get, create, delete Teams
+  humanURL: https://www.usecanopy.com/api
+  baseURL: https://app.usecanopy.com/api/v1.0.0
+  tags:
+  - Teams API
+  properties:
+  - type: OpenAPI
+    url: openapi/canopy-teams-api-api-openapi.yml
+  - type: Documentation
+    url: https://docs.usecanopy.com/reference/getting-started
+  - type: APIReference
+    url: https://docs.usecanopy.com/reference
+  - type: GettingStarted
+    url: https://docs.usecanopy.com/reference/getting-started
+  - type: Website
+    url: https://www.usecanopy.com/
+  - type: Authentication
+    url: authentication/canopy-authentication.yml
+  - type: OAuthScopes
+    url: scopes/canopy-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canopy-problem-types.yml
+  - type: Conventions
+    url: conventions/canopy-conventions.yml
+  - type: Conformance
+    url: conformance/canopy-conformance.yml
+  - type: DataModel
+    url: data-model/canopy-data-model.yml
+  - type: Examples
+    url: examples/canopy-examples.yml
+  - type: Lifecycle
+    url: lifecycle/canopy-lifecycle.yml
+  - type: RateLimits
+    url: rate-limits/canopy-rate-limits.yml
+  - type: Webhooks
+    url: asyncapi/canopy-webhooks.yml
+  - type: ToolCrosswalk
+    url: mcp/canopy-tool-crosswalk.yml
+  - type: Security
+    url: https://www.usecanopy.com/security
+- aid: canopy:canopy-webhooks-api-api
+  name: Canopy Connect Webhooks API
+  description: Get, create, update and delete Webhooks
+  humanURL: https://www.usecanopy.com/api
+  baseURL: https://app.usecanopy.com/api/v1.0.0
+  tags:
+  - Webhooks API
+  properties:
+  - type: OpenAPI
+    url: openapi/canopy-webhooks-api-api-openapi.yml
+  - type: Documentation
+    url: https://docs.usecanopy.com/reference/getting-started
+  - type: APIReference
+    url: https://docs.usecanopy.com/reference
+  - type: GettingStarted
+    url: https://docs.usecanopy.com/reference/getting-started
+  - type: Website
+    url: https://www.usecanopy.com/
+  - type: Authentication
+    url: authentication/canopy-authentication.yml
+  - type: OAuthScopes
+    url: scopes/canopy-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canopy-problem-types.yml
+  - type: Conventions
+    url: conventions/canopy-conventions.yml
+  - type: Conformance
+    url: conformance/canopy-conformance.yml
+  - type: DataModel
+    url: data-model/canopy-data-model.yml
+  - type: Examples
+    url: examples/canopy-examples.yml
+  - type: Lifecycle
+    url: lifecycle/canopy-lifecycle.yml
+  - type: RateLimits
+    url: rate-limits/canopy-rate-limits.yml
+  - type: Webhooks
+    url: asyncapi/canopy-webhooks.yml
+  - type: ToolCrosswalk
+    url: mcp/canopy-tool-crosswalk.yml
+  - type: Security
+    url: https://www.usecanopy.com/security
+- aid: canopy:canopy-whitelabel-api-api
+  name: Canopy Connect Whitelabel API
+  description: Allows you to create a fully whitelabeled experience
+  humanURL: https://www.usecanopy.com/api
+  baseURL: https://app.usecanopy.com/api/v1.0.0
+  tags:
+  - Whitelabel API
+  properties:
+  - type: OpenAPI
+    url: openapi/canopy-whitelabel-api-api-openapi.yml
+  - type: Documentation
+    url: https://docs.usecanopy.com/reference/getting-started
+  - type: APIReference
+    url: https://docs.usecanopy.com/reference
+  - type: GettingStarted
+    url: https://docs.usecanopy.com/reference/getting-started
+  - type: Website
+    url: https://www.usecanopy.com/
+  - type: Authentication
+    url: authentication/canopy-authentication.yml
+  - type: OAuthScopes
+    url: scopes/canopy-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canopy-problem-types.yml
+  - type: Conventions
+    url: conventions/canopy-conventions.yml
+  - type: Conformance
+    url: conformance/canopy-conformance.yml
+  - type: DataModel
+    url: data-model/canopy-data-model.yml
+  - type: Examples
+    url: examples/canopy-examples.yml
+  - type: Lifecycle
+    url: lifecycle/canopy-lifecycle.yml
+  - type: RateLimits
+    url: rate-limits/canopy-rate-limits.yml
+  - type: Webhooks
+    url: asyncapi/canopy-webhooks.yml
+  - type: ToolCrosswalk
+    url: mcp/canopy-tool-crosswalk.yml
+  - type: Security
+    url: https://www.usecanopy.com/security
+- aid: canopy:canopy-widgets-api-api
+  name: Canopy Connect Widgets API
+  description: Get, create, update, and delete Widgets
+  humanURL: https://www.usecanopy.com/api
+  baseURL: https://app.usecanopy.com/api/v1.0.0
+  tags:
+  - Widgets API
+  properties:
+  - type: OpenAPI
+    url: openapi/canopy-widgets-api-api-openapi.yml
+  - type: Documentation
+    url: https://docs.usecanopy.com/reference/getting-started
+  - type: APIReference
+    url: https://docs.usecanopy.com/reference
+  - type: GettingStarted
+    url: https://docs.usecanopy.com/reference/getting-started
+  - type: Website
+    url: https://www.usecanopy.com/
+  - type: Authentication
+    url: authentication/canopy-authentication.yml
+  - type: OAuthScopes
+    url: scopes/canopy-scopes.yml
+  - type: ErrorCatalog
+    url: errors/canopy-problem-types.yml
+  - type: Conventions
+    url: conventions/canopy-conventions.yml
+  - type: Conformance
+    url: conformance/canopy-conformance.yml
+  - type: DataModel
+    url: data-model/canopy-data-model.yml
+  - type: Examples
+    url: examples/canopy-examples.yml
+  - type: Lifecycle
+    url: lifecycle/canopy-lifecycle.yml
+  - type: RateLimits
+    url: rate-limits/canopy-rate-limits.yml
+  - type: Webhooks
+    url: asyncapi/canopy-webhooks.yml
+  - type: ToolCrosswalk
+    url: mcp/canopy-tool-crosswalk.yml
+  - type: Security
+    url: https://www.usecanopy.com/security
 common:
 - type: Overlay
   url: overlays/canopy-openapi-overlay.yaml
