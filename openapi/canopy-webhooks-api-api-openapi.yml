@@ -1,0 +1,390 @@
+openapi: 3.2.0
+info:
+  title: Reference Webhooks API
+  version: 1.0.0
+  description: Canopy Connect Public API Documentation
+  contact:
+    name: Canopy Connect
+    email: support@usecanopy.com
+    url: https://usecanopy.com/
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://app.usecanopy.com/api/v1.0.0
+security:
+- BasicAuth: []
+tags:
+- name: Webhooks API
+  description: Get, create, update and delete Webhooks
+paths:
+  /teams/{teamId}/webhooks:
+    parameters:
+    - schema:
+        type: string
+        format: uuid
+      name: teamId
+      in: path
+      required: true
+      description: ID of Team
+    get:
+      summary: GET /webhooks
+      responses:
+        '200':
+          description: 200 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  webhooks:
+                    type: array
+                    description: Webhooks available for your API Key type (sandbox or production)
+                    items:
+                      type: object
+                      properties:
+                        webhook_id:
+                          type: string
+                          description: The ID of the Webhook
+                          format: uuid
+                        signing_secret:
+                          type: string
+                          description: The secret used to validate webhook requests (https://docs.usecanopy.com/reference/verifying-webhook-signatures)
+                        url:
+                          type: string
+                          description: The URL that the webhook requests go to
+                          format: uri
+                        is_sandbox:
+                          type: boolean
+                          description: Whether your API Key and Webhook are sandbox (not production)
+                        is_active:
+                          type: boolean
+                          description: Whether your webhook is active and will receive webhook requests
+                        event_types:
+                          type: array
+                          description: The event types that will trigger the webhook request
+                          items:
+                            type: string
+                            enum:
+                            - COMPLETE
+                            - POLICIES_AVAILABLE
+                            - POLICY_AVAILABLE
+                            - AUTH_STATUS
+                            - VALIDATION_COMPLETE
+              examples:
+                Example Response:
+                  value:
+                    webhooks:
+                    - webhook_id: 4dadb30c-95cd-4b17-aa99-0245e4ff6064
+                      signing_secret: cBiN66y0wYlbnwJiBu4wRAWceeL8jMJyhH/PjRYzTylTM9IfkJwOZ/Yfwi4dpZM5
+                      url: https://www.example.com/canopyConnectWebhook
+                      is_sandbox: true
+                      is_active: true
+                      event_types:
+                      - COMPLETE
+                      - POLICIES_AVAILABLE
+                      - AUTH_STATUS
+        '401':
+          description: 401 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - UNAUTHORIZED
+              examples:
+                Example Response:
+                  value:
+                    error: UNAUTHORIZED
+        '403':
+          description: 403 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - UNAUTHORIZED
+              examples:
+                Example Response:
+                  value:
+                    error: UNAUTHORIZED
+      operationId: get-webhooks
+      description: Used to get all available webhooks
+      tags:
+      - Webhooks API
+    post:
+      summary: POST /webhooks
+      operationId: post-webhooks
+      responses:
+        '200':
+          description: 200 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  webhook_id:
+                    type: string
+                    format: uuid
+                    description: The ID of the Webhook
+                  signing_secret:
+                    type: string
+                    description: The secret used to validate webhook requests (https://docs.usecanopy.com/reference/verifying-webhook-signatures)
+              examples:
+                Example Response:
+                  value:
+                    webhook_id: 4dadb30c-95cd-4b17-aa99-0245e4ff6064
+                    signing_secret: cBiN66y0wYlbnwJiBu4wRAWceeL8jMJyhH/PjRYzTylTM9IfkJwOZ/Yfwi4dpZM5
+        '400':
+          description: 400 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - INVALID_URL
+                    - INVALID_EVENT_TYPE
+        '401':
+          description: 401 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - UNAUTHORIZED
+              examples:
+                Example Response:
+                  value:
+                    error: UNAUTHORIZED
+        '403':
+          description: 403 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - UNAUTHORIZED
+              examples:
+                Example Response:
+                  value:
+                    error: UNAUTHORIZED
+      description: Used to create a webhook
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                hookUrl:
+                  type: string
+                  description: The URL that the webhook requests will go to
+                  format: uri
+                eventTypes:
+                  type: array
+                  description: The event types that will trigger the webhook request
+                  items:
+                    type: string
+                    enum:
+                    - COMPLETE
+                    - POLICIES_AVAILABLE
+                    - POLICY_AVAILABLE
+                    - AUTH_STATUS
+                    - VALIDATION_COMPLETE
+      tags:
+      - Webhooks API
+  /teams/{teamId}/webhooks/{webhookId}:
+    parameters:
+    - schema:
+        type: string
+        format: uuid
+      name: teamId
+      in: path
+      required: true
+      description: ID of Team
+    - schema:
+        type: string
+        format: uuid
+      name: webhookId
+      in: path
+      required: true
+      description: ID of Webhook
+    patch:
+      summary: PATCH /webhooks/:webhookId
+      operationId: patch-webhook
+      responses:
+        '200':
+          description: 200 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+              examples:
+                Example Response:
+                  value:
+                    success: true
+        '400':
+          description: 400 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - NOT_FOUND
+                    - INVALID_IS_ACTIVE
+                    - INVALID_EVENT_TYPE
+                    - INVALID_WEBHOOK_ID
+              examples:
+                Example Response:
+                  value:
+                    error: NOT_FOUND
+        '401':
+          description: 401 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - UNAUTHORIZED
+              examples:
+                Example Response:
+                  value:
+                    error: UNAUTHORIZED
+        '403':
+          description: 403 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - UNAUTHORIZED
+              examples:
+                Example Response:
+                  value:
+                    error: UNAUTHORIZED
+      description: Used to update a webhook
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                isActive:
+                  type: boolean
+                  description: Whether your webhook is active and will receive webhook requests
+                eventTypes:
+                  type: array
+                  description: The event types that will trigger the webhook request
+                  items:
+                    type: string
+                    enum:
+                    - COMPLETE
+                    - POLICIES_AVAILABLE
+                    - POLICY_AVAILABLE
+                    - AUTH_STATUS
+                    - VALIDATION_COMPLETE
+        description: ''
+      tags:
+      - Webhooks API
+    delete:
+      summary: DELETE /webhooks/:webhookId
+      operationId: delete-webhook
+      responses:
+        '200':
+          description: 200 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+              examples:
+                Example Response:
+                  value:
+                    success: true
+        '400':
+          description: 400 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - INVALID_WEBHOOK_ID
+              examples:
+                Example Response:
+                  value:
+                    error: INVALID_WEBHOOK_ID
+        '401':
+          description: 401 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - UNAUTHORIZED
+              examples:
+                Example Response:
+                  value:
+                    error: UNAUTHORIZED
+        '403':
+          description: 403 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - UNAUTHORIZED
+              examples:
+                Example Response:
+                  value:
+                    error: UNAUTHORIZED
+      description: Used to delete a webhook
+      tags:
+      - Webhooks API
+components:
+  securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: basic
+      description: HTTP Basic authentication. Use your Canopy Connect Client ID as the username and your Client Secret as the password. The `Authorization` header value is `Basic <base64 of clientId:clientSecret>`. See the [Authentication guide](https://docs.usecanopy.com/reference/authentication-guide) for a full walkthrough, and create or manage your Client ID and Client Secret on the [API Settings page](https://app.usecanopy.com/dashboard/settings/api-settings).
+x-readme:
+  headers: []
+  explorer-enabled: true
+  proxy-enabled: true
+  samples-enabled: true

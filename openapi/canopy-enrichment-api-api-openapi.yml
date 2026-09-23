@@ -1,0 +1,1533 @@
+openapi: 3.2.0
+info:
+  title: Reference Enrichment API
+  version: 1.0.0
+  description: Canopy Connect Public API Documentation
+  contact:
+    name: Canopy Connect
+    email: support@usecanopy.com
+    url: https://usecanopy.com/
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://app.usecanopy.com/api/v1.0.0
+security:
+- BasicAuth: []
+tags:
+- name: Enrichment API
+  description: Allows you to look up driver/household data
+paths:
+  /teams/{teamId}/enrich/propertyData:
+    parameters:
+    - schema:
+        type: string
+        format: uuid
+      name: teamId
+      in: path
+      required: true
+      description: ID of Team
+    get:
+      summary: GET /propertyData
+      responses:
+        '200':
+          description: 200 Response Schema
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnrichmentPropertyData'
+              examples:
+                200 Example Response:
+                  value:
+                    address:
+                      number: '344'
+                      street: Clinton
+                      type: St
+                      city: Brooklyn
+                      state: NY
+                      sec_unit_type: Apartment
+                      sec_unit_num: 3D
+                      zip: '11231'
+                    data:
+                      apn: 02192-04-018-000
+                      occupancy: null
+                      class: SINGLE_FAMILY_RESIDENCE_TOWNHOUSE
+                      sub_type: RESIDENTIAL
+                      year_built: 1950
+                      construction_type: BRICK
+                      wall_type: BRICK
+                      foundation_type: CONCRETE
+                      frame_type: WOOD
+                      roof_cover: SHINGLE
+                      roof_shape: PYRAMID
+                      cooling_type: CENTRAL
+                      heating_type: CENTRAL
+                      heating_fuel: GAS
+                      energy_type: GOOD
+                      sewer_type: MUNICIPAL
+                      building_shape: L_SHAPED
+                      construction_quality: EXCELLENT
+                      has_fireplace: true
+                      num_fireplaces: 1
+                      fireplace_type: 'YES'
+                      has_pool: false
+                      pool_type: NO_POOL
+                      square_ft: 934
+                      num_beds: 2
+                      num_baths_full: 2
+                      num_baths_partial: 1
+                      num_stories: 2
+                      num_units: 1
+                      garage_type: ATTACHED_1_CAR
+                      garage_square_ft: 240
+                      num_parking_spaces: 1
+                      assessed_improvement_value_cents: 1423000
+                      assessed_land_value_cents: 2291000
+                      assessed_total_value_cents: 3714000
+                      market_improvement_value_cents: 19900000
+                      market_land_value_cents: 32040000
+                      market_total_value_cents: 51940000
+                      owner1_first_name: Clark Joseph
+                      owner1_last_name: Kent
+                      owner2_first_name: Lois
+                      owner2_last_name: Lane
+                      owner3_first_name: null
+                      owner3_last_name: null
+                      owner4_first_name: null
+                      owner4_last_name: null
+                      first_mortgage_amount_cents: null
+                      first_mortgage_lender: null
+                      second_mortgage_amount_cents: null
+                      second_mortgage_lender: null
+                      purchase_date: '2016-06-29'
+                      purchase_price_cents: 50000000
+                      last_update_date: '2022-04-14'
+        '400':
+          description: 400 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - INVALID_ADDRESS
+              examples:
+                Example Response:
+                  value:
+                    error: INVALID_ADDRESS
+        '404':
+          description: 404 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - NO_PROPERTY_DATA
+              examples:
+                Example Response:
+                  value:
+                    error: NO_PROPERTY_DATA
+      operationId: get-property-data
+      description: Look up property data for a given address. Your plan must include ad-hoc property data lookups in order to access this API. For more information, contact your Canopy Connect representative.
+      parameters:
+      - schema:
+          type: string
+        in: query
+        name: address
+        description: The address to look up property data for.
+        example: 344 Clinton Street, Apartment 3D, Brooklyn, NY, 11231
+      tags:
+      - Enrichment API
+  /teams/{teamId}/enrich/driverLicense:
+    parameters:
+    - schema:
+        type: string
+        format: uuid
+      name: teamId
+      in: path
+      required: true
+      description: ID of Team
+    get:
+      summary: GET /driverLicense
+      tags:
+      - Enrichment API
+      responses:
+        '200':
+          description: 200 Response Schema
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnrichmentDriverLicense'
+      operationId: get-enrichment-driverlicense
+      parameters:
+      - schema:
+          type: string
+        in: query
+        name: first_name
+        required: true
+        description: The first name of the person.
+      - schema:
+          type: string
+        in: query
+        name: middle_name
+        description: The middle name of the person.
+      - schema:
+          type: string
+        in: query
+        name: last_name
+        required: true
+        description: The last name of the person.
+      - schema:
+          type: string
+        in: query
+        name: date_of_birth_str
+        required: true
+        description: The date of birth of the person. MM/DD/YYYY
+      - schema:
+          type: string
+        in: query
+        name: address
+        required: true
+        description: A mailing or street address.
+      - schema:
+          type: string
+        in: query
+        name: purpose
+        required: true
+        description: Why you are looking up the information. This must be an allowed reason under the DPPA.
+      - schema:
+          type: string
+        in: query
+        name: employee_name
+        required: true
+        description: Person responsible for making the inquiry.
+      - schema:
+          type: string
+        in: query
+        name: employee_job_function
+        required: true
+        description: The title of the person responsible for making the inquiry.
+  /teams/{teamId}/enrich/drivingRecordIq:
+    parameters:
+    - schema:
+        type: string
+        format: uuid
+      name: teamId
+      in: path
+      required: true
+      description: ID of Team
+    get:
+      summary: GET /drivingRecordIq
+      tags:
+      - Enrichment API
+      responses:
+        '200':
+          description: 200 Response Schema
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnrichmentDrivingRecordIq'
+      operationId: get-enrichment-drivingrecordiq
+      parameters:
+      - schema:
+          type: string
+        in: query
+        name: first_name
+        required: true
+        description: The first name of the person.
+      - schema:
+          type: string
+        in: query
+        name: middle_name
+        description: The middle name of the person.
+      - schema:
+          type: string
+        in: query
+        name: last_name
+        required: true
+        description: The last name of the person.
+      - schema:
+          type: string
+        in: query
+        name: address
+        required: true
+        description: A mailing or street address.
+      - schema:
+          type: string
+        in: query
+        name: purpose
+        required: true
+        description: Why you are looking up the information. This must be an allowed reason under the DPPA.
+      - schema:
+          type: string
+        in: query
+        name: employee_name
+        required: true
+        description: Person responsible for making the inquiry.
+      - schema:
+          type: string
+        in: query
+        name: employee_job_function
+        required: true
+        description: The title of the person responsible for making the inquiry.
+      - schema:
+          type: string
+        in: query
+        name: date_of_birth_str
+        description: Required if DL is not supplied. Date of birth of the person in MM/DD/YYYY.
+      - schema:
+          type: string
+        in: query
+        name: drivers_license
+        description: Required if DOB is not supplied. The drivers license number of the person.
+      - schema:
+          type: string
+        in: query
+        name: drivers_license_state
+        description: Required if DOB is not supplied. The drivers license state of the person.
+  /teams/{teamId}/enrich/household:
+    parameters:
+    - schema:
+        type: string
+        format: uuid
+      name: teamId
+      in: path
+      required: true
+      description: ID of Team
+    get:
+      summary: GET /household
+      tags:
+      - Enrichment API
+      responses:
+        '200':
+          description: 200 Response Schema
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnrichmentHousehold'
+      operationId: get-enrichment-household
+      parameters:
+      - schema:
+          type: string
+        in: query
+        name: first_name
+        required: true
+        description: The first name of the person.
+      - schema:
+          type: string
+        in: query
+        name: middle_name
+        description: The middle name of the person.
+      - schema:
+          type: string
+        in: query
+        name: last_name
+        required: true
+        description: The last name of the person.
+      - schema:
+          type: string
+        in: query
+        name: address
+        required: true
+        description: A mailing or street address.
+      - schema:
+          type: boolean
+        in: query
+        name: lookup_vehicles
+        description: Whether vehicles should be included in the response
+      - schema:
+          type: string
+        in: query
+        name: purpose
+        required: true
+        description: Why you are looking up the information. This must be an allowed reason under the DPPA.
+      - schema:
+          type: string
+        in: query
+        name: employee_name
+        required: true
+        description: Person responsible for making the inquiry.
+      - schema:
+          type: string
+        in: query
+        name: employee_job_function
+        required: true
+        description: The title of the person responsible for making the inquiry.
+      - schema:
+          type: string
+        in: query
+        name: date_of_birth_str
+        description: Required if DL is not supplied. Date of birth of the person in MM/DD/YYYY.
+      - schema:
+          type: string
+        in: query
+        name: drivers_license
+        description: Required if DOB is not supplied. The drivers license number of the person.
+      - schema:
+          type: string
+        in: query
+        name: drivers_license_state
+        description: Required if DOB is not supplied. The drivers license state of the person.
+components:
+  schemas:
+    EnrichmentHousehold:
+      title: EnrichmentHousehold
+      type: object
+      properties:
+        household_id:
+          type: string
+          format: uuid
+          description: Canopy Connect Household lookup ID
+        drivers:
+          type: array
+          items:
+            $ref: '#/components/schemas/EnrichmentDriverLicense/properties/driver_license'
+        vehicles:
+          type: array
+          items:
+            title: EnrichmentVehicleData
+            type: object
+            properties:
+              vin:
+                type:
+                - string
+                - 'null'
+                description: The VIN of the vehicle.
+              year:
+                type:
+                - integer
+                - 'null'
+                description: The model year of the vehicle.
+              make:
+                type:
+                - string
+                - 'null'
+                description: The make of the vehicle.
+              model:
+                type:
+                - string
+                - 'null'
+                description: The model of the vehicle.
+              series:
+                type:
+                - string
+                - 'null'
+                description: The series of the vehicle.
+              series2:
+                type:
+                - string
+                - 'null'
+                description: The series2 of the vehicle.
+              type:
+                type:
+                - string
+                - 'null'
+                description: The type of the vehicle, based on state registration.
+              ownership_type:
+                type:
+                - string
+                - 'null'
+                enum:
+                - OWN
+                - FINANCE
+                - LEASE
+                description: The ownership type of the vehicle.
+              lien_holder:
+                type:
+                - string
+                - 'null'
+                description: The lienholder of the vehicle.
+              purchase_date:
+                type:
+                - string
+                - 'null'
+                format: date-time
+                description: The purchase date of the vehicle.
+    EnrichmentDrivingRecordIq:
+      title: EnrichmentDrivingRecordIq
+      type: object
+      properties:
+        driving_record_iq_id:
+          type: string
+          format: uuid
+          description: Canopy Connect Driving Record IQ lookup ID.
+        driving_record_iq:
+          type: object
+          properties:
+            status:
+              type:
+              - string
+              - 'null'
+              enum:
+              - CLEAN
+              - NO_EVIDENCE
+              - MINOR_VIOLATIONS
+              - MAJOR_VIOLATIONS
+            minor_violations:
+              type: integer
+              default: 0
+            last_minor_violation_date_str:
+              type:
+              - string
+              - 'null'
+            major_violations:
+              type: integer
+              default: 0
+            last_major_violation_date_str:
+              type:
+              - string
+              - 'null'
+    EnrichmentDriverLicense:
+      title: EnrichmentDriverLicense
+      type: object
+      properties:
+        driver_license_id:
+          type: string
+          format: uuid
+          description: Canopy Connect Driver License lookup ID.
+        driver_license:
+          title: EnrichmentDriverData
+          type: object
+          properties:
+            first_name:
+              type: string
+              description: The first name of the person.
+            middle_name:
+              type:
+              - string
+              - 'null'
+              description: The middle name of the person.
+            last_name:
+              type: string
+              description: The last name of the person.
+            date_of_birth_str:
+              type:
+              - string
+              - 'null'
+              description: The date of birth of the person.
+            drivers_license:
+              type:
+              - string
+              - 'null'
+              description: The driver's license number.
+            drivers_license_state:
+              type:
+              - string
+              - 'null'
+              description: The state where the driver's license was issued.
+            gender:
+              type:
+              - string
+              - 'null'
+              description: The reported gender of the driver.
+            marital_status:
+              type:
+              - string
+              - 'null'
+              description: The marital status of the driver.
+    EnrichmentPropertyData:
+      title: EnrichmentPropertyData
+      type: object
+      properties:
+        address:
+          title: Address
+          type: object
+          properties:
+            country:
+              type:
+              - string
+              - 'null'
+              description: Country of Address
+            number:
+              type:
+              - string
+              - 'null'
+              description: House or street number of Address
+            street:
+              type:
+              - string
+              - 'null'
+              description: Name of the street without directional or type qualifier
+            type:
+              type:
+              - string
+              - 'null'
+              description: Abbreviated street type, eg. Rd, St, Ave, etc
+            city:
+              type:
+              - string
+              - 'null'
+              description: City of Address
+            state:
+              type:
+              - string
+              - 'null'
+              description: State of Address, as a two-letter state code
+            sec_unit_type:
+              type:
+              - string
+              - 'null'
+              description: The type of unit
+            sec_unit_num:
+              type:
+              - string
+              - 'null'
+              description: The number of the unit (may not be numeric)
+            zip:
+              type:
+              - string
+              - 'null'
+              description: Zipcode of Address
+            prefix:
+              type:
+              - string
+              - 'null'
+              description: Directional prefix for the street, such as N, NE, E, etc. A given prefix should be one to two characters long.
+        data:
+          title: PropertyData
+          type: object
+          properties:
+            apn:
+              type:
+              - string
+              - 'null'
+              description: The Assessor's Parcel Number of the dwelling
+            class:
+              type:
+              - string
+              - 'null'
+              enum:
+              - AGRICULTURAL
+              - AMUSEMENT_RECREATION
+              - APARTMENT
+              - COMMERCIAL
+              - COMMERCIAL_CONDOMINIUM
+              - CONDOMINIUM_RESIDENTIAL
+              - DUPLEX_TRIPLEX_QUADPLEX
+              - EXEMPT
+              - FINANCIAL_INSTITUTION
+              - HOSPITAL
+              - HOTEL_MOTEL
+              - INDUSTRIAL
+              - INDUSTRIAL_HEAVY
+              - INDUSTRIAL_LIGHT
+              - MISCELLANEOUS
+              - OFFICE_BUILDING
+              - PARKING
+              - RETAIL
+              - SERVICE
+              - SINGLE_FAMILY_RESIDENCE_TOWNHOUSE
+              - TRANSPORT
+              - UTILITIES
+              - VACANT
+              description: The class of the dwelling
+            sub_type:
+              type:
+              - string
+              - 'null'
+              enum:
+              - AGRICULTURE_FARMING
+              - COMMERCIAL
+              - INDUSTRIAL
+              - OTHER
+              - OTHER_UNKNOWN
+              - PUBLIC_WORKS
+              - RESIDENTIAL
+              - VACANT_LAND
+              description: The sub type of the dwelling
+            year_built:
+              type:
+              - integer
+              - 'null'
+              description: The year the dwelling was built
+            construction_type:
+              type:
+              - string
+              - 'null'
+              enum:
+              - A_FRAME
+              - ADOBE
+              - ALUMINUM_FRAME
+              - ALUMINUM_SIDING
+              - ALUMINUM_VINYL
+              - ARCHED_DOME
+              - BLOCK_BRICK
+              - BLOCK_METAL
+              - BLOCK_STEEL
+              - BRICK
+              - BRICK_CINDER_BLOCK
+              - BRICK_CONCRETE
+              - BRICK_FRAME
+              - BRICK_METAL
+              - BRICK_STEEL
+              - BRICK_STONE
+              - BRICK_STUCCO
+              - CINDER_BLOCK
+              - CLAPBOARD
+              - COMBINATION
+              - CONCRETE
+              - CONCRETE_BLOCK
+              - CONCRETE_MASONRY
+              - CONCRETE_STEEL
+              - CUSTOM
+              - DOME
+              - FLEXIBLE_FLEXICORE
+              - FRAME
+              - FRAME_MASONRY
+              - FRAME_STEEL
+              - FRAME_STUCCO
+              - GLASS
+              - HEAVY
+              - LIGHT
+              - LOG
+              - MANUFACTURED_MODULAR
+              - MASONRY
+              - MASONRY_TILT_UP
+              - METAL
+              - NONE
+              - POLE_FRAME
+              - PREFAB_METAL
+              - STEEL
+              - STEEL_MASONRY
+              - STEEL_STUCCO
+              - STEEL_WOOD
+              - STONE_VENEER
+              - STONE_ROCK
+              - STUCCO
+              - TILT_UP
+              - TILT_UP_BRICK_METAL
+              - TILT_UP_CONCRETE
+              - TYPE_NOT_SPECIFIED
+              - TYPE_UNKNOWN
+              - WOOD
+              - WOOD_FRAME
+              - WOOD_FRAME_CONCRETE_BLOCK
+              - WOOD_FRAME_METAL
+              - WOOD_BRICK
+              - WOOD_STEEL
+              - WOOD_STONE
+              - WOOD_STUCCO
+              description: The construction material used to build the dwelling
+            wall_type:
+              type:
+              - string
+              - 'null'
+              enum:
+              - $2X2_FRAME
+              - $2X3_FRAME
+              - $2X4_FRAME
+              - $2X6_FRAME
+              - $8_INCH_PAINT
+              - ADOBE
+              - ALUMINUM_LAP
+              - ALUMINUM_SIDING
+              - ALUMINUM_VINYL
+              - ASBESTOS
+              - ASBESTOS_FRAME
+              - ASPHT_SHINGLE
+              - BAKED_ENAMEL
+              - BAT_BOARD
+              - BEVEL_FINISHING_STYLE
+              - BLOCK
+              - BLOCK_MASONRY
+              - BOARD_BATTEN
+              - BRICK
+              - BRICK_FRAME_STONE
+              - BRICK_VENEER
+              - BRICK_STONE_BRICK_AND_OR_STONE
+              - BRICK_WOOD
+              - BUTTRESSED
+              - CEDAR
+              - CERAMIC_TILE
+              - CHANNEL
+              - CINDER_BLOCK
+              - CLAY_TILE
+              - COMB
+              - COMBINATION
+              - COMPOSITION_COMPOSITE
+              - CONCRETE
+              - CONCRETE_BLOCK
+              - CONCRETE_BLOCK_STUCCO
+              - CONCRETE_TILE
+              - CONCRETE_CINDER_BLOCK
+              - CURTAIN
+              - DIAGONAL
+              - DROP
+              - EIFS_SYNTHETIC_STUCCO
+              - FARM_SINGLE
+              - FIBER_CEMENT_SIDING_HARDI_BOARD_HARDI_PLANK
+              - FRAME_BRICK
+              - FRAME_SIDING
+              - FRAME_ALUMINUM
+              - FRAME_MASONRY
+              - FRAME_MASONRY_VENEER
+              - FRAME_SHINGLE_SIDING
+              - FRAME_STONE
+              - FRAME_STUCCO
+              - FRAME_VINYL
+              - FRAME_WOOD
+              - GLASS
+              - HARDWOOD_SIDING
+              - HORIZONTAL
+              - LAP
+              - LOG_1_2_ROUND
+              - LOGS
+              - MARBLE
+              - MARBLECRETE
+              - MASONITE
+              - MASONRY_STUCCO
+              - METAL
+              - METAL_SIDING
+              - MODULAR
+              - NONE
+              - NOT_AVAILABLE
+              - NP
+              - OTHER
+              - OTHER_NOT_CLASSIFIED
+              - PANEL
+              - PAPER
+              - PLYWOOD
+              - POLE
+              - PRE_CAST
+              - PRECAST_CONCRETE_PANEL
+              - PREFAB_WOOD
+              - PROTECTIVE_TREATMENT
+              - RIBBED
+              - RIBBED_ALUMINUM
+              - RUSTIC
+              - SHAKE
+              - SHINGLES
+              - SIDING
+              - SIDING_ALUM_VINYL
+              - SIDING_NOT_SPECIFIED
+              - SINGLE_WALL
+              - SLUMP_BLOCK
+              - STEEL_PANEL
+              - STONE
+              - STONE_VENEER
+              - STONE_WOOD_FRAME
+              - STRUT_FRAME
+              - STUCCO
+              - T111
+              - TBD
+              - TILE
+              - TONG_GROOVE
+              - UNKNOWN
+              - VERTICAL
+              - VINYL
+              - WOOD
+              - WOOD_FRAME
+              - WOOD_FRAME_SIDING
+              - WOOD_SHINGLE
+              - WOOD_SIDING
+              - WOOD_STEEL_STUD
+              description: The wall type of the dwelling
+            foundation_type:
+              type:
+              - string
+              - 'null'
+              enum:
+              - BLOCK
+              - BLOCK_UNSPECIFIED
+              - BRICK
+              - BRICK_UNSPECIFIED
+              - CLOSED_PIERS
+              - CONCRETE
+              - CONCRETE_BEAM_SLAB
+              - CONCRETE_BLOCK
+              - CONCRETE_BEAM
+              - CONTINUOUS_FOOTING
+              - CONTINUOUS_WALL
+              - CROSS_BRIDGED_WALLS
+              - DIRT_EARTH
+              - FOOTING
+              - FOOTING_CONTINUOUS_STRIP
+              - FOOTING_SPREAD
+              - GRADE_BEAM
+              - MASONRY
+              - MASONRY_UNSPECIFIED
+              - MAT_RAFT_FOUNDATION
+              - MUD_SILL
+              - NO_FOUNDATION
+              - NONE
+              - NOT_STATED
+              - NP
+              - OPEN_PIERS
+              - PIER
+              - PIER_POST_CONCRETE
+              - PIER_POST_WOOD
+              - PIER_POST_BEAM
+              - PILE
+              - PILE_CONCRETE
+              - PILE_END_BEARING
+              - PILE_FRICTION
+              - PILE_WOOD_TIMBER
+              - PILINGS
+              - PIPE_IRON
+              - PRE_FAB
+              - RAISED
+              - RAISED_UNSPECIFIED
+              - RAISED_BASEMENT
+              - RAISED_CRAWLSPACE
+              - RETAINING_WALL
+              - SLAB
+              - SPREAD_FOOTING
+              - STANDARD
+              - STEEL
+              - STEM_WALL
+              - STEM_WALL_CRAWLSPACE
+              - STONE
+              - STONE_UNSPECIFIED
+              - TYPE_NOT_SPECIFIED
+              - TYPE_UNKNOWN
+              - TYPE_UNKNOWN_BASEMENT
+              - TYPE_UNKNOWN_CRAWLSPACE
+              - TYPE_UNKNOWN_PART_BASEMENT
+              - UNAVAILABLE
+              - UNKNOWN
+              - WOOD
+              - WOOD_UNSPECIFIED
+              description: The foundation type of the dwelling
+            frame_type:
+              type:
+              - string
+              - 'null'
+              enum:
+              - ALUMINUM_FRAME
+              - CONCRETE
+              - CONCRETE_STEEL
+              - CUSTOM
+              - FIRE_RESISTANT
+              - MASONRY
+              - PRE_FAB
+              - STEEL
+              - TYPE_UNKNOWN
+              - WOOD
+              description: The frame type of the dwelling
+            roof_cover:
+              type:
+              - string
+              - 'null'
+              enum:
+              - ALUMINUM
+              - ASBESTOS
+              - ASPHALT
+              - AVERAGE_COMPOSITION_SHINGLE
+              - BAR_TILE_SPANISH_STYLE
+              - BI_METAL_TWO_PLY
+              - BUILTUP_LAYERED_ASPHALT
+              - CLAY_TILE
+              - COMPOSITION_SHINGLE
+              - CONCRETE
+              - CONCRETE_TILE
+              - ENAMEL
+              - FIBERGLASS
+              - GALVANIZED
+              - GYPSUM
+              - HEAVY_COMPOSITION_SHINGLE
+              - LIGHT_COMPOSITION_SHINGLE
+              - MASONITE_CEMENT_SHAKE
+              - MEDIUM_SHAKE
+              - METAL
+              - NOT_AVAILABLE
+              - NP
+              - OTHER_NOT_CLASSIFIED
+              - ROCK_GRAVEL
+              - ROLL_COMPOSITION_ROLLED_MINERAL_ROOF
+              - ROLL_PAPER_ROLLED_SMOOTH_ROOF
+              - ROLL_TAR_GRAVEL
+              - RUBBER_ELASTOMETRIC
+              - SHAKE
+              - SHINGLE
+              - SLATE
+              - SLATE_TILE
+              - SYNTHETIC_TILE
+              - TILE
+              - UNKNOWN
+              - UNKNOWN_OR_NOT_PROVIDED
+              - URETHANE
+              - WOOD
+              - WOOD_SHAKE_SHINGLE
+              - WOOD_SHINGLE
+              description: The roof cover type of the dwelling
+            roof_shape:
+              type:
+              - string
+              - 'null'
+              enum:
+              - A_FRAME
+              - ARCHED
+              - BARN
+              - BARREL
+              - BOWSTRING_TRUSS
+              - BUBBLE
+              - BUTTERFLY
+              - CANOPY
+              - CATHEDRAL_CLERESTORY
+              - COMPLEX_CUSTOM
+              - CONTEMPORARY
+              - DORMER
+              - FLAT
+              - FRAME
+              - GABLE
+              - GABLE_HIP
+              - GAMBREL
+              - GAMBREL_MANSARD
+              - GEODESIC_DOME
+              - HIP
+              - MANSARD
+              - MONITOR
+              - OTHER
+              - PITCHED
+              - PRESTRESS_CONCRETE
+              - PYRAMID
+              - REINFORCED_CONCRETE
+              - RIGID_FRM_BAR_JT
+              - SAWTOOTH
+              - SHED
+              - STEEL_FRM_TRUSS
+              - SWISS_CHALET_ALPINE
+              - WOOD_TRUSS
+              description: The shape of the dwelling's roof
+            cooling_type:
+              type:
+              - string
+              - 'null'
+              enum:
+              - AC_CENTRAL
+              - AC_CENTRAL_AND_UNIT
+              - AC_CENTRAL_PARTIAL
+              - AC_COMMERCIAL_AC
+              - AC_DUAL_UNIT
+              - AC_EVAPORATIVE
+              - AC_HEAT_PUMP
+              - AC_NONE
+              - AC_OFFICE_ONLY
+              - AC_PACKAGE_ROOF
+              - AC_PARTIAL
+              - AC_REFRIGERATION
+              - AC_REFRIGERATION_EVAPORATION
+              - AC_SEPARATE_SYSTEM
+              - AC_SOLAR
+              - AC_SPLIT_SYSTEM
+              - AC_WALL_UNIT
+              - AC_WALL_WINDOW_UNIT
+              - AC_WINDOW_UNIT
+              - BYPASS
+              - CENTRAL
+              - CHILLED_WATER
+              - EVAPORATIVE
+              - EVAPORATIVE_WALL_UNIT
+              - FAN_COOLING
+              - GEO_THERMAL
+              - NONE
+              - NOT_AVAILABLE
+              - NOT_PROVIDED
+              - OTHER
+              - PACKAGE
+              - PARTIAL
+              - REFRIGERATION_WALL_UNIT
+              - REFRIGERATOR
+              - REFRIGERATOR_EVAPORATIVE
+              - SOLAR
+              - UNKNOWN
+              - WALL_UNIT
+              - WINDOW_AC
+              - WINDOW_EVAPORATIVE
+              - 'YES'
+              description: The type of cooling the dwelling has
+            heating_type:
+              type:
+              - string
+              - 'null'
+              enum:
+              - BASEBOARD
+              - CEILING_CABLE
+              - CEILING_FURNACE
+              - CENTRAL
+              - COAL
+              - CONVECTION
+              - ELECTRIC
+              - FIREPLACE
+              - FLOOR_FURNACE
+              - FLOOR_WALL_FURNACE
+              - FORCED_AIR
+              - FORCED_AIR_WITH_AIR_CONDITIONING
+              - GAS
+              - GEO_THERMAL
+              - GRAVITY
+              - HEAT_PUMP
+              - HOT_WATER
+              - NONE
+              - NOT_AVAILABLE
+              - NP
+              - OIL
+              - OTHER
+              - PACKAGE
+              - PARTIAL
+              - PROPANE
+              - RADIANT
+              - SOLAR
+              - SPACE
+              - STEAM
+              - STOVE
+              - UNKNOWN
+              - WALL_GAS
+              - WOOD_FURNACE
+              - 'YES'
+              - ZONE
+              description: The type of heating the dwelling has
+            heating_fuel:
+              type:
+              - string
+              - 'null'
+              enum:
+              - COAL
+              - ELECTRIC
+              - ELECTRIC_HOT_WATER
+              - GAS
+              - GEO_THERMAL
+              - HEAT_PUMP
+              - LIQUEFIED_PETROLEUM_GAS
+              - NONE
+              - NOT_AVAILABLE
+              - NOT_PROVIDED
+              - OIL
+              - OTHER
+              - PROPANE
+              - SOLAR
+              - SOLID
+              - TYPE_UNKNOWN
+              - WOOD
+              description: The type of heating fuel the dwelling uses
+            energy_type:
+              type:
+              - string
+              - 'null'
+              enum:
+              - ABOVE_STANDARD
+              - AVAILABLE
+              - AVERAGE
+              - BELOW_STANDARD
+              - DEVELOPED
+              - FAIR
+              - GOOD
+              - 'NO'
+              - NOT_AVAILABLE
+              - NP
+              - OVERHEAD
+              - POOR
+              - STANDARD
+              - UNDERGROUND
+              - UNKNOWN
+              - 'YES'
+              description: The type of energy supplied to the dwelling
+            sewer_type:
+              type:
+              - string
+              - 'null'
+              enum:
+              - BYPASS
+              - CESSPOOL
+              - COMMERCIAL
+              - DEVELOPED
+              - MUNICIPAL
+              - NONE
+              - NOT_AVAILABLE
+              - NP
+              - PRIVATE
+              - PUBLIC
+              - PUBLIC_SEPTIC
+              - SANITARY
+              - SEPTIC
+              - STORM
+              - UNKNOWN
+              - 'YES'
+              description: The type of sewer the dwelling has
+            building_shape:
+              type:
+              - string
+              - 'null'
+              enum:
+              - OTHER
+              - COMPLEX
+              - C_SHAPED
+              - IRREGULAR
+              - L_SHAPED
+              - RECTANGLE
+              - SLIGHTLY_IRREGULAR
+              - SQUARE
+              - VERY_IRREGULAR
+              description: The shape of the dwelling
+            construction_quality:
+              type:
+              - string
+              - 'null'
+              enum:
+              - AVERAGE
+              - CABIN
+              - EXCELLENT
+              - FAIR
+              - GOOD
+              - HIGH_QUALITY_RESIDENTIAL
+              - LOW
+              - NOT_AVAILABLE
+              - NP
+              - OTHER
+              - UNKNOWN
+              - VERY_GOOD
+              description: The construction quality of the dwelling
+            has_fireplace:
+              type:
+              - boolean
+              - 'null'
+              description: Whether the dwelling has a fireplace
+            num_fireplaces:
+              type:
+              - integer
+              - 'null'
+              description: The number of fireplaces the dwelling has
+            fireplace_type:
+              type:
+              - string
+              - 'null'
+              enum:
+              - $1_STORY_BRICK
+              - $2_STORY
+              - $2_STORY_BRICK
+              - BACKED
+              - CEILING_HIGH_BRICK
+              - CUSTOM
+              - DOUBLE
+              - ELECTRIC
+              - FLUE_ONLY
+              - GLASS_LOG
+              - HEATER_CIRCLE
+              - MASONRY
+              - NOT_AVAILABLE
+              - NOT_PROVIDED
+              - NP
+              - PREFAB
+              - RAISED_HEARTH
+              - SEE_THRU
+              - SINGLE
+              - STACKED
+              - WOOD_STOVE
+              - 'YES'
+              description: The type of fireplace the dwelling has
+            has_pool:
+              type:
+              - boolean
+              - 'null'
+              description: Whether the dwelling has a pool
+            pool_type:
+              type:
+              - string
+              - 'null'
+              enum:
+              - OTHER
+              - ABOVE_GROUND_POOL
+              - ADULT_KIDDIE_POOLS
+              - BUMPER_BOAT
+              - CONCRETE_VINYL
+              - FISH_POND
+              - HEATED_POOL_GUNITE
+              - INDOOR_POOL
+              - IN_GROUND_POOL
+              - IN_GROUND_VINYL_POOL
+              - KIDDIE_PLAY_POOL
+              - LAGOON
+              - LAP_POOL
+              - MULTIPLE_POOLS_UNSPECIFIED
+              - NO_POOL
+              - NOT_STATED
+              - POOL_SPA_WITH_DECK
+              - POOL_CONCRETE_WITH_CABANA_POOL_HOUSE
+              - POOL_CONCRETE_WITH_EQUIPMENT
+              - POOL_CONCRETE_FENCED
+              - POOL_GUNITE_WITH_HOT_TUB_SPA
+              - POOL_GUNITE_WITH_PATIO
+              - POOL_GUNITE_ENCLOSED
+              - POOL_GUNITE_KIDNEY_SHAPED
+              - POOL_IN_GROUND_WITH_HOT_TUB_SPA
+              - POOL_UNSPECIFIED_WITH_COVER
+              - POOL_UNSPECIFIED_WITH_DECK
+              - POOL_UNSPECIFIED_ENCLOSED
+              - POOL_UNSPECIFIED_FENCED
+              - POOL_UNSPECIFIED_HEATED
+              - POOL_VINYL_WITH_DECK
+              - POOL_VINYL_WITH_PATIO
+              - POOL_VINYL_KIDNEY_SHAPED
+              - POOL_VINYL_L_SHAPED
+              - POOL_VINYL_OVAL_SHAPED
+              - POOL_WITH_BAR
+              - POOL_WITH_CABANA_POOL_HOUSE
+              - POOL_WITH_CANOPY
+              - POOL_WITH_DIVING_BOARD
+              - POOL_WITH_EQUIPMENT
+              - POOL_WITH_FOUNTAIN
+              - POOL_WITH_HOT_TUB_SPA
+              - POOL_WITH_PATIO
+              - POOL_WITH_SAUNA
+              - POOL_WITH_WATERFALL
+              - POOL_ARROW_SHAPED
+              - POOL_BRICK_MASONRY_STONE
+              - POOL_CIRCULAR
+              - POOL_CONCRETE
+              - POOL_FIBERGLASS
+              - POOL_GUNITE
+              - POOL_IRREGULAR_SHAPED
+              - POOL_KIDNEY_SHAPED
+              - POOL_L_SHAPED
+              - POOL_METAL
+              - POOL_OVAL_SHAPED
+              - POOL_PLASTIC_VINYL_LINED
+              - POOL_PRE_FABRICATED_VINYL
+              - POOL_SOLAR_HEATED
+              - POOL_STONE_GRANITE
+              - POOL_VINYL_LINING_STEEL_WALLED
+              - POOLS_THREE_PLUS_UNSPECIFIED
+              - POOLS_TWO_UNSPECIFIED
+              - PUBLIC_MUNICIPAL_COMMERCIAL
+              - SAUNA_SPA_ONLY
+              - SAUNA_ONLY
+              - SPA_GAZEBO_ONLY
+              - SPA_HOT_TUB_DECK_ONLY
+              - SPA_HOT_TUB_ONLY
+              - TYPE_NOT_SPECIFIED
+              - WADING_POOL
+              description: The type of pool the dwelling has
+            square_ft:
+              type:
+              - integer
+              - 'null'
+              description: The square footage of the dwelling
+            num_beds:
+              type:
+              - integer
+              - 'null'
+              description: The number of bedrooms the dwelling has
+            num_baths_full:
+              type:
+              - integer
+              - 'null'
+              description: The number of full bathrooms the dwelling has
+            num_baths_partial:
+              type:
+              - integer
+              - 'null'
+              description: The number of partial bathrooms the dwelling has
+            num_stories:
+              type:
+              - integer
+              - 'null'
+              description: The number of stories the dwelling has
+            num_units:
+              type:
+              - integer
+              - 'null'
+              description: The number of units the dwelling has
+            garage_type:
+              type:
+              - string
+              - 'null'
+              enum:
+              - CARPORT_FINISHED
+              - ATTACHED_1_CAR
+              - ATTACHED_2_CAR
+              - ATTACHED_3_PLUS_CAR
+              - ATTACHED_FINISHED
+              - ATTACHED_UNFINISHED
+              - CARPORT_UNSPECIFIED
+              - CARPORT_1_CAR
+              - CARPORT_2_CAR
+              - CARPORT_3_PLUS_CAR
+              - CARPORT_ATTACHED
+              - CARPORT_DETACHED
+              - CARPORT_DETACHED_FINISHED
+              - CARPORT_DETACHED_UNFINISHED
+              - CARPORT_ENCLOSED
+              - CARPORT_OPEN
+              - CARPORT_UNFINISHED
+              - COVERED
+              - DETACHED_UNSPECIFIED
+              - DETACHED_1_CAR
+              - DETACHED_2_CAR
+              - DETACHED_3_PLUS_CAR
+              - DETACHED_FINISHED
+              - DETACHED_UNFINISHED
+              - GARAGE_AND_CARPORT
+              - GARAGE_1_CAR
+              - GARAGE_2_CAR
+              - GARAGE_3_PLUS_CAR
+              - GARAGE_ATTACHED
+              - GARAGE_BASEMENT
+              - GARAGE_BASEMENT_1_CAR
+              - GARAGE_BASEMENT_2_CAR
+              - GARAGE_BASEMENT_3_PLUS_CAR
+              - GARAGE_BASEMENT_FINISHED
+              - GARAGE_BASEMENT_FINISHED_1_CAR
+              - GARAGE_BASEMENT_FINISHED_2_CAR
+              - GARAGE_BASEMENT_FINISHED_3_PLUS_CAR
+              - GARAGE_BASEMENT_UNFINISHED
+              - GARAGE_BASEMENT_UNFINISHED_1_CAR
+              - GARAGE_BASEMENT_UNFINISHED_2_CAR
+              - GARAGE_BASEMENT_UNFINISHED_3_PLUS_CAR
+              - GARAGE_BUILT_IN
+              - GARAGE_BUILT_IN_1_CAR
+              - GARAGE_BUILT_IN_2_CAR
+              - GARAGE_BUILT_IN_FINISHED
+              - GARAGE_BUILT_IN_UNFINISHED
+              - GARAGE_DETACHED
+              - GARAGE_ENCLOSED
+              - GARAGE_FINISHED
+              - GARAGE_HEATED
+              - GARAGE_OPEN
+              - GARAGE_TUCKUNDER
+              - GARAGE_UNFINISHED
+              - GARAGE_UNFINISHED_1_CAR
+              - GARAGE_UNFINISHED_2_CAR
+              - GARAGE_UNFINISHED_3_PLUS_CAR
+              - MIXED
+              - NO_GARAGE
+              - NOT_AVAILABLE
+              - NOT_PROVIDED
+              - NOT_STATED
+              - NP
+              - PARKING_STRUCTURE
+              - POLE_BUILDING_GARAGE
+              - TYPE_NOT_SPECIFIED
+              - UNKNOWN
+              description: The type of garage the dwelling has
+            garage_square_ft:
+              type:
+              - integer
+              - 'null'
+              description: The square footage of the dwelling's garage
+            num_parking_spaces:
+              type:
+              - integer
+              - 'null'
+              description: The number of parking spaces the dwelling has
+            assessed_improvement_value_cents:
+              type:
+              - integer
+              - 'null'
+              description: The assessed improvement value in cents
+            assessed_land_value_cents:
+              type:
+              - integer
+              - 'null'
+              description: The assessed land value in cents
+            assessed_total_value_cents:
+              type:
+              - integer
+              - 'null'
+              description: The assessed total value in cents
+            market_improvement_value_cents:
+              type:
+              - integer
+              - 'null'
+              description: The market improvement value in cents
+            market_land_value_cents:
+              type:
+              - integer
+              - 'null'
+              description: The market land value in cents
+            market_total_value_cents:
+              type:
+              - integer
+              - 'null'
+              description: The market total value in cents
+            owner1_first_name:
+              type:
+              - string
+              - 'null'
+              description: The first owner's first name
+            owner1_last_name:
+              type:
+              - string
+              - 'null'
+              description: The first owner's last name
+            owner2_first_name:
+              type:
+              - string
+              - 'null'
+              description: The second owner's first name
+            owner2_last_name:
+              type:
+              - string
+              - 'null'
+              description: The second owner's last name
+            owner3_first_name:
+              type:
+              - string
+              - 'null'
+              description: The third owner's first name
+            owner3_last_name:
+              type:
+              - string
+              - 'null'
+              description: The third owner's last name
+            owner4_first_name:
+              type:
+              - string
+              - 'null'
+              description: The fourth owner's first name
+            owner4_last_name:
+              type:
+              - string
+              - 'null'
+              description: The fourth owner's last name
+            first_mortgage_amount_cents:
+              type:
+              - integer
+              - 'null'
+              description: The first mortgage amount in cents
+            first_mortgage_lender:
+              type:
+              - string
+              - 'null'
+              description: The first mortgage lender name
+            second_mortgage_amount_cents:
+              type:
+              - integer
+              - 'null'
+              description: The second mortgage amount in cents
+            second_mortgage_lender:
+              type:
+              - string
+              - 'null'
+              description: The second mortgage lender name
+            purchase_date:
+              type:
+              - string
+              - 'null'
+              description: The date the dwelling was purchased
+              format: date
+            purchase_price_cents:
+              type:
+              - integer
+              - 'null'
+              description: The purchase price of the dwelling in cents
+            last_update_date:
+              type:
+              - string
+              - 'null'
+              description: The last update date for the property data
+              format: date
+  securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: basic
+      description: HTTP Basic authentication. Use your Canopy Connect Client ID as the username and your Client Secret as the password. The `Authorization` header value is `Basic <base64 of clientId:clientSecret>`. See the [Authentication guide](https://docs.usecanopy.com/reference/authentication-guide) for a full walkthrough, and create or manage your Client ID and Client Secret on the [API Settings page](https://app.usecanopy.com/dashboard/settings/api-settings).
+x-readme:
+  headers: []
+  explorer-enabled: true
+  proxy-enabled: true
+  samples-enabled: true

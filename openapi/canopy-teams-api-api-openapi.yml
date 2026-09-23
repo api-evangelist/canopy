@@ -1,0 +1,153 @@
+openapi: 3.2.0
+info:
+  title: Reference Teams API
+  version: 1.0.0
+  description: Canopy Connect Public API Documentation
+  contact:
+    name: Canopy Connect
+    email: support@usecanopy.com
+    url: https://usecanopy.com/
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://app.usecanopy.com/api/v1.0.0
+security:
+- BasicAuth: []
+tags:
+- name: Teams API
+  description: Get, create, delete Teams
+paths:
+  /teams/{teamId}:
+    parameters:
+    - schema:
+        type: string
+      name: teamId
+      in: path
+      required: true
+    get:
+      summary: GET /:teamId
+      tags:
+      - Teams API
+      responses:
+        '200':
+          description: 200 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  team_id:
+                    type: string
+                    description: ID of the Team
+                  company_name:
+                    type: string
+                    description: Company name for the Team
+                  client_id:
+                    type: string
+                    description: Client ID used to make request
+      operationId: get-team
+      description: Used to get information about the current team
+    delete:
+      summary: DELETE /:teamId
+      tags:
+      - Teams API
+      responses:
+        '200':
+          description: 200 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+        '403':
+          description: 403 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    enum:
+                    - SUBSCRIPTION_INACTIVE
+                  message:
+                    enum:
+                    - Subscription is already canceled
+        '404':
+          description: 404 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    enum:
+                    - NOT_FOUND
+                  message:
+                    enum:
+                    - Team not found
+      operationId: delete-team
+      description: Used to deprovision a team
+  /teams:
+    post:
+      summary: POST /teams
+      tags:
+      - Teams API
+      responses:
+        '200':
+          description: 200 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  client_id:
+                    type: string
+                    description: API client ID for the Team created
+                  client_secret:
+                    type: string
+                    description: API client secret for the Team created
+                  team:
+                    type: object
+                    properties:
+                      team_id:
+                        type: string
+                        description: ID of the Team created
+                      company_name:
+                        type: string
+                        description: Company name for the Team created
+        '403':
+          description: 403 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    enum:
+                    - FORBIDDEN
+      operationId: create-team
+      description: Used to provision a team
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                company_name:
+                  type: string
+                  minLength: 1
+                  maxLength: 255
+components:
+  securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: basic
+      description: HTTP Basic authentication. Use your Canopy Connect Client ID as the username and your Client Secret as the password. The `Authorization` header value is `Basic <base64 of clientId:clientSecret>`. See the [Authentication guide](https://docs.usecanopy.com/reference/authentication-guide) for a full walkthrough, and create or manage your Client ID and Client Secret on the [API Settings page](https://app.usecanopy.com/dashboard/settings/api-settings).
+x-readme:
+  headers: []
+  explorer-enabled: true
+  proxy-enabled: true
+  samples-enabled: true

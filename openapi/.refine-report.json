@@ -1,0 +1,46 @@
+{
+  "provider": "canopy",
+  "sources": [
+    "_original/canopy-documentation.json"
+  ],
+  "outputs": [
+    "canopy-consent-api-api-openapi.yml",
+    "canopy-enrichment-api-api-openapi.yml",
+    "canopy-misc-api-api-openapi.yml",
+    "canopy-monitorings-api-api-openapi.yml",
+    "canopy-policy-check-team-setting-api-api-openapi.yml",
+    "canopy-policy-forms-api-api-openapi.yml",
+    "canopy-policy-search-api-api-openapi.yml",
+    "canopy-pulls-api-api-openapi.yml",
+    "canopy-servicings-api-api-openapi.yml",
+    "canopy-teams-api-api-openapi.yml",
+    "canopy-webhooks-api-api-openapi.yml",
+    "canopy-whitelabel-api-api-openapi.yml",
+    "canopy-widgets-api-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [
+    "1 archived document(s) dropped as subsets of other archived documents",
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "canopy-documentation.json: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "apis.yml register: already-registered"
+  ],
+  "skipped": [
+    "_original/canopy-openapi.json: archived document superseded by a larger archived document",
+    "canopy-consent-api-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "canopy-enrichment-api-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "canopy-misc-api-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "canopy-monitorings-api-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "canopy-policy-check-team-setting-api-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "canopy-policy-forms-api-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "canopy-policy-search-api-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "canopy-pulls-api-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "canopy-servicings-api-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "canopy-teams-api-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "canopy-webhooks-api-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "canopy-whitelabel-api-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "canopy-widgets-api-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
+}

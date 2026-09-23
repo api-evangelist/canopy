@@ -1,0 +1,2059 @@
+openapi: 3.2.0
+info:
+  title: Reference Whitelabel API
+  version: 1.0.0
+  description: Canopy Connect Public API Documentation
+  contact:
+    name: Canopy Connect
+    email: support@usecanopy.com
+    url: https://usecanopy.com/
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://app.usecanopy.com/api/v1.0.0
+security:
+- BasicAuth: []
+tags:
+- name: Whitelabel API
+  description: Allows you to create a fully whitelabeled experience
+paths:
+  /tos:
+    get:
+      summary: GET /tos
+      description: Used to retrieve the current terms of service version number and the html content of the terms of service. When presenting consent to the customer you may either link to https://usecanopy.com/privacy or show them the terms html.
+      operationId: get-tos
+      responses:
+        '200':
+          description: 200 Response Schema
+          content:
+            application/json:
+              examples:
+                Example Response:
+                  value:
+                    terms_version: 1
+                    terms_html: '<!DOCTYPE html>
+
+                      <html lang="en">...html_content...</html>
+
+                      '
+              schema:
+                type: object
+                properties:
+                  terms_version:
+                    type: integer
+                    example: 1
+                    default: 0
+                    description: The current version for our Terms of Service
+                  terms_html:
+                    type: string
+                    example: '<!DOCTYPE html>
+
+                      <html lang="en">...html_content...</html>
+
+                      '
+                    description: Html content of our Terms of Service which must be made visible to the consumer through an button/link to collect consent
+      deprecated: false
+      security: []
+      tags:
+      - Whitelabel API
+  /widget/pull/consentAndConnect:
+    post:
+      summary: POST /consentAndConnect
+      description: Used to verify consent, create a pull, and start the authentication. Use /connect for reauthentication
+      operationId: post-consent-and-connect
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                device_identifier:
+                  type: string
+                  description: User's IP address or other unique user identifier
+                terms_version:
+                  type: integer
+                  description: Must correspond to the terms_version that was presented to the user
+                consent_language:
+                  type: string
+                  description: Text that was displayed to the user when prompting for their consent
+                  maxLength: 1024
+                  example: By clicking <name of button> you agree to the Canopy Connect End User Privacy Policy and Terms of Service
+                public_alias:
+                  type: string
+                  description: The widget alias that the pull will be submitted on
+                meta_data:
+                  type: object
+                  description: JSON serializable metadata that will be saved to the pull
+                insurerName:
+                  type: string
+                  description: Carrier ID to submit the credentials to
+                insurerUsername:
+                  type: string
+                  description: The username token returned by [Components](https://docs.usecanopy.com/reference/components-reference-documentation#submit)
+                  minLength: 5
+                  maxLength: 200
+                insurerPassword:
+                  type: string
+                  description: The password token returned by [Components](https://docs.usecanopy.com/reference/components-reference-documentation#submit)
+                  minLength: 5
+                  maxLength: 200
+                insurerThirdField:
+                  type: string
+                  description: The thirdfield token returned by [Components](https://docs.usecanopy.com/reference/components-reference-documentation#submit)
+                servicing_actions:
+                  type:
+                  - array
+                  - 'null'
+                  description: Will set the `pull.type` to `SERVICING`.
+                  items:
+                    $ref: '#/paths/~1teams~1{teamId}~1servicings/post/requestBody/content/application~1json/schema/properties/servicing_actions/items'
+                refresh_reason:
+                  enum:
+                  - UPCOMING_MONITORING
+                  - UPCOMING_SERVICING
+                  description: Specify if intending to reuse the credentials and consent from this pull for a future [Monitoring](https://docs.usecanopy.com/reference/how-to-use-monitoring) or [Servicing](https://docs.usecanopy.com/reference/how-to-use-servicing) pull. Will attempt to refresh the session so that the consumer does not need to re-authenticate.
+              required:
+              - device_identifier
+              - terms_version
+              - consent_language
+              - public_alias
+              - insurerName
+              - insurerUsername
+            examples:
+              SERVICING:
+                value:
+                  device_identifier: 127.0.0.1
+                  terms_version: 1
+                  consent_language: By clicking <name of button> you agree to the Canopy Connect End User Privacy Policy and Terms of Service
+                  public_alias: demo
+                  meta_data: {}
+                  insurerName: statefarm
+                  insurerUsername: b6d60778-0e25-40d6-843c-626222c3e524
+                  insurerPassword: 2083eb68-0757-4aac-bf8d-d331b5271909
+                  servicing_actions:
+                  - type: ADD_MORTGAGEE
+                    payload:
+                      carrier_policy_number: HO132483
+                      name: JP MORGAN CHASE BANK NA ISAOA ATIMA
+                      address: PO BOX 47020, ATLANTA, GA 30362
+                      loan_number: '1234567890'
+                      mortgagee_type: FIRST
+              PULLING_DATA:
+                value:
+                  device_identifier: 127.0.0.1
+                  terms_version: 1
+                  consent_language: By clicking <name of button> you agree to the Canopy Connect End User Privacy Policy and Terms of Service
+                  public_alias: demo
+                  meta_data: {}
+                  insurerName: statefarm
+                  insurerUsername: b6d60778-0e25-40d6-843c-626222c3e524
+                  insurerPassword: 2083eb68-0757-4aac-bf8d-d331b5271909
+                  servicing_actions: null
+      responses:
+        '200':
+          description: 200 Response Schema
+          content:
+            application/json:
+              examples:
+                Example Response:
+                  value:
+                    pull_id: ce559727-cf02-4ebf-83ce-8035f8828be4
+                    pull_jwt: '...jwt...'
+              schema:
+                type: object
+                properties:
+                  pull_id:
+                    type: string
+                    format: uuid
+                    description: Pull Id used to interact with the pull
+                    example: ce559727-cf02-4ebf-83ce-8035f8828be4
+                  pull_jwt:
+                    type: string
+                    description: JWT used to authenticate interactions with the Pull
+                  servicing_action_ids:
+                    type: array
+                    minItems: 1
+                    description: IDs for each of the `ServicingActions` created. They will be returned in the same order they were supplied.
+                    items:
+                      type: string
+                      format: uuid
+                required:
+                - pull_id
+                - pull_jwt
+        '400':
+          description: 400 Response Schema
+          content:
+            application/json:
+              examples:
+                Example Response:
+                  value:
+                    error: MISSING_DEVICE_IDENTIFIER
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - MISSING_DEVICE_IDENTIFIER
+                    - INVALID_CONSENT_LANGUAGE
+                    - INVALID_PUBLIC_ALIAS
+                    - INCORRECT_API_KEY_TYPE
+                    - UNSUPPORTED_INSURER
+                    - INVALID_USERNAME
+                    - INVALID_PASSWORD
+                    - INVALID_THIRDFIELD
+                    - CONSENT_LANGUAGE_TOO_LONG
+                    - INVALID_SERVICING_ACTIONS
+                    - MISSING_SERVICING_ACTIONS
+        '401':
+          description: 401 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - UNAUTHORIZED
+              examples:
+                Example Response:
+                  value:
+                    error: UNAUTHORIZED
+        '404':
+          description: 404 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - INVALID_PRIVACY_POLICY_TERM_ID
+              examples:
+                Example Response:
+                  value:
+                    error: INVALID_PRIVACY_POLICY_TERM_ID
+      deprecated: false
+      tags:
+      - Whitelabel API
+  /widget/pull/consentAndDocuments:
+    post:
+      summary: POST /consentAndDocuments
+      description: Used to verify consent, create a pull, and upload documents.
+      operationId: post-consent-and-documents
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+              - device_identifier
+              - terms_version
+              - consent_language
+              - public_alias
+              - documents
+              properties:
+                device_identifier:
+                  type: string
+                  description: User's IP address or other unique user identifier
+                terms_version:
+                  type: integer
+                  description: Must correspond to the terms_version that was presented to the user
+                consent_language:
+                  type: string
+                  description: Text that was displayed to the user when prompting for their consent
+                  maxLength: 1024
+                  example: By clicking <name of button> you agree to the Canopy Connect End User Privacy Policy and Terms of Service
+                public_alias:
+                  type: string
+                  description: The widget alias that the pull will be submitted on
+                meta_data:
+                  type: object
+                  description: JSON serializable metadata that will be saved to the pull
+                insurerName:
+                  type:
+                  - string
+                  - 'null'
+                  description: Carrier ID to submit the credentials to
+                documents:
+                  type: array
+                  description: 'Insurance documents. Max size per file is 10MB. Max combined size is 200MB.
+
+
+                    Example adding files to formdata:
+
+                    ```javascript
+
+                    const formData = new FormData();
+
+                    formData.append(''documents'', file1);
+
+                    formData.append(''documents'', file2);
+
+                    ```'
+                  maxItems: 20
+                  minItems: 1
+                  items:
+                    type: string
+                    format: binary
+            encoding:
+              meta_data:
+                style: deepObject
+                explode: true
+      responses:
+        '200':
+          description: 200 Response Schema
+          content:
+            application/json:
+              examples:
+                Example Response:
+                  value:
+                    pull_id: ce559727-cf02-4ebf-83ce-8035f8828be4
+              schema:
+                type: object
+                required:
+                - pull_id
+                properties:
+                  pull_id:
+                    type: string
+                    format: uuid
+                    description: Pull Id used to interact with the pull
+                    example: ce559727-cf02-4ebf-83ce-8035f8828be4
+        '400':
+          description: 400 Response Schema
+          content:
+            application/json:
+              examples:
+                Example Response:
+                  value:
+                    error: MISSING_DEVICE_IDENTIFIER
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - MISSING_DEVICE_IDENTIFIER
+                    - INVALID_CONSENT_LANGUAGE
+                    - INVALID_PUBLIC_ALIAS
+                    - INCORRECT_API_KEY_TYPE
+                    - UNSUPPORTED_INSURER
+                    - CONSENT_LANGUAGE_TOO_LONG
+                    - DOCUMENT_UPLOAD_DISABLED
+                    - COULD_NOT_CREATE
+        '401':
+          description: 401 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - UNAUTHORIZED
+              examples:
+                Example Response:
+                  value:
+                    error: UNAUTHORIZED
+        '404':
+          description: 404 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - INVALID_PRIVACY_POLICY_TERM_ID
+              examples:
+                Example Response:
+                  value:
+                    error: INVALID_PRIVACY_POLICY_TERM_ID
+      deprecated: false
+      tags:
+      - Whitelabel API
+  /widget/pull/{pullId}/connect:
+    parameters:
+    - schema:
+        type: string
+        format: uuid
+      name: pullId
+      in: path
+      required: true
+      description: Pull ID of the pull you are trying to re-connect
+    post:
+      summary: POST /connect
+      description: Used to reauthenticate a pull when its status is `NOT_AUTHENTICATED`
+      operationId: post-connect
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                insurerName:
+                  type: string
+                  description: Consumers carrier username
+                insurerUsername:
+                  type: string
+                  description: The username token returned by [Components](https://docs.usecanopy.com/reference/components-reference-documentation#submit)
+                  minLength: 5
+                  maxLength: 200
+                insurerPassword:
+                  type: string
+                  description: The password token returned by [Components](https://docs.usecanopy.com/reference/components-reference-documentation#submit)
+                  minLength: 5
+                  maxLength: 200
+                insurerThirdField:
+                  type: string
+                  description: The thirdfield token returned by [Components](https://docs.usecanopy.com/reference/components-reference-documentation#submit)
+              required:
+              - insurerName
+              - insurerUsername
+        description: ''
+      responses:
+        '200':
+          description: 200 Response Schema
+          content:
+            application/json:
+              examples:
+                Example Response:
+                  value:
+                    pull:
+                      pull_id: ce559727-cf02-4ebf-83ce-8035f8828be4
+                    shouldPoll: true
+              schema:
+                type: object
+                properties:
+                  pull:
+                    type: object
+                    properties:
+                      pull_id:
+                        type: string
+                        example: ce559727-cf02-4ebf-83ce-8035f8828be4
+                        format: uuid
+                        description: Pull Id of the pull that was re-connected (will be the same as the path parameter)
+                  shouldPoll:
+                    type: boolean
+                    example: true
+                    default: true
+                    deprecated: true
+        '400':
+          description: 400 Response Schema
+          content:
+            application/json:
+              examples:
+                Example Response:
+                  value:
+                    error: INVALID_INPUT
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - INVALID_INPUT
+                    - UNSUPPORTED_INSURER
+        '403':
+          description: 403 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - UNAUTHORIZED
+              examples:
+                Example Response:
+                  value:
+                    error: UNAUTHORIZED
+        '404':
+          description: 404 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - NOT_FOUND
+              examples:
+                Example Response:
+                  value:
+                    error: NOT_FOUND
+      deprecated: false
+      security: []
+      parameters:
+      - schema:
+          type: string
+        in: header
+        name: pull-jwt
+        description: Pull JWT of the pull you are trying to re-connect
+        required: true
+      tags:
+      - Whitelabel API
+  /carriers:
+    get:
+      summary: GET /carriers
+      description: Used to retrieve a list of supported carriers. It also includes various attributes to aid in UI
+      operationId: get-carriers
+      responses:
+        '200':
+          description: 200 Response Schema
+          content:
+            application/json:
+              examples:
+                Example Response:
+                  value:
+                  - carrier_id: chubb
+                    name: Chubb
+                    usernameFieldPlaceholder: User ID
+                    thirdFieldPlaceholder: null
+                    color: '#150f96'
+                    homepageUrl: www.chubb.com
+                    createAccountUrl: https://www.chubb.com/securePersonalContent/ng/reg/#/register/policy
+                    resetPasswordUrl: https://extpga01.chubb.com/ChbResetPassword
+                    disablePasswordField: false
+                    servicingActions:
+                    - ADD_MORTGAGEE
+                    - EDIT_MORTGAGEE
+                    - REMOVE_MORTGAGEE
+                    products:
+                    - personal
+                  - carrier_id: nationalgeneral
+                    name: National General
+                    usernameFieldPlaceholder: null
+                    thirdFieldPlaceholder: Policy Number
+                    color: '#f8981d'
+                    homepageUrl: www.nationalgeneral.com
+                    createAccountUrl: https://service.nationalgeneral.com/Register.aspx
+                    resetPasswordUrl: https://service.nationalgeneral.com/RetrievePassword.aspx
+                    disablePasswordField: false
+                    products:
+                    - personal
+                    - commercial
+              schema:
+                type: array
+                items:
+                  $ref: '#/paths/~1carriers~1{carrierId}/get/responses/200/content/application~1json/schema'
+        '401':
+          description: 401 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - UNAUTHORIZED
+              examples:
+                Example Response:
+                  value:
+                    error: UNAUTHORIZED
+      deprecated: false
+      tags:
+      - Whitelabel API
+      security: []
+      parameters:
+      - schema:
+          type: string
+          example: personal,commercial
+        in: query
+        name: products
+        description: 'Cannot be used with `public_alias`. Comma separated list of products to show carriers for. Valid products: `personal`, `commercial`'
+      - schema:
+          type: string
+        in: query
+        name: public_alias
+        description: Cannot be used with `products`. The widget public alias that is used to return carriers with products that match the widget's supported products
+  /carriers/{carrierId}:
+    parameters:
+    - schema:
+        type: string
+      name: carrierId
+      in: path
+      required: true
+    get:
+      summary: GET /carriers/:carrierId
+      tags:
+      - Whitelabel API
+      responses:
+        '200':
+          description: 200 Response Schema
+          content:
+            application/json:
+              schema:
+                title: Carrier
+                type: object
+                properties:
+                  carrier_id:
+                    type: string
+                    example: chubb
+                    description: Unique carrier id
+                  name:
+                    type: string
+                    example: Chubb
+                    description: Human-friendly carrier name
+                  usernameFieldPlaceholder:
+                    type: string
+                    example: User ID
+                    description: Default to 'Username' when null
+                  thirdFieldPlaceholder:
+                    type:
+                    - string
+                    - 'null'
+                    description: If not null then a third input field should be displayed with the value being the label. You can use thirdFieldValidtorRgx to validate the input and show thirdFieldValidatorError if it does not pass
+                  thirdFieldValidatorError:
+                    type: string
+                    description: A user friendly error message that can be displayed when thridfield input does not match the thirdFieldValidatorRgx
+                  thirdFieldValidatorRgx:
+                    type: string
+                    format: regex
+                    description: A regex pattern that can be used to validate thirdfield input from the user
+                    example: (FL|LA|NC|SC|TX)
+                  thirdFieldValidatorRgxFlags:
+                    type: string
+                    description: 'Regex flags to be used with thirdFieldValidatorRgx. Empty string is equivalent to no flags. Usage info: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions#advanced_searching_with_flags'
+                    example: i
+                  color:
+                    type: string
+                    example: '#150f96'
+                    description: Color derived from the carrier
+                  homepageUrl:
+                    type: string
+                    example: www.chubb.com
+                    description: Carrier homepage URL
+                  createAccountUrl:
+                    type: string
+                    example: https://www.chubb.com/securePersonalContent/ng/reg/#/register/policy
+                    description: Carrier URL to create an account
+                  resetPasswordUrl:
+                    type:
+                    - string
+                    - 'null'
+                    example: https://extpga01.chubb.com/ChbResetPassword
+                    description: Carrier URL to reset your password
+                  disablePasswordField:
+                    type: boolean
+                    example: false
+                    default: true
+                    description: True if password is not required for carrier (password field should be hidden)
+                  servicingActions:
+                    type: array
+                    description: '`ServicingAction` types available for carrier.'
+                    items:
+                      enum:
+                      - ADD_MORTGAGEE
+                      - EDIT_MORTGAGEE
+                      - REMOVE_MORTGAGEE
+                  products:
+                    type: array
+                    items:
+                      enum:
+                      - personal
+                      - commercial
+                  subIssuerOf:
+                    type: string
+                    description: If present, this carrier is a sub-issuer that routes through the parent carrier with this ID
+                required:
+                - carrier_id
+                - name
+                - usernameFieldPlaceholder
+                - thirdFieldPlaceholder
+                - color
+                - homepageUrl
+                - createAccountUrl
+                - disablePasswordField
+              examples:
+                Example Response:
+                  value:
+                    carrier_id: chubb
+                    name: Chubb
+                    usernameFieldPlaceholder: User ID
+                    thirdFieldPlaceholder: null
+                    color: '#150f96'
+                    homepageUrl: www.chubb.com
+                    createAccountUrl: https://www.chubb.com/securePersonalContent/ng/reg/#/register/policy
+                    resetPasswordUrl: https://extpga01.chubb.com/ChbResetPassword
+                    disablePasswordField: false
+                    servicingActions:
+                    - ADD_MORTGAGEE
+                    - EDIT_MORTGAGEE
+                    - REMOVE_MORTGAGEE
+                    products:
+                    - personal
+        '400':
+          description: 400 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    enum:
+                    - INVALID_STATUS
+              examples: {}
+        '404':
+          description: 404 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    enum:
+                    - NOT_FOUND
+      operationId: get-carrier
+      description: Used to retrieve a single supported carrier.
+      parameters:
+      - schema:
+          type: string
+          example: personal,commercial
+        in: query
+        name: products
+        description: 'Cannot be used with `public_alias`. Comma separated list of products to include carriers for. Valid products: `personal`, `commercial`'
+      - schema:
+          type: string
+        in: query
+        name: public_alias
+        description: Cannot be used with `products`. The widget public alias that is used to include carriers with products that match the widget's supported products
+  /widget/pull/{pullId}/idv:
+    parameters:
+    - schema:
+        type: string
+        format: uuid
+      name: pullId
+      in: path
+      required: true
+      description: Pull ID of the pull you are trying to submit a IDV code for
+    post:
+      summary: POST /idv
+      description: Used to submit a mfa code when a pull has a status of `IDENTITY_VERIFICATION`
+      operationId: post-idv
+      responses:
+        '200':
+          description: 200 Response Schema
+          content:
+            application/json:
+              examples:
+                Example Response:
+                  value:
+                    pull_id: ce559727-cf02-4ebf-83ce-8035f8828be4
+              schema:
+                type: object
+                properties:
+                  pull_id:
+                    type: string
+                    example: ce559727-cf02-4ebf-83ce-8035f8828be4
+                    description: Pull Id of the pull the idv code was submitted to (will be the same as the path parameter)
+        '400':
+          description: 400 Response Schema
+          content:
+            application/json:
+              examples:
+                Example Response:
+                  value:
+                    error: INVALID_INPUT
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - INVALID_INPUT
+                    - INVALID_ACTION
+        '403':
+          description: 403 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - UNAUTHORIZED
+              examples:
+                Example Response:
+                  value:
+                    error: UNAUTHORIZED
+        '404':
+          description: 404 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - NOT_FOUND
+              examples:
+                Example Response:
+                  value:
+                    error: NOT_FOUND
+      deprecated: false
+      security: []
+      parameters:
+      - schema:
+          type: string
+        in: header
+        description: Pull JWT of the pull you are trying to submit a IDV code for
+        name: pull-jwt
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                mfaValue:
+                  type: string
+                  description: The mfa value supplied by the consumer
+        description: ''
+      tags:
+      - Whitelabel API
+  /widget/pull/{pullId}/idvoptions:
+    parameters:
+    - schema:
+        type: string
+        format: uuid
+      name: pullId
+      in: path
+      required: true
+      description: Pull ID of the pull you are submitting IDV Options for
+    post:
+      summary: POST /idvoptions
+      description: Used to select a mfa option when a pull has a status of `IDENTITY_VERIFICATION_OPTIONS`
+      operationId: post-idvoptions
+      responses:
+        '200':
+          description: 200 Response Schema
+          content:
+            application/json:
+              examples:
+                Example Response:
+                  value:
+                    pull_id: ce559727-cf02-4ebf-83ce-8035f8828be4
+              schema:
+                type: object
+                properties:
+                  pull_id:
+                    type: string
+                    example: ce559727-cf02-4ebf-83ce-8035f8828be4
+                    description: Pull Id of the pull the idv option was submitted to (will be the same as the path parameter)
+        '400':
+          description: 400 Response Schema
+          content:
+            application/json:
+              examples:
+                Example Response:
+                  value:
+                    error: INVALID_INPUT
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - INVALID_INPUT
+                    - INVALID_ACTION
+        '403':
+          description: 403 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - UNAUTHORIZED
+              examples:
+                Example Response:
+                  value:
+                    error: UNAUTHORIZED
+        '404':
+          description: 404 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - NOT_FOUND
+              examples:
+                Example Response:
+                  value:
+                    error: NOT_FOUND
+      deprecated: false
+      security: []
+      parameters:
+      - schema:
+          type: string
+        in: header
+        name: pull-jwt
+        description: Pull JWT for the pull you are submitting IDV Options for
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                optionKey:
+                  type: string
+                  description: Derived from one of the keys from mfa_options
+      tags:
+      - Whitelabel API
+  /widget/pull/reconnectToken:
+    parameters: []
+    post:
+      summary: POST /reconnectToken
+      tags:
+      - Whitelabel API
+      responses:
+        '200':
+          description: 200 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  pull_id:
+                    type: string
+                    format: uuid
+                    description: ID of the Pull being reconnected
+                  pull_jwt:
+                    type: string
+                    description: Pull JWT used to authenticate the rest of the Whitelabel API routes
+                required:
+                - pull_id
+                - pull_jwt
+        '400':
+          description: 400 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - INVALID_RECONNECT_TOKEN
+                    - INCORRECT_API_KEY_TYPE
+                    - MONITORING_INACTIVE
+                    - PULL_NOT_SUPPORTED
+                    - NEWER_PULL_AVAILABLE
+                    - ALREADY_RECONNECTED
+                    - UNSUPPORTED_CARRIER
+        '403':
+          description: 403 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - UNAUTHORIZED
+                required:
+                - error
+              examples:
+                Example Response:
+                  value:
+                    error: UNAUTHORIZED
+        '404':
+          description: 404 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - NOT_FOUND
+      operationId: post-reconnect-token
+      description: Used to reconnect to a monitored pull that requires input from the user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reconnect_token:
+                  type: string
+                  description: The Reconnect Token associated with the Pull.
+              required:
+              - reconnect_token
+  /widget/pull/{pullId}/servicingAction:
+    parameters:
+    - schema:
+        type: string
+        format: uuid
+      name: pullId
+      in: path
+      required: true
+      description: ID of the `Pull` you are submitting `ServicingAction` confirmation for.
+    post:
+      summary: POST /servicingAction
+      description: Used to submit confirmation for a `ServicingAction` on a `Pull`.
+      operationId: post-servicing-action
+      responses:
+        '200':
+          description: 200 Response Schema
+          content:
+            application/json:
+              examples:
+                Example Response:
+                  value:
+                    pull_id: ce559727-cf02-4ebf-83ce-8035f8828be4
+              schema:
+                type: object
+                properties:
+                  pull_id:
+                    type: string
+                    example: ce559727-cf02-4ebf-83ce-8035f8828be4
+                    description: Pull ID of the pull the `ServicingAction` was submitted for (will be the same as the path parameter).
+        '400':
+          description: 400 Response Schema
+          content:
+            application/json:
+              examples:
+                Example Response:
+                  value:
+                    error: INVALID_INPUT
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - INVALID_INPUT
+                    - INVALID_ACTION
+        '403':
+          description: 403 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - UNAUTHORIZED
+              examples:
+                Example Response:
+                  value:
+                    error: UNAUTHORIZED
+        '404':
+          description: 404 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - NOT_FOUND
+              examples:
+                Example Response:
+                  value:
+                    error: NOT_FOUND
+      deprecated: false
+      security: []
+      parameters:
+      - schema:
+          type: string
+        in: header
+        name: pull-jwt
+        description: Pull JWT for the `Pull` you are submitting `ServicingAction` confirmation for.
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                servicing_action_id:
+                  type: string
+                  format: uuid
+                  description: ID for the `ServicingAction` you are submitting confirmation for.
+                is_confirmed:
+                  type: boolean
+                  description: Whether to confirm (true) or reject (false) the `ServicingAction` based on the `confirmation_data` available for it.
+              required:
+              - servicing_action_id
+              - is_confirmed
+      tags:
+      - Whitelabel API
+components:
+  schemas:
+    ServicingAction:
+      title: ServicingAction
+      examples:
+      - servicing_action_id: a082368f-fa48-48d3-9b0a-f3941c81511d
+        type: ADD_MORTGAGEE
+        payload: {}
+        confirmation_data: {}
+        status: QUEUED
+        validation_error_type: INVALID_POLICY_NUMBER
+      allOf:
+      - type: object
+        properties:
+          servicing_action_id:
+            type: string
+            format: uuid
+            description: ID of the `ServicingAction`.
+          status:
+            enum:
+            - QUEUED
+            - IN_PROGRESS
+            - INTERNAL_ERROR
+            - PROVIDER_ERROR
+            - VALIDATION_ERROR
+            - WAITING_FOR_CONSUMER_CONFIRMATION
+            - SUBMITTING_CONFIRMATION
+            - UNCONFIRMED
+            - VERIFIED
+            - VERIFICATION_FAILED
+            - SUCCESS
+          validation_error_type:
+            type:
+            - string
+            - 'null'
+            enum:
+            - INVALID_POLICY_NUMBER
+            - INVALID_POLICY_TYPE
+            - INVALID_MORTGAGEE_NAME
+            - INVALID_MORTGAGEE_ADDRESS
+            - DUPLICATE_MORTGAGEE_NAME
+            - DUPLICATE_MORTGAGEE_TYPE
+            - INVALID_MORTGAGEE_TYPE
+            - POLICY_UNAVAILABLE_FOR_SERVICING
+            - VEHICLE_UNAVAILABLE_FOR_SERVICING
+            - REPLACING_VIN_NOT_FOUND
+            - PRIMARY_DRIVER_NOT_FOUND
+            - INVALID_VIN
+            - INVALID_VEHICLE_ACQUISITION_DATE
+            - REGISTERED_OWNER_NOT_FOUND
+            - INVALID_FINANCING_COMPANY
+            - INVALID_GARAGING_ADDRESS
+            - GARAGING_ADDRESS_OUT_OF_STATE
+            - CUSTOMER_SERVICE_REQUIRED
+            - FINANCING_COMPANY_NOT_FOUND
+            - DUPLICATE_FINANCING_COMPANY
+            - OTHER_PARTIES_TO_NOTIFY_NOT_SUPPORTED
+            - CANNOT_ADD_NEW_DRIVER
+            - CANNOT_ADD_NEW_REGISTERED_OWNER
+            - INVALID_SAFETY_RESTRAINT_DEVICE
+            - ANTI_THEFT_DEVICE_REQUIRED
+            - INVALID_COVERAGE_SELECTION
+            - INVALID_PRIMARY_USE_TYPE
+            - MULTIPLE_FINANCING_COMPANIES_NOT_ALLOWED
+            description: Only present if `status` is `VALIDATION_ERROR`.
+        required:
+        - servicing_action_id
+        - status
+      - title: ServicingAction
+        oneOf:
+        - type: object
+          title: AddMortgagee
+          allOf:
+          - title: AddMortgageePayload
+            type: object
+            properties:
+              type:
+                enum:
+                - ADD_MORTGAGEE
+              payload:
+                type: object
+                description: Input required for a `ServicingAction`. Corresponds with the `type`.
+                required:
+                - carrier_policy_number
+                - name
+                - address
+                - loan_number
+                - mortgagee_type
+                properties:
+                  carrier_policy_number:
+                    type: string
+                    example: HO132483
+                  name:
+                    type: string
+                    example: JP MORGAN CHASE BANK NA ISAOA ATIMA
+                  address:
+                    type: string
+                    example: PO BOX 47020, ATLANTA, GA 30362
+                  loan_number:
+                    type: string
+                    example: '1234567890'
+                  mortgagee_type:
+                    enum:
+                    - FIRST
+                    - SECOND
+                    - THIRD
+            required:
+            - type
+            - payload
+          - type: object
+            properties:
+              confirmation_data:
+                type: object
+                properties:
+                  carrier_policy_number:
+                    type: string
+                    example: HO132483
+                  before:
+                    type:
+                    - 'null'
+                  after:
+                    type: object
+                    required:
+                    - name
+                    - address
+                    - loan_number
+                    - mortgagee_type
+                    description: The new mortgagee after the change is applied.
+                    properties:
+                      name:
+                        type: string
+                        example: JP MORGAN CHASE BANK NA ISAOA ATIMA
+                      address:
+                        type: string
+                        example: PO BOX 47020, ATLANTA, GA 30362
+                      loan_number:
+                        type: string
+                        example: '1234567890'
+                      mortgagee_type:
+                        enum:
+                        - FIRST
+                        - SECOND
+                        - THIRD
+                required:
+                - carrier_policy_number
+                - before
+                - after
+                description: Output provided for confirmation. Corresponds with the `type`.
+        - type: object
+          title: EditMortgagee
+          allOf:
+          - title: EditMortgageePayload
+            type: object
+            properties:
+              type:
+                enum:
+                - EDIT_MORTGAGEE
+              payload:
+                type: object
+                description: Input required for a `ServicingAction`. Corresponds with the `type`.
+                required:
+                - carrier_policy_number
+                - name
+                - address
+                - loan_number
+                - mortgagee_type
+                properties:
+                  carrier_policy_number:
+                    type: string
+                    example: HO132483
+                  name:
+                    type: string
+                    example: JP MORGAN CHASE BANK NA ISAOA ATIMA
+                  address:
+                    type: string
+                    example: PO BOX 47020, ATLANTA, GA 30362
+                  loan_number:
+                    type: string
+                    example: '1234567890'
+                  mortgagee_type:
+                    enum:
+                    - FIRST
+                    - SECOND
+                    - THIRD
+            required:
+            - type
+            - payload
+          - type: object
+            properties:
+              confirmation_data:
+                type: object
+                properties:
+                  carrier_policy_number:
+                    type: string
+                    example: HO132483
+                  before:
+                    type: object
+                    required:
+                    - name
+                    - address
+                    - loan_number
+                    - mortgagee_type
+                    description: The old mortgagee before the change is applied.
+                    properties:
+                      name:
+                        type: string
+                        example: JP MORGAN CHASE BANK NA ISAOA ATIMA
+                      address:
+                        type: string
+                        example: PO BOX 47020, ATLANTA, GA 30362
+                      loan_number:
+                        type: string
+                        example: '1234567890'
+                      mortgagee_type:
+                        enum:
+                        - FIRST
+                        - SECOND
+                        - THIRD
+                  after:
+                    type: object
+                    required:
+                    - name
+                    - address
+                    - loan_number
+                    - mortgagee_type
+                    description: The new mortgagee after the change is applied.
+                    properties:
+                      name:
+                        type: string
+                        example: JP MORGAN CHASE BANK NA ISAOA ATIMA
+                      address:
+                        type: string
+                        example: PO BOX 47020, ATLANTA, GA 30362
+                      loan_number:
+                        type: string
+                        example: '1234567890'
+                      mortgagee_type:
+                        enum:
+                        - FIRST
+                        - SECOND
+                        - THIRD
+                required:
+                - carrier_policy_number
+                - before
+                - after
+                description: Output provided for confirmation. Corresponds with the `type`.
+        - type: object
+          title: RemoveMortgagee
+          allOf:
+          - title: RemoveMortgageePayload
+            type: object
+            properties:
+              type:
+                enum:
+                - REMOVE_MORTGAGEE
+              payload:
+                type: object
+                description: Input required for a `ServicingAction`. Corresponds with the `type`.
+                required:
+                - carrier_policy_number
+                - mortgagee_type
+                properties:
+                  carrier_policy_number:
+                    type: string
+                    example: HO132483
+                  mortgagee_type:
+                    enum:
+                    - FIRST
+                    - SECOND
+                    - THIRD
+            required:
+            - type
+            - payload
+          - type: object
+            properties:
+              confirmation_data:
+                type: object
+                properties:
+                  carrier_policy_number:
+                    type: string
+                    example: HO132483
+                  before:
+                    type: object
+                    description: The old mortgagee before the change is applied.
+                    required:
+                    - name
+                    - address
+                    - loan_number
+                    - mortgagee_type
+                    properties:
+                      name:
+                        type: string
+                        example: JP MORGAN CHASE BANK NA ISAOA ATIMA
+                      address:
+                        type: string
+                        example: PO BOX 47020, ATLANTA, GA 30362
+                      loan_number:
+                        type: string
+                        example: '1234567890'
+                      mortgagee_type:
+                        enum:
+                        - FIRST
+                        - SECOND
+                        - THIRD
+                  after:
+                    type:
+                    - 'null'
+                required:
+                - carrier_policy_number
+                - before
+                - after
+                description: Output provided for confirmation. Corresponds with the `type`.
+        - type: object
+          title: AddVehicle
+          allOf:
+          - title: AddVehiclePayload
+            type: object
+            properties:
+              type:
+                enum:
+                - ADD_VEHICLE
+              payload:
+                description: Input required for a `ServicingAction`. Corresponds with the `type`.
+                type: object
+                required:
+                - carrier_policy_number
+                - vehicle
+                - registered_owner_full_name
+                - registered_state
+                - garaging_address
+                - is_customized
+                - primary_use
+                - primary_driver_full_name
+                - annual_mileage
+                - current_mileage
+                - coverage_selections
+                - safety_restraint_device
+                - anti_theft_device
+                - daytime_running_lights
+                - tracking_device
+                - vehicle_acquisition_date
+                - vehicle_ownership
+                properties:
+                  carrier_policy_number:
+                    type: string
+                    example: AU192837
+                  vehicle:
+                    properties:
+                      type:
+                        enum:
+                        - PRIVATE_PASSENGER
+                        - ANTIQUE_AUTO
+                        - BOAT
+                        - COMMERCIAL_AUTO
+                        - MOTORCYCLE_OR_ATV
+                        - RV_MOTORHOME_OR_TRAILER
+                        - MOBILE_HOME
+                        - SNOWMOBILE
+                        - GOLF_CART
+                      model_year:
+                        type: integer
+                        example: 2012
+                      vin:
+                        type: string
+                        example: 3N1AB6AP0CL704240
+                      make:
+                        type: string
+                        example: NISSAN
+                      model:
+                        type: string
+                        example: Sentra
+                    required:
+                    - type
+                    - model_year
+                    - vin
+                    - make
+                    - model
+                    type: object
+                  replacing_vin:
+                    type: string
+                    description: The VIN of the vehicle being replaced, if applicable.
+                    example: 3FAHP0HA8CR128394
+                  registered_owner_full_name:
+                    type: string
+                    example: John Smith
+                  registered_co_owner_full_name:
+                    type: string
+                    example: Alice Smith
+                  registered_state:
+                    enum:
+                    - AL
+                    - AK
+                    - AS
+                    - AZ
+                    - AR
+                    - CA
+                    - CO
+                    - CT
+                    - DE
+                    - DC
+                    - FM
+                    - FL
+                    - GA
+                    - GU
+                    - HI
+                    - ID
+                    - IL
+                    - IN
+                    - IA
+                    - KS
+                    - KY
+                    - LA
+                    - ME
+                    - MH
+                    - MD
+                    - MA
+                    - MI
+                    - MN
+                    - MS
+                    - MO
+                    - MT
+                    - NE
+                    - NV
+                    - NH
+                    - NJ
+                    - NM
+                    - NY
+                    - NC
+                    - ND
+                    - MP
+                    - OH
+                    - OK
+                    - OR
+                    - PW
+                    - PA
+                    - PR
+                    - RI
+                    - SC
+                    - SD
+                    - TN
+                    - TX
+                    - UT
+                    - VT
+                    - VI
+                    - VA
+                    - WA
+                    - WV
+                    - WI
+                    - WY
+                  garaging_address:
+                    type: string
+                    example: 344 Clinton Street, Brooklyn, NY, 11231
+                  is_customized:
+                    type: boolean
+                  primary_use:
+                    oneOf:
+                    - title: Commute, Work, or School
+                      properties:
+                        type:
+                          enum:
+                          - COMMUTE
+                          - WORK
+                          - SCHOOL
+                        days_driven_per_week:
+                          type: integer
+                          maximum: 7
+                          minimum: 1
+                        miles_driven_each_way:
+                          type: integer
+                          minimum: 1
+                      required:
+                      - type
+                      - days_driven_per_week
+                      - miles_driven_each_way
+                    - title: Personal, Pleasure, or Farm
+                      properties:
+                        type:
+                          enum:
+                          - PERSONAL
+                          - PLEASURE
+                          - FARM
+                      required:
+                      - type
+                    type: object
+                  primary_driver_full_name:
+                    type: string
+                  annual_mileage:
+                    type: number
+                    example: 10000
+                  current_mileage:
+                    type: number
+                    example: 2000
+                  coverage_selections:
+                    type: object
+                    required:
+                    - BODILY_INJURY_LIABILITY
+                    - PROPERTY_DAMAGE_LIABILITY
+                    - PERSONAL_INJURY_PROTECTION
+                    - UNINSURED_MOTORISTS
+                    - UNDERINSURED_MOTORISTS
+                    - COLLISION
+                    - COMPREHENSIVE
+                    - EMERGENCY_ROAD_SERVICE
+                    - RENTAL_REIMBURSEMENT
+                    properties:
+                      BODILY_INJURY_LIABILITY:
+                        type: object
+                        required:
+                        - per_person_limit_cents
+                        - per_incident_limit_cents
+                        properties:
+                          per_person_limit_cents:
+                            type: integer
+                            example: 10000000
+                          per_incident_limit_cents:
+                            type: integer
+                            example: 30000000
+                      PROPERTY_DAMAGE_LIABILITY:
+                        type: object
+                        required:
+                        - per_incident_limit_cents
+                        properties:
+                          per_incident_limit_cents:
+                            type: integer
+                            example: 50000
+                      PERSONAL_INJURY_PROTECTION:
+                        anyOf:
+                        - title: Declined
+                          properties:
+                            is_declined:
+                              enum:
+                              - true
+                          required:
+                          - is_declined
+                        - title: Accepted
+                          properties:
+                            is_declined:
+                              enum:
+                              - false
+                            per_person_limit_cents:
+                              type: integer
+                              example: 2500000
+                            deductible_cents:
+                              type: integer
+                              example: 50000
+                          required:
+                          - is_declined
+                          - per_person_limit_cents
+                        type: object
+                      UNINSURED_MOTORISTS:
+                        anyOf:
+                        - title: Declined
+                          properties:
+                            is_declined:
+                              enum:
+                              - true
+                          required:
+                          - is_declined
+                        - title: Accepted
+                          properties:
+                            is_declined:
+                              enum:
+                              - false
+                            per_person_limit_cents:
+                              type: integer
+                              example: 2500000
+                            per_incident_limit_cents:
+                              type: integer
+                              example: 5000000
+                          required:
+                          - is_declined
+                          - per_person_limit_cents
+                          - per_incident_limit_cents
+                        type: object
+                      UNDERINSURED_MOTORISTS:
+                        anyOf:
+                        - title: Declined
+                          properties:
+                            is_declined:
+                              enum:
+                              - true
+                          required:
+                          - is_declined
+                        - title: Accepted
+                          properties:
+                            is_declined:
+                              enum:
+                              - false
+                            per_person_limit_cents:
+                              type: integer
+                              example: 2500000
+                            per_incident_limit_cents:
+                              type: integer
+                              example: 5000000
+                          required:
+                          - is_declined
+                          - per_person_limit_cents
+                          - per_incident_limit_cents
+                        type: object
+                      COLLISION:
+                        anyOf:
+                        - title: Declined
+                          properties:
+                            is_declined:
+                              enum:
+                              - true
+                          required:
+                          - is_declined
+                        - title: Accepted
+                          properties:
+                            is_declined:
+                              enum:
+                              - false
+                            deductible_cents:
+                              type: integer
+                              example: 50000
+                          required:
+                          - is_declined
+                          - deductible_cents
+                        type: object
+                      COMPREHENSIVE:
+                        anyOf:
+                        - title: Declined
+                          properties:
+                            is_declined:
+                              enum:
+                              - true
+                          required:
+                          - is_declined
+                        - title: Accepted
+                          properties:
+                            is_declined:
+                              enum:
+                              - false
+                            deductible_cents:
+                              type: integer
+                              example: 50000
+                          required:
+                          - is_declined
+                          - deductible_cents
+                        type: object
+                      EMERGENCY_ROAD_SERVICE:
+                        type: object
+                        required:
+                        - is_declined
+                        properties:
+                          is_declined:
+                            type: boolean
+                      RENTAL_REIMBURSEMENT:
+                        anyOf:
+                        - title: Declined
+                          properties:
+                            is_declined:
+                              enum:
+                              - true
+                          required:
+                          - is_declined
+                        - title: Accepted
+                          properties:
+                            is_declined:
+                              enum:
+                              - false
+                            per_day_limit_cents:
+                              type: integer
+                              example: 3000
+                            max_days:
+                              type: integer
+                              example: 30
+                          required:
+                          - is_declined
+                          - per_day_limit_cents
+                          - max_days
+                        type: object
+                  safety_restraint_device:
+                    enum:
+                    - NONE
+                    - AUTOMATIC_SEAT_BELTS
+                    - DRIVER_SIDE_AIR_BAG
+                    - FULL_FRONT_AIR_BAG
+                  anti_theft_device:
+                    enum:
+                    - UNKNOWN
+                    - NONE
+                    - ALARM_ONLY
+                    - NON_PASSIVE_DISABLING_DEVICE
+                    - PASSIVE_DISABLING_DEVICE
+                    - VEHICLE_RECOVERY_SYSTEM
+                    - VEHICLE_RECOVERY_SYSTEM_PASSIVE_DISABLING_DEVICE
+                    - ELECTRONIC_HOMING_DEVICE
+                  daytime_running_lights:
+                    type: boolean
+                  tracking_device:
+                    type: boolean
+                  vehicle_acquisition_date:
+                    type: string
+                    format: date
+                    example: '2023-08-16'
+                  vehicle_ownership:
+                    anyOf:
+                    - properties:
+                        type:
+                          enum:
+                          - OWN
+                        financing_companies:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              type:
+                                enum:
+                                - LIEN_HOLDER
+                                - OTHER_PARTY_TO_NOTIFY
+                              name:
+                                type: string
+                                example: Metropolis Bank
+                              address:
+                                type: string
+                                example: 620 Atlantic Avenue, Brooklyn, NY, 11217
+                            required:
+                            - type
+                            - name
+                            - address
+                      required:
+                      - type
+                      - financing_companies
+                    - properties:
+                        type:
+                          enum:
+                          - LEASE
+                          - FINANCE
+                        financing_companies:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              type:
+                                enum:
+                                - LIEN_HOLDER
+                                - OTHER_PARTY_TO_NOTIFY
+                              name:
+                                type: string
+                                example: Metropolis Bank
+                              address:
+                                type: string
+                                example: 620 Atlantic Avenue, Brooklyn, NY, 11217
+                            required:
+                            - type
+                            - name
+                            - address
+                        loan_duration_months:
+                          type: integer
+                          example: 60
+                      required:
+                      - type
+                      - financing_companies
+                      - loan_duration_months
+                    type: object
+            required:
+            - type
+            - payload
+          - type: object
+            properties:
+              confirmation_data:
+                anyOf:
+                - title: Agent Required
+                  properties:
+                    requires_agent:
+                      enum:
+                      - true
+                      description: Change requires intervention from the policy's agent.
+                    coverage_selections:
+                      type: object
+                      propertyNames:
+                        title: VehicleCoverageTypes
+                        type: string
+                        enum:
+                        - SINGLE_LIMIT_LIABILITY
+                        - BODILY_INJURY_LIABILITY
+                        - PROPERTY_DAMAGE_LIABILITY
+                        - SUPPLEMENTAL_SPOUSAL_LIABILITY
+                        - SUPPLEMENTAL_SPOUSAL_BODILY_INJURY_LIABILITY
+                        - SUPPLEMENTAL_SPOUSAL_PROPERTY_DAMAGE_LIABILITY
+                        - PERSONAL_INJURY_PROTECTION
+                        - COMPREHENSIVE
+                        - FULL_GLASS
+                        - COLLISION_DEDUCTIBLE_WAIVER
+                        - COLLISION
+                        - UNINSURED_MOTORISTS
+                        - UNINSURED_MOTORIST_BODILY_INJURY_LIABILITY
+                        - UNINSURED_MOTORIST_PROPERTY_DAMAGE_LIABILITY
+                        - UNINSURED_MOTORIST_BODILY_INJURY_AND_PROPERTY_DAMAGE_LIABILITY
+                        - UNDERINSURED_MOTORISTS
+                        - UNDERINSURED_MOTORIST_BODILY_INJURY_LIABILITY
+                        - UNDERINSURED_MOTORIST_PROPERTY_DAMAGE_LIABILITY
+                        - UNDERINSURED_MOTORIST_BODILY_INJURY_AND_PROPERTY_DAMAGE_LIABILITY
+                        - UNINSURED_AND_UNDERINSURED_MOTORISTS
+                        - UNINSURED_AND_UNDERINSURED_MOTORIST_BODILY_INJURY_LIABILITY
+                        - UNINSURED_AND_UNDERINSURED_MOTORIST_PROPERTY_DAMAGE_LIABILITY
+                        - UNINSURED_AND_UNDERINSURED_MOTORIST_BODILY_INJURY_AND_PROPERTY_DAMAGE_LIABILITY
+                        - TOWING_AND_LABOR
+                        - LOAN_OR_LEASE_ASSISTANCE
+                        - RIDESHARE_GAP_PROTECTION
+                        - MEDICAL_PAYMENTS
+                        - EMERGENCY_ROAD_SERVICE
+                        - RENTAL_REIMBURSEMENT
+                        - CAR_RENTAL_AND_TRAVEL_EXPENSES
+                        - PORTABLE_ELECTRONICS
+                        - MECHANICAL_BREAKDOWN
+                        - SUPPLEMENTAL_UNINSURED_AND_UNDERINSURED_MOTORISTS
+                        - EMERGENCY_EXPENSE
+                        - REPLACEMENT_COST_PERSONAL_EFFECTS
+                        - VACATION_LIABILITY_COVERAGE
+                        - RV_MEDICAL
+                        - EXTENDED_BENEFITS
+                        - WAGE_EARNER_DISABILITY_BENEFITS
+                        - ESSENTIAL_SERVICES_DISABILITY_BENEFITS
+                        - DEATH_BENEFIT
+                        - CAR_REPLACEMENT_ASSISTANCE
+                        - FULL_TORT
+                        - LIMITED_TORT
+                        - COMBINED_SINGLE_LIMIT
+                        - SPARE_PARTS
+                        - OPTIONAL_BODILY_INJURY_LIABILITY
+                        - MOTOR_CARGO
+                        - ON_HOOK
+                        - FIRST_PARTY_BENEFIT
+                        - FIRST_PARTY_BENEFIT_MEDICAL_EXPENSE
+                        - FIRST_PARTY_BENEFIT_ACCIDENTAL_DEATH
+                        - FIRST_PARTY_BENEFIT_INCOME_LOSS
+                        - FIRST_PARTY_BENEFIT_FUNERAL_EXPENSE
+                        - FIRST_PARTY_BENEFIT_EXTRAORDINARY_MEDICAL
+                        - FIRST_PARTY_BENEFIT_SURVIVORS_LOSS
+                        - CUSTOM_PARTS_AND_EQUIPMENT
+                        - VEHICLE_PROTECTION
+                        - FUNERAL_BENEFIT
+                        - SURVIVORS_LOSS_BENEFIT
+                      additionalProperties:
+                        title: ConfirmedCoverageSelection
+                        type: object
+                        properties:
+                          per_person_limit_cents:
+                            type:
+                            - integer
+                            - 'null'
+                          per_incident_limit_cents:
+                            type:
+                            - integer
+                            - 'null'
+                          per_day_limit_cents:
+                            type:
+                            - integer
+                            - 'null'
+                          max_days:
+                            type:
+                            - integer
+                            - 'null'
+                          deductible_cents:
+                            type:
+                            - integer
+                            - 'null'
+                          premium_cents:
+                            type:
+                            - integer
+                            - 'null'
+                          is_declined:
+                            type:
+                            - boolean
+                            - 'null'
+                          is_policy_level:
+                            type:
+                            - boolean
+                            - 'null'
+                            description: Indicates if the coverage applies to all vehicles on the policy or only the vehicle being added.
+                          is_changed:
+                            type:
+                            - boolean
+                            - 'null'
+                            description: Indicates if the coverage selection was changed from its previous value.
+                      description: The keys may be any of `VehicleCoverageTypes` (see [VehicleCoverage.name](https://docs.usecanopy.com/reference/schemas-vehiclecoverage)).
+                      properties:
+                        BODILY_INJURY_LIABILITY:
+                          $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/3/allOf/1/properties/confirmation_data/anyOf/0/properties/coverage_selections/additionalProperties'
+                        PROPERTY_DAMAGE_LIABILITY:
+                          $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/3/allOf/1/properties/confirmation_data/anyOf/0/properties/coverage_selections/additionalProperties'
+                        PERSONAL_INJURY_PROTECTION:
+                          $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/3/allOf/1/properties/confirmation_data/anyOf/0/properties/coverage_selections/additionalProperties'
+                        UNINSURED_MOTORISTS:
+                          $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/3/allOf/1/properties/confirmation_data/anyOf/0/properties/coverage_selections/additionalProperties'
+                        UNDERINSURED_MOTORISTS:
+                          $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/3/allOf/1/properties/confirmation_data/anyOf/0/properties/coverage_selections/additionalProperties'
+                        COLLISION:
+                          $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/3/allOf/1/properties/confirmation_data/anyOf/0/properties/coverage_selections/additionalProperties'
+                        COMPREHENSIVE:
+                          $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/3/allOf/1/properties/confirmation_data/anyOf/0/properties/coverage_selections/additionalProperties'
+                        EMERGENCY_ROAD_SERVICE:
+                          $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/3/allOf/1/properties/confirmation_data/anyOf/0/properties/coverage_selections/additionalProperties'
+                        RENTAL_REIMBURSEMENT:
+                          $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/3/allOf/1/properties/confirmation_data/anyOf/0/properties/coverage_selections/additionalProperties'
+                    adjusted_policy_premium_cents:
+                      type: integer
+                      example: 86750
+                      description: New total premium for the entire term (not the remainder).
+                  required:
+                  - requires_agent
+                - title: Agent Not Required
+                  properties:
+                    requires_agent:
+                      enum:
+                      - false
+                      description: Change does not require intervention from the policy's agent.
+                    coverage_selections:
+                      type: object
+                      propertyNames:
+                        $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/3/allOf/1/properties/confirmation_data/anyOf/0/properties/coverage_selections/propertyNames'
+                      additionalProperties:
+                        $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/3/allOf/1/properties/confirmation_data/anyOf/0/properties/coverage_selections/additionalProperties'
+                      description: The keys may be any of `VehicleCoverageTypes` (see [VehicleCoverage.name](https://docs.usecanopy.com/reference/schemas-vehiclecoverage)).
+                      properties:
+                        BODILY_INJURY_LIABILITY:
+                          $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/3/allOf/1/properties/confirmation_data/anyOf/0/properties/coverage_selections/additionalProperties'
+                        PROPERTY_DAMAGE_LIABILITY:
+                          $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/3/allOf/1/properties/confirmation_data/anyOf/0/properties/coverage_selections/additionalProperties'
+                        PERSONAL_INJURY_PROTECTION:
+                          $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/3/allOf/1/properties/confirmation_data/anyOf/0/properties/coverage_selections/additionalProperties'
+                        UNINSURED_MOTORISTS:
+                          $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/3/allOf/1/properties/confirmation_data/anyOf/0/properties/coverage_selections/additionalProperties'
+                        UNDERINSURED_MOTORISTS:
+                          $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/3/allOf/1/properties/confirmation_data/anyOf/0/properties/coverage_selections/additionalProperties'
+                        COLLISION:
+                          $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/3/allOf/1/properties/confirmation_data/anyOf/0/properties/coverage_selections/additionalProperties'
+                        COMPREHENSIVE:
+                          $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/3/allOf/1/properties/confirmation_data/anyOf/0/properties/coverage_selections/additionalProperties'
+                        EMERGENCY_ROAD_SERVICE:
+                          $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/3/allOf/1/properties/confirmation_data/anyOf/0/properties/coverage_selections/additionalProperties'
+                        RENTAL_REIMBURSEMENT:
+                          $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/3/allOf/1/properties/confirmation_data/anyOf/0/properties/coverage_selections/additionalProperties'
+                    adjusted_policy_premium_cents:
+                      type: integer
+                      example: 86750
+                      description: New total premium for the entire term (not the remainder).
+                  required:
+                  - requires_agent
+                  - coverage_selections
+                  - adjusted_policy_premium_cents
+                description: Output provided for confirmation. Corresponds with the `type`.
+                type: object
+  securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: basic
+      description: HTTP Basic authentication. Use your Canopy Connect Client ID as the username and your Client Secret as the password. The `Authorization` header value is `Basic <base64 of clientId:clientSecret>`. See the [Authentication guide](https://docs.usecanopy.com/reference/authentication-guide) for a full walkthrough, and create or manage your Client ID and Client Secret on the [API Settings page](https://app.usecanopy.com/dashboard/settings/api-settings).
+x-readme:
+  headers: []
+  explorer-enabled: true
+  proxy-enabled: true
+  samples-enabled: true

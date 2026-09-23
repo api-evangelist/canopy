@@ -1,0 +1,299 @@
+openapi: 3.2.0
+info:
+  title: Reference Policy Check Team Setting API
+  version: 1.0.0
+  description: Canopy Connect Public API Documentation
+  contact:
+    name: Canopy Connect
+    email: support@usecanopy.com
+    url: https://usecanopy.com/
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://app.usecanopy.com/api/v1.0.0
+security:
+- BasicAuth: []
+tags:
+- name: Policy Check Team Setting API
+  description: Manage Policy Check team setting
+paths:
+  /teams/{teamId}/policyChecks/settings:
+    parameters:
+    - schema:
+        type: string
+        format: uuid
+      name: teamId
+      in: path
+      required: true
+      description: ID of Team
+    get:
+      summary: GET /policyChecks/settings
+      description: Fetch the Policy Check settings on your Canopy Connect account. This shows which Policy Checks are configured. All configured Policy Checks are run on every submission.
+      tags:
+      - Policy Check Team Setting API
+      responses:
+        '200':
+          description: 200 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  policy_check_settings:
+                    type: object
+                    properties:
+                      vehicle:
+                        $ref: '#/components/schemas/PolicyCheckVehicleSetting'
+                      dwelling:
+                        $ref: '#/components/schemas/PolicyCheckDwellingSetting'
+                required:
+                - success
+                - vehicle
+              examples:
+                Example Response:
+                  value:
+                    success: true
+                    vehicle:
+                      POLICY_NOT_ACTIVE: false
+                      LIENHOLDER_NAME_MISMATCH: []
+                      DRIVER_REMOVED: false
+                      VEHICLE_REMOVED: false
+                      NO_COLLISION_COVERAGE: false
+                      NO_COMPREHENSIVE_COVERAGE: false
+                      MAX_COLLISION_DEDUCTIBLE_CENTS: null
+                      MAX_COMPREEHENSIVE_DEDUCTIBLE_CENTS: null
+                      MIN_PROPERTY_DAMAGE_COVERAGE_CENTS: null
+                      MIN_BODILY_INJURY_COVERAGE:
+                        per_person_cents: null
+                        per_accident_cents: null
+                      MIN_UNINSURED_MOTORIST_BODILY_INJURY_COVERAGE:
+                        per_person_cents: null
+                        per_accident_cents: null
+        '401':
+          description: 401 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - UNAUTHORIZED
+              examples:
+                Example Response:
+                  value:
+                    error: UNAUTHORIZED
+        '403':
+          description: 403 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - FORBIDDEN
+              examples:
+                Example Response:
+                  value:
+                    error: FORBIDDEN
+      operationId: get-policy-check-team-settings
+    post:
+      summary: POST /policyChecks/settings
+      description: Configure the Policy Checks on your Canopy Connect account. All configured Policy Checks are run on every submission.
+      tags:
+      - Policy Check Team Setting API
+      responses:
+        '200':
+          description: 200 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  policy_check_settings:
+                    type: object
+                    properties:
+                      vehicle:
+                        $ref: '#/components/schemas/PolicyCheckVehicleSetting'
+                      dwelling:
+                        $ref: '#/components/schemas/PolicyCheckDwellingSetting'
+                required:
+                - success
+                - vehicle
+              examples:
+                Example Response:
+                  value:
+                    success: true
+                    vehicle:
+                      POLICY_NOT_ACTIVE: false
+                      LIENHOLDER_NAME_MISMATCH: []
+                      DRIVER_REMOVED: false
+                      VEHICLE_REMOVED: false
+                      NO_COLLISION_COVERAGE: false
+                      NO_COMPREHENSIVE_COVERAGE: false
+                      MAX_COLLISION_DEDUCTIBLE_CENTS: null
+                      MAX_COMPREEHENSIVE_DEDUCTIBLE_CENTS: null
+                      MIN_PROPERTY_DAMAGE_COVERAGE_CENTS: null
+                      MIN_BODILY_INJURY_COVERAGE:
+                        per_person_cents: null
+                        per_accident_cents: null
+                      MIN_UNINSURED_MOTORIST_BODILY_INJURY_COVERAGE:
+                        per_person_cents: null
+                        per_accident_cents: null
+        '400':
+          description: 400 Response Schema
+          content:
+            application/json:
+              examples:
+                Example Response:
+                  value:
+                    error: INVALID_INPUT
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - INVALID_INPUT
+        '401':
+          description: 401 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - UNAUTHORIZED
+              examples:
+                Example Response:
+                  value:
+                    error: UNAUTHORIZED
+        '403':
+          description: 403 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - FORBIDDEN
+              examples:
+                Example Response:
+                  value:
+                    error: FORBIDDEN
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                policy_check_settings:
+                  type: object
+                  properties:
+                    vehicle:
+                      $ref: '#/components/schemas/PolicyCheckVehicleSetting'
+                    dwelling:
+                      $ref: '#/components/schemas/PolicyCheckDwellingSetting'
+      operationId: post-policy-check-team-settings
+components:
+  schemas:
+    PolicyCheckDwellingSetting:
+      title: PolicyCheckDwellingSetting
+      type: object
+      properties:
+        DWELLING_POLICY_NOT_ACTIVE:
+          type: boolean
+          description: Verify whether the dwelling policy is active or inactive.
+        LOSS_SETTLEMENT_TYPE_EQUALS_REPLACEMENT_COST:
+          type: boolean
+          description: Verify the dwelling policy uses replacement cost for loss settlement type.
+        REPLACEMENT_COST_EXCEEDS_DWELLING_LIMIT:
+          type: boolean
+          description: Ensure that the replacement cost does not exceed the dwelling coverage limit.
+    PolicyCheckVehicleSetting:
+      title: PolicyCheckVehicleSetting
+      type: object
+      properties:
+        POLICY_NOT_ACTIVE:
+          type: boolean
+          description: Verify whether the auto policy is active or inactive
+        LIENHOLDER_NAME_MISMATCH:
+          type: array
+          description: Array of lienholder names that are required to be included in the auto policy
+          uniqueItems: true
+          items:
+            type: string
+        DRIVER_REMOVED:
+          type: boolean
+          description: Verify whether any driver was removed from the previous pull in the monitoring
+        VEHICLE_REMOVED:
+          type: boolean
+          description: Verify whether any vehicle was removed from the previous pull in the monitoring
+        NO_COLLISION_COVERAGE:
+          type: boolean
+          description: Verify whether collision coverage is included in the auto policy
+        NO_COMPREHENSIVE_COVERAGE:
+          type: boolean
+          description: Verify whether comprehensive coverage is included in the auto policy
+        MAX_COLLISION_DEDUCTIBLE_CENTS:
+          type:
+          - number
+          - 'null'
+          description: Verify that the collision deductible is below the specified limit
+        MAX_COMPREHENSIVE_DEDUCTIBLE_CENTS:
+          type:
+          - number
+          - 'null'
+          description: Verify that the comprehensive deductible is below the specified limit
+        MIN_PROPERTY_DAMAGE_COVERAGE_CENTS:
+          type:
+          - number
+          - 'null'
+          description: Verify that the property damage liability coverage is above the specified limit
+        MIN_BODILY_INJURY_COVERAGE:
+          type: object
+          properties:
+            per_person_cents:
+              type:
+              - number
+              - 'null'
+            per_accident_cents:
+              type:
+              - number
+              - 'null'
+          description: Verify that the bodily injury liability coverage per person and/or per accident is above the specified limits
+        MIN_UNINSURED_MOTORIST_BODILY_INJURY_COVERAGE:
+          type: object
+          properties:
+            per_person_cents:
+              type:
+              - number
+              - 'null'
+            per_accident_cents:
+              type:
+              - number
+              - 'null'
+          description: Verify that the uninsured motorist bodily injury coverage per person and/or per accident is above the specified limits
+  securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: basic
+      description: HTTP Basic authentication. Use your Canopy Connect Client ID as the username and your Client Secret as the password. The `Authorization` header value is `Basic <base64 of clientId:clientSecret>`. See the [Authentication guide](https://docs.usecanopy.com/reference/authentication-guide) for a full walkthrough, and create or manage your Client ID and Client Secret on the [API Settings page](https://app.usecanopy.com/dashboard/settings/api-settings).
+x-readme:
+  headers: []
+  explorer-enabled: true
+  proxy-enabled: true
+  samples-enabled: true

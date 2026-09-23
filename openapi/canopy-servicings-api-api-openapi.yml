@@ -1,0 +1,1379 @@
+openapi: 3.2.0
+info:
+  title: Reference Servicings API
+  version: 1.0.0
+  description: Canopy Connect Public API Documentation
+  contact:
+    name: Canopy Connect
+    email: support@usecanopy.com
+    url: https://usecanopy.com/
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://app.usecanopy.com/api/v1.0.0
+security:
+- BasicAuth: []
+tags:
+- name: Servicings API
+  description: Manage servicing actions
+paths:
+  /teams/{teamId}/servicings:
+    parameters:
+    - schema:
+        type: string
+        format: uuid
+      name: teamId
+      in: path
+      required: true
+      description: ID of Team
+    get:
+      summary: GET /servicings
+      tags:
+      - Servicings API
+      responses:
+        '200':
+          description: 200 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total_servicings:
+                    type: integer
+                  servicings:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ServicingAction'
+                required:
+                - total_servicings
+                - servicings
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    enum:
+                    - INVALID_INPUT
+        '401':
+          description: 401 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - UNAUTHORIZED
+                required:
+                - error
+        '403':
+          description: 403 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - SUBSCRIPTION_INACTIVE
+                    - UNAUTHORIZED
+                required:
+                - error
+      operationId: get-servicings
+      description: Used to get all `ServicingActions`.
+      parameters:
+      - schema:
+          type: integer
+          default: 100
+          minimum: 1
+          maximum: 100
+        in: query
+        name: limit
+        description: Pagination limit
+      - schema:
+          type: integer
+          format: uuid
+          minimum: 0
+        in: query
+        name: offset
+        description: Pagination offset from the first result
+      - schema:
+          type: string
+          format: uuid
+        in: query
+        name: pull_id
+        description: Filter used to list `ServicingsActions` related to a `Pull`
+    post:
+      summary: POST /servicings
+      operationId: post-servicings
+      responses:
+        '200':
+          description: 200 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  pull_id:
+                    type: string
+                    format: uuid
+                  pull_jwt:
+                    type: string
+                  servicing_action_ids:
+                    type: array
+                    description: IDs for each of the `ServicingActions` created. They will be returned in the same order they were supplied.
+                    items:
+                      type: string
+                      format: uuid
+                      minLength: 1
+              examples:
+                Example 1:
+                  value:
+                    pull_id: 7aec3a23-0c86-41f7-937e-174af7c0aa6a
+                    pull_jwt: jwt-string
+                    servicing_action_ids:
+                    - 497f6eca-6276-4993-bfeb-53cbbbba6f08
+        '400':
+          description: 400 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - INVALID_INPUT
+                    - PULL_TOO_OLD
+                    - INVALID_USERNAME
+                required:
+                - error
+        '401':
+          description: 401 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - UNAUTHORIZED
+                required:
+                - error
+              examples:
+                Example Response:
+                  value:
+                    error: UNAUTHORIZED
+        '403':
+          description: 403 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - SUBSCRIPTION_INACTIVE
+                    - UNAUTHORIZED
+                required:
+                - error
+              examples:
+                Example Response:
+                  value:
+                    error: SUBSCRIPTION_INACTIVE
+        '404':
+          description: 404 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - NOT_FOUND
+                required:
+                - error
+      description: 'Used to create `ServicingActions` using the credentials + consent from an existing `Pull`.
+
+
+        If you are collecting credentials + consent for a new `Pull`, use POST /consentAndConnect.'
+      tags:
+      - Servicings API
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                pull_id:
+                  type: string
+                  format: uuid
+                  description: ID of the `Pull` to reuse the credentials + consent from.
+                servicing_actions:
+                  type: array
+                  minItems: 1
+                  items:
+                    title: ServicingActionPayload
+                    type: object
+                    examples:
+                    - servicing_action_id: a082368f-fa48-48d3-9b0a-f3941c81511d
+                      type: ADD_MORTGAGEE
+                      payload: {}
+                      confirmation_data: {}
+                      status: QUEUED
+                      validation_error_type: INVALID_POLICY_NUMBER
+                    oneOf:
+                    - type: object
+                      $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/0/allOf/0'
+                    - type: object
+                      $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/1/allOf/0'
+                    - type: object
+                      $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/2/allOf/0'
+                    - type: object
+                      $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/3/allOf/0'
+              required:
+              - pull_id
+              - servicing_actions
+            examples:
+              ADD_VEHICLE:
+                value:
+                  pull_id: 7aec3a23-0c86-41f7-937e-174af7c0aa6a
+                  servicing_actions:
+                  - type: ADD_VEHICLE
+                    payload:
+                      carrier_policy_number: AU192837
+                      vehicle:
+                        model_year: 2012
+                        vin: 3N1AB6AP0CL704240
+                        type: PRIVATE_PASSENGER
+                      replacing_vin: 3FAHP0HA8CR128394
+                      registered_owner_full_name: John Smith
+                      registered_co_owner_full_name: Alice Smith
+                      registered_state: AL
+                      garaging_address: 344 Clinton Street, Brooklyn, NY, 11231
+                      is_customized: true
+                      primary_use:
+                        type: COMMUTE
+                        days_driven_per_week: 1
+                        miles_driven_each_way: 1
+                      primary_driver_full_name: John Smith
+                      annual_mileage: 10000
+                      current_mileage: 2000
+                      coverage_selections:
+                        BODILY_INJURY_LIABILITY:
+                          per_person_limit_cents: 10000000
+                          per_incident_limit_cents: 30000000
+                        PROPERTY_DAMAGE_LIABILITY:
+                          per_incident_limit_cents: 5000000
+                        PERSONAL_INJURY_PROTECTION:
+                          is_declined: true
+                        UNINSURED_MOTORISTS:
+                          is_declined: false
+                          per_person_limit_cents: 2500000
+                          per_incident_limit_cents: 5000000
+                        UNDERINSURED_MOTORISTS:
+                          is_declined: false
+                          per_person_limit_cents: 2500000
+                          per_incident_limit_cents: 5000000
+                        COLLISION:
+                          is_declined: false
+                          deductible_cents: 50000
+                        COMPREHENSIVE:
+                          is_declined: false
+                          deductible_cents: 50000
+                        EMERGENCY_ROAD_SERVICE:
+                          is_declined: true
+                        RENTAL_REIMBURSEMENT:
+                          is_declined: false
+                          per_day_limit_cents: 3000
+                          max_days: 30
+                      safety_restraint_device: NONE
+                      anti_theft_device: UNKNOWN
+                      daytime_running_lights: true
+                      tracking_device: true
+                      vehicle_acquisition_date: '2023-08-16'
+                      vehicle_ownership:
+                        type: OWN
+              ADD_MORTGAGEE:
+                value:
+                  pull_id: 7aec3a23-0c86-41f7-937e-174af7c0aa6a
+                  servicing_actions:
+                  - type: ADD_MORTGAGEE
+                    payload:
+                      carrier_policy_number: HO132483
+                      name: JP MORGAN CHASE BANK NA ISAOA ATIMA
+                      address: PO BOX 47020, ATLANTA, GA 30362
+                      loan_number: '1234567890'
+                      mortgagee_type: FIRST
+              EDIT_MORTGAGEE:
+                value:
+                  pull_id: 7aec3a23-0c86-41f7-937e-174af7c0aa6a
+                  servicing_actions:
+                  - type: EDIT_MORTGAGEE
+                    payload:
+                      carrier_policy_number: HO132483
+                      name: JP MORGAN CHASE BANK NA ISAOA ATIMA
+                      address: PO BOX 47020, ATLANTA, GA 30362
+                      loan_number: '1234567890'
+                      mortgagee_type: FIRST
+              REMOVE_MORTGAGEE:
+                value:
+                  pull_id: 7aec3a23-0c86-41f7-937e-174af7c0aa6a
+                  servicing_actions:
+                  - type: REMOVE_MORTGAGEE
+                    payload:
+                      carrier_policy_number: HO132483
+                      mortgagee_type: FIRST
+  /teams/{teamId}/servicings/{servicingActionId}:
+    parameters:
+    - schema:
+        type: string
+        format: uuid
+      name: teamId
+      in: path
+      required: true
+      description: ID of Team
+    - schema:
+        type: string
+        format: uuid
+      name: servicingActionId
+      in: path
+      required: true
+      description: ID of ServicingAction
+    get:
+      summary: GET /servicings/:servicingActionId
+      operationId: get-servicing
+      responses:
+        '200':
+          description: 200 Response Schema
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServicingAction'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    enum:
+                    - INVALID_INPUT
+        '401':
+          description: 401 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - UNAUTHORIZED
+                required:
+                - error
+              examples:
+                Example Response:
+                  value:
+                    error: UNAUTHORIZED
+        '403':
+          description: 403 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - SUBSCRIPTION_INACTIVE
+                    - UNAUTHORIZED
+                required:
+                - error
+              examples:
+                Example Response:
+                  value:
+                    error: SUBSCRIPTION_INACTIVE
+        '404':
+          description: 404 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - NOT_FOUND
+                required:
+                - error
+      tags:
+      - Servicings API
+      description: Used to get a `ServicingAction`.
+      parameters: []
+components:
+  schemas:
+    ServicingAction:
+      title: ServicingAction
+      examples:
+      - servicing_action_id: a082368f-fa48-48d3-9b0a-f3941c81511d
+        type: ADD_MORTGAGEE
+        payload: {}
+        confirmation_data: {}
+        status: QUEUED
+        validation_error_type: INVALID_POLICY_NUMBER
+      allOf:
+      - type: object
+        properties:
+          servicing_action_id:
+            type: string
+            format: uuid
+            description: ID of the `ServicingAction`.
+          status:
+            enum:
+            - QUEUED
+            - IN_PROGRESS
+            - INTERNAL_ERROR
+            - PROVIDER_ERROR
+            - VALIDATION_ERROR
+            - WAITING_FOR_CONSUMER_CONFIRMATION
+            - SUBMITTING_CONFIRMATION
+            - UNCONFIRMED
+            - VERIFIED
+            - VERIFICATION_FAILED
+            - SUCCESS
+          validation_error_type:
+            type:
+            - string
+            - 'null'
+            enum:
+            - INVALID_POLICY_NUMBER
+            - INVALID_POLICY_TYPE
+            - INVALID_MORTGAGEE_NAME
+            - INVALID_MORTGAGEE_ADDRESS
+            - DUPLICATE_MORTGAGEE_NAME
+            - DUPLICATE_MORTGAGEE_TYPE
+            - INVALID_MORTGAGEE_TYPE
+            - POLICY_UNAVAILABLE_FOR_SERVICING
+            - VEHICLE_UNAVAILABLE_FOR_SERVICING
+            - REPLACING_VIN_NOT_FOUND
+            - PRIMARY_DRIVER_NOT_FOUND
+            - INVALID_VIN
+            - INVALID_VEHICLE_ACQUISITION_DATE
+            - REGISTERED_OWNER_NOT_FOUND
+            - INVALID_FINANCING_COMPANY
+            - INVALID_GARAGING_ADDRESS
+            - GARAGING_ADDRESS_OUT_OF_STATE
+            - CUSTOMER_SERVICE_REQUIRED
+            - FINANCING_COMPANY_NOT_FOUND
+            - DUPLICATE_FINANCING_COMPANY
+            - OTHER_PARTIES_TO_NOTIFY_NOT_SUPPORTED
+            - CANNOT_ADD_NEW_DRIVER
+            - CANNOT_ADD_NEW_REGISTERED_OWNER
+            - INVALID_SAFETY_RESTRAINT_DEVICE
+            - ANTI_THEFT_DEVICE_REQUIRED
+            - INVALID_COVERAGE_SELECTION
+            - INVALID_PRIMARY_USE_TYPE
+            - MULTIPLE_FINANCING_COMPANIES_NOT_ALLOWED
+            description: Only present if `status` is `VALIDATION_ERROR`.
+        required:
+        - servicing_action_id
+        - status
+      - title: ServicingAction
+        oneOf:
+        - type: object
+          title: AddMortgagee
+          allOf:
+          - title: AddMortgageePayload
+            type: object
+            properties:
+              type:
+                enum:
+                - ADD_MORTGAGEE
+              payload:
+                type: object
+                description: Input required for a `ServicingAction`. Corresponds with the `type`.
+                required:
+                - carrier_policy_number
+                - name
+                - address
+                - loan_number
+                - mortgagee_type
+                properties:
+                  carrier_policy_number:
+                    type: string
+                    example: HO132483
+                  name:
+                    type: string
+                    example: JP MORGAN CHASE BANK NA ISAOA ATIMA
+                  address:
+                    type: string
+                    example: PO BOX 47020, ATLANTA, GA 30362
+                  loan_number:
+                    type: string
+                    example: '1234567890'
+                  mortgagee_type:
+                    enum:
+                    - FIRST
+                    - SECOND
+                    - THIRD
+            required:
+            - type
+            - payload
+          - type: object
+            properties:
+              confirmation_data:
+                type: object
+                properties:
+                  carrier_policy_number:
+                    type: string
+                    example: HO132483
+                  before:
+                    type:
+                    - 'null'
+                  after:
+                    type: object
+                    required:
+                    - name
+                    - address
+                    - loan_number
+                    - mortgagee_type
+                    description: The new mortgagee after the change is applied.
+                    properties:
+                      name:
+                        type: string
+                        example: JP MORGAN CHASE BANK NA ISAOA ATIMA
+                      address:
+                        type: string
+                        example: PO BOX 47020, ATLANTA, GA 30362
+                      loan_number:
+                        type: string
+                        example: '1234567890'
+                      mortgagee_type:
+                        enum:
+                        - FIRST
+                        - SECOND
+                        - THIRD
+                required:
+                - carrier_policy_number
+                - before
+                - after
+                description: Output provided for confirmation. Corresponds with the `type`.
+        - type: object
+          title: EditMortgagee
+          allOf:
+          - title: EditMortgageePayload
+            type: object
+            properties:
+              type:
+                enum:
+                - EDIT_MORTGAGEE
+              payload:
+                type: object
+                description: Input required for a `ServicingAction`. Corresponds with the `type`.
+                required:
+                - carrier_policy_number
+                - name
+                - address
+                - loan_number
+                - mortgagee_type
+                properties:
+                  carrier_policy_number:
+                    type: string
+                    example: HO132483
+                  name:
+                    type: string
+                    example: JP MORGAN CHASE BANK NA ISAOA ATIMA
+                  address:
+                    type: string
+                    example: PO BOX 47020, ATLANTA, GA 30362
+                  loan_number:
+                    type: string
+                    example: '1234567890'
+                  mortgagee_type:
+                    enum:
+                    - FIRST
+                    - SECOND
+                    - THIRD
+            required:
+            - type
+            - payload
+          - type: object
+            properties:
+              confirmation_data:
+                type: object
+                properties:
+                  carrier_policy_number:
+                    type: string
+                    example: HO132483
+                  before:
+                    type: object
+                    required:
+                    - name
+                    - address
+                    - loan_number
+                    - mortgagee_type
+                    description: The old mortgagee before the change is applied.
+                    properties:
+                      name:
+                        type: string
+                        example: JP MORGAN CHASE BANK NA ISAOA ATIMA
+                      address:
+                        type: string
+                        example: PO BOX 47020, ATLANTA, GA 30362
+                      loan_number:
+                        type: string
+                        example: '1234567890'
+                      mortgagee_type:
+                        enum:
+                        - FIRST
+                        - SECOND
+                        - THIRD
+                  after:
+                    type: object
+                    required:
+                    - name
+                    - address
+                    - loan_number
+                    - mortgagee_type
+                    description: The new mortgagee after the change is applied.
+                    properties:
+                      name:
+                        type: string
+                        example: JP MORGAN CHASE BANK NA ISAOA ATIMA
+                      address:
+                        type: string
+                        example: PO BOX 47020, ATLANTA, GA 30362
+                      loan_number:
+                        type: string
+                        example: '1234567890'
+                      mortgagee_type:
+                        enum:
+                        - FIRST
+                        - SECOND
+                        - THIRD
+                required:
+                - carrier_policy_number
+                - before
+                - after
+                description: Output provided for confirmation. Corresponds with the `type`.
+        - type: object
+          title: RemoveMortgagee
+          allOf:
+          - title: RemoveMortgageePayload
+            type: object
+            properties:
+              type:
+                enum:
+                - REMOVE_MORTGAGEE
+              payload:
+                type: object
+                description: Input required for a `ServicingAction`. Corresponds with the `type`.
+                required:
+                - carrier_policy_number
+                - mortgagee_type
+                properties:
+                  carrier_policy_number:
+                    type: string
+                    example: HO132483
+                  mortgagee_type:
+                    enum:
+                    - FIRST
+                    - SECOND
+                    - THIRD
+            required:
+            - type
+            - payload
+          - type: object
+            properties:
+              confirmation_data:
+                type: object
+                properties:
+                  carrier_policy_number:
+                    type: string
+                    example: HO132483
+                  before:
+                    type: object
+                    description: The old mortgagee before the change is applied.
+                    required:
+                    - name
+                    - address
+                    - loan_number
+                    - mortgagee_type
+                    properties:
+                      name:
+                        type: string
+                        example: JP MORGAN CHASE BANK NA ISAOA ATIMA
+                      address:
+                        type: string
+                        example: PO BOX 47020, ATLANTA, GA 30362
+                      loan_number:
+                        type: string
+                        example: '1234567890'
+                      mortgagee_type:
+                        enum:
+                        - FIRST
+                        - SECOND
+                        - THIRD
+                  after:
+                    type:
+                    - 'null'
+                required:
+                - carrier_policy_number
+                - before
+                - after
+                description: Output provided for confirmation. Corresponds with the `type`.
+        - type: object
+          title: AddVehicle
+          allOf:
+          - title: AddVehiclePayload
+            type: object
+            properties:
+              type:
+                enum:
+                - ADD_VEHICLE
+              payload:
+                description: Input required for a `ServicingAction`. Corresponds with the `type`.
+                type: object
+                required:
+                - carrier_policy_number
+                - vehicle
+                - registered_owner_full_name
+                - registered_state
+                - garaging_address
+                - is_customized
+                - primary_use
+                - primary_driver_full_name
+                - annual_mileage
+                - current_mileage
+                - coverage_selections
+                - safety_restraint_device
+                - anti_theft_device
+                - daytime_running_lights
+                - tracking_device
+                - vehicle_acquisition_date
+                - vehicle_ownership
+                properties:
+                  carrier_policy_number:
+                    type: string
+                    example: AU192837
+                  vehicle:
+                    properties:
+                      type:
+                        enum:
+                        - PRIVATE_PASSENGER
+                        - ANTIQUE_AUTO
+                        - BOAT
+                        - COMMERCIAL_AUTO
+                        - MOTORCYCLE_OR_ATV
+                        - RV_MOTORHOME_OR_TRAILER
+                        - MOBILE_HOME
+                        - SNOWMOBILE
+                        - GOLF_CART
+                      model_year:
+                        type: integer
+                        example: 2012
+                      vin:
+                        type: string
+                        example: 3N1AB6AP0CL704240
+                      make:
+                        type: string
+                        example: NISSAN
+                      model:
+                        type: string
+                        example: Sentra
+                    required:
+                    - type
+                    - model_year
+                    - vin
+                    - make
+                    - model
+                    type: object
+                  replacing_vin:
+                    type: string
+                    description: The VIN of the vehicle being replaced, if applicable.
+                    example: 3FAHP0HA8CR128394
+                  registered_owner_full_name:
+                    type: string
+                    example: John Smith
+                  registered_co_owner_full_name:
+                    type: string
+                    example: Alice Smith
+                  registered_state:
+                    enum:
+                    - AL
+                    - AK
+                    - AS
+                    - AZ
+                    - AR
+                    - CA
+                    - CO
+                    - CT
+                    - DE
+                    - DC
+                    - FM
+                    - FL
+                    - GA
+                    - GU
+                    - HI
+                    - ID
+                    - IL
+                    - IN
+                    - IA
+                    - KS
+                    - KY
+                    - LA
+                    - ME
+                    - MH
+                    - MD
+                    - MA
+                    - MI
+                    - MN
+                    - MS
+                    - MO
+                    - MT
+                    - NE
+                    - NV
+                    - NH
+                    - NJ
+                    - NM
+                    - NY
+                    - NC
+                    - ND
+                    - MP
+                    - OH
+                    - OK
+                    - OR
+                    - PW
+                    - PA
+                    - PR
+                    - RI
+                    - SC
+                    - SD
+                    - TN
+                    - TX
+                    - UT
+                    - VT
+                    - VI
+                    - VA
+                    - WA
+                    - WV
+                    - WI
+                    - WY
+                  garaging_address:
+                    type: string
+                    example: 344 Clinton Street, Brooklyn, NY, 11231
+                  is_customized:
+                    type: boolean
+                  primary_use:
+                    oneOf:
+                    - title: Commute, Work, or School
+                      properties:
+                        type:
+                          enum:
+                          - COMMUTE
+                          - WORK
+                          - SCHOOL
+                        days_driven_per_week:
+                          type: integer
+                          maximum: 7
+                          minimum: 1
+                        miles_driven_each_way:
+                          type: integer
+                          minimum: 1
+                      required:
+                      - type
+                      - days_driven_per_week
+                      - miles_driven_each_way
+                    - title: Personal, Pleasure, or Farm
+                      properties:
+                        type:
+                          enum:
+                          - PERSONAL
+                          - PLEASURE
+                          - FARM
+                      required:
+                      - type
+                    type: object
+                  primary_driver_full_name:
+                    type: string
+                  annual_mileage:
+                    type: number
+                    example: 10000
+                  current_mileage:
+                    type: number
+                    example: 2000
+                  coverage_selections:
+                    type: object
+                    required:
+                    - BODILY_INJURY_LIABILITY
+                    - PROPERTY_DAMAGE_LIABILITY
+                    - PERSONAL_INJURY_PROTECTION
+                    - UNINSURED_MOTORISTS
+                    - UNDERINSURED_MOTORISTS
+                    - COLLISION
+                    - COMPREHENSIVE
+                    - EMERGENCY_ROAD_SERVICE
+                    - RENTAL_REIMBURSEMENT
+                    properties:
+                      BODILY_INJURY_LIABILITY:
+                        type: object
+                        required:
+                        - per_person_limit_cents
+                        - per_incident_limit_cents
+                        properties:
+                          per_person_limit_cents:
+                            type: integer
+                            example: 10000000
+                          per_incident_limit_cents:
+                            type: integer
+                            example: 30000000
+                      PROPERTY_DAMAGE_LIABILITY:
+                        type: object
+                        required:
+                        - per_incident_limit_cents
+                        properties:
+                          per_incident_limit_cents:
+                            type: integer
+                            example: 50000
+                      PERSONAL_INJURY_PROTECTION:
+                        anyOf:
+                        - title: Declined
+                          properties:
+                            is_declined:
+                              enum:
+                              - true
+                          required:
+                          - is_declined
+                        - title: Accepted
+                          properties:
+                            is_declined:
+                              enum:
+                              - false
+                            per_person_limit_cents:
+                              type: integer
+                              example: 2500000
+                            deductible_cents:
+                              type: integer
+                              example: 50000
+                          required:
+                          - is_declined
+                          - per_person_limit_cents
+                        type: object
+                      UNINSURED_MOTORISTS:
+                        anyOf:
+                        - title: Declined
+                          properties:
+                            is_declined:
+                              enum:
+                              - true
+                          required:
+                          - is_declined
+                        - title: Accepted
+                          properties:
+                            is_declined:
+                              enum:
+                              - false
+                            per_person_limit_cents:
+                              type: integer
+                              example: 2500000
+                            per_incident_limit_cents:
+                              type: integer
+                              example: 5000000
+                          required:
+                          - is_declined
+                          - per_person_limit_cents
+                          - per_incident_limit_cents
+                        type: object
+                      UNDERINSURED_MOTORISTS:
+                        anyOf:
+                        - title: Declined
+                          properties:
+                            is_declined:
+                              enum:
+                              - true
+                          required:
+                          - is_declined
+                        - title: Accepted
+                          properties:
+                            is_declined:
+                              enum:
+                              - false
+                            per_person_limit_cents:
+                              type: integer
+                              example: 2500000
+                            per_incident_limit_cents:
+                              type: integer
+                              example: 5000000
+                          required:
+                          - is_declined
+                          - per_person_limit_cents
+                          - per_incident_limit_cents
+                        type: object
+                      COLLISION:
+                        anyOf:
+                        - title: Declined
+                          properties:
+                            is_declined:
+                              enum:
+                              - true
+                          required:
+                          - is_declined
+                        - title: Accepted
+                          properties:
+                            is_declined:
+                              enum:
+                              - false
+                            deductible_cents:
+                              type: integer
+                              example: 50000
+                          required:
+                          - is_declined
+                          - deductible_cents
+                        type: object
+                      COMPREHENSIVE:
+                        anyOf:
+                        - title: Declined
+                          properties:
+                            is_declined:
+                              enum:
+                              - true
+                          required:
+                          - is_declined
+                        - title: Accepted
+                          properties:
+                            is_declined:
+                              enum:
+                              - false
+                            deductible_cents:
+                              type: integer
+                              example: 50000
+                          required:
+                          - is_declined
+                          - deductible_cents
+                        type: object
+                      EMERGENCY_ROAD_SERVICE:
+                        type: object
+                        required:
+                        - is_declined
+                        properties:
+                          is_declined:
+                            type: boolean
+                      RENTAL_REIMBURSEMENT:
+                        anyOf:
+                        - title: Declined
+                          properties:
+                            is_declined:
+                              enum:
+                              - true
+                          required:
+                          - is_declined
+                        - title: Accepted
+                          properties:
+                            is_declined:
+                              enum:
+                              - false
+                            per_day_limit_cents:
+                              type: integer
+                              example: 3000
+                            max_days:
+                              type: integer
+                              example: 30
+                          required:
+                          - is_declined
+                          - per_day_limit_cents
+                          - max_days
+                        type: object
+                  safety_restraint_device:
+                    enum:
+                    - NONE
+                    - AUTOMATIC_SEAT_BELTS
+                    - DRIVER_SIDE_AIR_BAG
+                    - FULL_FRONT_AIR_BAG
+                  anti_theft_device:
+                    enum:
+                    - UNKNOWN
+                    - NONE
+                    - ALARM_ONLY
+                    - NON_PASSIVE_DISABLING_DEVICE
+                    - PASSIVE_DISABLING_DEVICE
+                    - VEHICLE_RECOVERY_SYSTEM
+                    - VEHICLE_RECOVERY_SYSTEM_PASSIVE_DISABLING_DEVICE
+                    - ELECTRONIC_HOMING_DEVICE
+                  daytime_running_lights:
+                    type: boolean
+                  tracking_device:
+                    type: boolean
+                  vehicle_acquisition_date:
+                    type: string
+                    format: date
+                    example: '2023-08-16'
+                  vehicle_ownership:
+                    anyOf:
+                    - properties:
+                        type:
+                          enum:
+                          - OWN
+                        financing_companies:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              type:
+                                enum:
+                                - LIEN_HOLDER
+                                - OTHER_PARTY_TO_NOTIFY
+                              name:
+                                type: string
+                                example: Metropolis Bank
+                              address:
+                                type: string
+                                example: 620 Atlantic Avenue, Brooklyn, NY, 11217
+                            required:
+                            - type
+                            - name
+                            - address
+                      required:
+                      - type
+                      - financing_companies
+                    - properties:
+                        type:
+                          enum:
+                          - LEASE
+                          - FINANCE
+                        financing_companies:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              type:
+                                enum:
+                                - LIEN_HOLDER
+                                - OTHER_PARTY_TO_NOTIFY
+                              name:
+                                type: string
+                                example: Metropolis Bank
+                              address:
+                                type: string
+                                example: 620 Atlantic Avenue, Brooklyn, NY, 11217
+                            required:
+                            - type
+                            - name
+                            - address
+                        loan_duration_months:
+                          type: integer
+                          example: 60
+                      required:
+                      - type
+                      - financing_companies
+                      - loan_duration_months
+                    type: object
+            required:
+            - type
+            - payload
+          - type: object
+            properties:
+              confirmation_data:
+                anyOf:
+                - title: Agent Required
+                  properties:
+                    requires_agent:
+                      enum:
+                      - true
+                      description: Change requires intervention from the policy's agent.
+                    coverage_selections:
+                      type: object
+                      propertyNames:
+                        title: VehicleCoverageTypes
+                        type: string
+                        enum:
+                        - SINGLE_LIMIT_LIABILITY
+                        - BODILY_INJURY_LIABILITY
+                        - PROPERTY_DAMAGE_LIABILITY
+                        - SUPPLEMENTAL_SPOUSAL_LIABILITY
+                        - SUPPLEMENTAL_SPOUSAL_BODILY_INJURY_LIABILITY
+                        - SUPPLEMENTAL_SPOUSAL_PROPERTY_DAMAGE_LIABILITY
+                        - PERSONAL_INJURY_PROTECTION
+                        - COMPREHENSIVE
+                        - FULL_GLASS
+                        - COLLISION_DEDUCTIBLE_WAIVER
+                        - COLLISION
+                        - UNINSURED_MOTORISTS
+                        - UNINSURED_MOTORIST_BODILY_INJURY_LIABILITY
+                        - UNINSURED_MOTORIST_PROPERTY_DAMAGE_LIABILITY
+                        - UNINSURED_MOTORIST_BODILY_INJURY_AND_PROPERTY_DAMAGE_LIABILITY
+                        - UNDERINSURED_MOTORISTS
+                        - UNDERINSURED_MOTORIST_BODILY_INJURY_LIABILITY
+                        - UNDERINSURED_MOTORIST_PROPERTY_DAMAGE_LIABILITY
+                        - UNDERINSURED_MOTORIST_BODILY_INJURY_AND_PROPERTY_DAMAGE_LIABILITY
+                        - UNINSURED_AND_UNDERINSURED_MOTORISTS
+                        - UNINSURED_AND_UNDERINSURED_MOTORIST_BODILY_INJURY_LIABILITY
+                        - UNINSURED_AND_UNDERINSURED_MOTORIST_PROPERTY_DAMAGE_LIABILITY
+                        - UNINSURED_AND_UNDERINSURED_MOTORIST_BODILY_INJURY_AND_PROPERTY_DAMAGE_LIABILITY
+                        - TOWING_AND_LABOR
+                        - LOAN_OR_LEASE_ASSISTANCE
+                        - RIDESHARE_GAP_PROTECTION
+                        - MEDICAL_PAYMENTS
+                        - EMERGENCY_ROAD_SERVICE
+                        - RENTAL_REIMBURSEMENT
+                        - CAR_RENTAL_AND_TRAVEL_EXPENSES
+                        - PORTABLE_ELECTRONICS
+                        - MECHANICAL_BREAKDOWN
+                        - SUPPLEMENTAL_UNINSURED_AND_UNDERINSURED_MOTORISTS
+                        - EMERGENCY_EXPENSE
+                        - REPLACEMENT_COST_PERSONAL_EFFECTS
+                        - VACATION_LIABILITY_COVERAGE
+                        - RV_MEDICAL
+                        - EXTENDED_BENEFITS
+                        - WAGE_EARNER_DISABILITY_BENEFITS
+                        - ESSENTIAL_SERVICES_DISABILITY_BENEFITS
+                        - DEATH_BENEFIT
+                        - CAR_REPLACEMENT_ASSISTANCE
+                        - FULL_TORT
+                        - LIMITED_TORT
+                        - COMBINED_SINGLE_LIMIT
+                        - SPARE_PARTS
+                        - OPTIONAL_BODILY_INJURY_LIABILITY
+                        - MOTOR_CARGO
+                        - ON_HOOK
+                        - FIRST_PARTY_BENEFIT
+                        - FIRST_PARTY_BENEFIT_MEDICAL_EXPENSE
+                        - FIRST_PARTY_BENEFIT_ACCIDENTAL_DEATH
+                        - FIRST_PARTY_BENEFIT_INCOME_LOSS
+                        - FIRST_PARTY_BENEFIT_FUNERAL_EXPENSE
+                        - FIRST_PARTY_BENEFIT_EXTRAORDINARY_MEDICAL
+                        - FIRST_PARTY_BENEFIT_SURVIVORS_LOSS
+                        - CUSTOM_PARTS_AND_EQUIPMENT
+                        - VEHICLE_PROTECTION
+                        - FUNERAL_BENEFIT
+                        - SURVIVORS_LOSS_BENEFIT
+                      additionalProperties:
+                        title: ConfirmedCoverageSelection
+                        type: object
+                        properties:
+                          per_person_limit_cents:
+                            type:
+                            - integer
+                            - 'null'
+                          per_incident_limit_cents:
+                            type:
+                            - integer
+                            - 'null'
+                          per_day_limit_cents:
+                            type:
+                            - integer
+                            - 'null'
+                          max_days:
+                            type:
+                            - integer
+                            - 'null'
+                          deductible_cents:
+                            type:
+                            - integer
+                            - 'null'
+                          premium_cents:
+                            type:
+                            - integer
+                            - 'null'
+                          is_declined:
+                            type:
+                            - boolean
+                            - 'null'
+                          is_policy_level:
+                            type:
+                            - boolean
+                            - 'null'
+                            description: Indicates if the coverage applies to all vehicles on the policy or only the vehicle being added.
+                          is_changed:
+                            type:
+                            - boolean
+                            - 'null'
+                            description: Indicates if the coverage selection was changed from its previous value.
+                      description: The keys may be any of `VehicleCoverageTypes` (see [VehicleCoverage.name](https://docs.usecanopy.com/reference/schemas-vehiclecoverage)).
+                      properties:
+                        BODILY_INJURY_LIABILITY:
+                          $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/3/allOf/1/properties/confirmation_data/anyOf/0/properties/coverage_selections/additionalProperties'
+                        PROPERTY_DAMAGE_LIABILITY:
+                          $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/3/allOf/1/properties/confirmation_data/anyOf/0/properties/coverage_selections/additionalProperties'
+                        PERSONAL_INJURY_PROTECTION:
+                          $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/3/allOf/1/properties/confirmation_data/anyOf/0/properties/coverage_selections/additionalProperties'
+                        UNINSURED_MOTORISTS:
+                          $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/3/allOf/1/properties/confirmation_data/anyOf/0/properties/coverage_selections/additionalProperties'
+                        UNDERINSURED_MOTORISTS:
+                          $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/3/allOf/1/properties/confirmation_data/anyOf/0/properties/coverage_selections/additionalProperties'
+                        COLLISION:
+                          $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/3/allOf/1/properties/confirmation_data/anyOf/0/properties/coverage_selections/additionalProperties'
+                        COMPREHENSIVE:
+                          $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/3/allOf/1/properties/confirmation_data/anyOf/0/properties/coverage_selections/additionalProperties'
+                        EMERGENCY_ROAD_SERVICE:
+                          $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/3/allOf/1/properties/confirmation_data/anyOf/0/properties/coverage_selections/additionalProperties'
+                        RENTAL_REIMBURSEMENT:
+                          $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/3/allOf/1/properties/confirmation_data/anyOf/0/properties/coverage_selections/additionalProperties'
+                    adjusted_policy_premium_cents:
+                      type: integer
+                      example: 86750
+                      description: New total premium for the entire term (not the remainder).
+                  required:
+                  - requires_agent
+                - title: Agent Not Required
+                  properties:
+                    requires_agent:
+                      enum:
+                      - false
+                      description: Change does not require intervention from the policy's agent.
+                    coverage_selections:
+                      type: object
+                      propertyNames:
+                        $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/3/allOf/1/properties/confirmation_data/anyOf/0/properties/coverage_selections/propertyNames'
+                      additionalProperties:
+                        $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/3/allOf/1/properties/confirmation_data/anyOf/0/properties/coverage_selections/additionalProperties'
+                      description: The keys may be any of `VehicleCoverageTypes` (see [VehicleCoverage.name](https://docs.usecanopy.com/reference/schemas-vehiclecoverage)).
+                      properties:
+                        BODILY_INJURY_LIABILITY:
+                          $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/3/allOf/1/properties/confirmation_data/anyOf/0/properties/coverage_selections/additionalProperties'
+                        PROPERTY_DAMAGE_LIABILITY:
+                          $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/3/allOf/1/properties/confirmation_data/anyOf/0/properties/coverage_selections/additionalProperties'
+                        PERSONAL_INJURY_PROTECTION:
+                          $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/3/allOf/1/properties/confirmation_data/anyOf/0/properties/coverage_selections/additionalProperties'
+                        UNINSURED_MOTORISTS:
+                          $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/3/allOf/1/properties/confirmation_data/anyOf/0/properties/coverage_selections/additionalProperties'
+                        UNDERINSURED_MOTORISTS:
+                          $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/3/allOf/1/properties/confirmation_data/anyOf/0/properties/coverage_selections/additionalProperties'
+                        COLLISION:
+                          $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/3/allOf/1/properties/confirmation_data/anyOf/0/properties/coverage_selections/additionalProperties'
+                        COMPREHENSIVE:
+                          $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/3/allOf/1/properties/confirmation_data/anyOf/0/properties/coverage_selections/additionalProperties'
+                        EMERGENCY_ROAD_SERVICE:
+                          $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/3/allOf/1/properties/confirmation_data/anyOf/0/properties/coverage_selections/additionalProperties'
+                        RENTAL_REIMBURSEMENT:
+                          $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/3/allOf/1/properties/confirmation_data/anyOf/0/properties/coverage_selections/additionalProperties'
+                    adjusted_policy_premium_cents:
+                      type: integer
+                      example: 86750
+                      description: New total premium for the entire term (not the remainder).
+                  required:
+                  - requires_agent
+                  - coverage_selections
+                  - adjusted_policy_premium_cents
+                description: Output provided for confirmation. Corresponds with the `type`.
+                type: object
+  securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: basic
+      description: HTTP Basic authentication. Use your Canopy Connect Client ID as the username and your Client Secret as the password. The `Authorization` header value is `Basic <base64 of clientId:clientSecret>`. See the [Authentication guide](https://docs.usecanopy.com/reference/authentication-guide) for a full walkthrough, and create or manage your Client ID and Client Secret on the [API Settings page](https://app.usecanopy.com/dashboard/settings/api-settings).
+x-readme:
+  headers: []
+  explorer-enabled: true
+  proxy-enabled: true
+  samples-enabled: true

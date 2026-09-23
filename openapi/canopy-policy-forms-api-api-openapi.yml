@@ -1,0 +1,193 @@
+openapi: 3.2.0
+info:
+  title: Reference Policy Forms API
+  version: 1.0.0
+  description: Canopy Connect Public API Documentation
+  contact:
+    name: Canopy Connect
+    email: support@usecanopy.com
+    url: https://usecanopy.com/
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://app.usecanopy.com/api/v1.0.0
+security:
+- BasicAuth: []
+tags:
+- name: Policy Forms API
+  description: Used to get policy form data
+paths:
+  /policyforms/{policyFormId}/pdf:
+    description: Download a policy form PDF
+    parameters:
+    - schema:
+        type: string
+        format: uuid
+      name: policyFormId
+      in: path
+      required: true
+      description: ID of Policy Form
+    get:
+      summary: GET /policyforms/:policyFormId/pdf
+      tags:
+      - Policy Forms API
+      description: '**Deprecated.** Use `GET /teams/{teamId}/policyForms/{policyFormId}` instead, which redirects to a short-lived, signed URL rather than streaming the file through the API.
+
+
+        Used to download a policy form PDF. Your plan must include policy forms in order to access this API in production. For more information, contact your Canopy Connect representative.'
+      responses:
+        '200':
+          description: 200 Response Schema
+          content:
+            application/pdf:
+              examples:
+                Example Response:
+                  value: '...document...data...buffer...'
+              schema:
+                type: string
+                format: byte
+          headers:
+            Content-Disposition:
+              schema:
+                type: string
+              description: attachment; filename="<FORM_NAME>.pdf"
+            Content-Type:
+              schema:
+                type: string
+              description: application/pdf
+        '400':
+          description: 400 Response Schema
+          content:
+            application/json:
+              examples:
+                Example Response:
+                  value:
+                    error: VALIDATION_ERROR
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - VALIDATION_ERROR
+        '404':
+          description: 404 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - NOT_FOUND
+              examples:
+                Example Response:
+                  value:
+                    error: NOT_FOUND
+      operationId: get-policy-form-by-id
+      deprecated: true
+  /teams/{teamId}/policyForms/{policyFormId}:
+    parameters:
+    - schema:
+        type: string
+        format: uuid
+      name: teamId
+      in: path
+      required: true
+      description: ID of Team
+    - schema:
+        type: string
+        format: uuid
+      name: policyFormId
+      in: path
+      required: true
+      description: ID of Policy Form
+    get:
+      summary: GET /:policyFormId
+      description: 'Download a policy form PDF. Your plan must include policy forms in order to access this API in production. For more information, contact your Canopy Connect representative.
+
+
+        The endpoint responds with a `302` redirect to a short-lived, signed URL where the file bytes are hosted. The same URL is also returned in a JSON response body, so you can read it directly instead of following the redirect. See the Downloading Files guide for details.'
+      operationId: download-policy-form-by-id
+      responses:
+        '302':
+          description: Redirects to a short-lived, signed URL where the file bytes are hosted. Follow the redirect to download the file, or read the same URL from the response body without following it.
+          headers:
+            Location:
+              schema:
+                type: string
+                format: uri
+              description: Short-lived, signed URL where the file bytes are hosted.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  url:
+                    type: string
+                    format: uri
+                    description: Short-lived, signed URL where the file bytes are hosted. Same value as the `Location` header. Does not require the Canopy Connect authentication headers, but it expires, so use it promptly.
+              examples:
+                Example Response:
+                  value:
+                    url: https://signed-storage.example.com/...&signature=...&expires=...
+        '400':
+          description: 400 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - VALIDATION_ERROR
+              examples:
+                Example Response:
+                  value:
+                    error: VALIDATION_ERROR
+        '401':
+          description: 401 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - UNAUTHORIZED
+              examples:
+                Example Response:
+                  value:
+                    error: UNAUTHORIZED
+        '404':
+          description: 404 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - NOT_FOUND
+              examples:
+                Example Response:
+                  value:
+                    error: NOT_FOUND
+      tags:
+      - Policy Forms API
+components:
+  securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: basic
+      description: HTTP Basic authentication. Use your Canopy Connect Client ID as the username and your Client Secret as the password. The `Authorization` header value is `Basic <base64 of clientId:clientSecret>`. See the [Authentication guide](https://docs.usecanopy.com/reference/authentication-guide) for a full walkthrough, and create or manage your Client ID and Client Secret on the [API Settings page](https://app.usecanopy.com/dashboard/settings/api-settings).
+x-readme:
+  headers: []
+  explorer-enabled: true
+  proxy-enabled: true
+  samples-enabled: true

@@ -1,0 +1,942 @@
+openapi: 3.2.0
+info:
+  title: Reference Monitorings API
+  version: 1.0.0
+  description: Canopy Connect Public API Documentation
+  contact:
+    name: Canopy Connect
+    email: support@usecanopy.com
+    url: https://usecanopy.com/
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://app.usecanopy.com/api/v1.0.0
+security:
+- BasicAuth: []
+tags:
+- name: Monitorings API
+  description: Manage synced accounts
+paths:
+  /teams/{teamId}/monitorings:
+    parameters:
+    - schema:
+        type: string
+        format: uuid
+      name: teamId
+      in: path
+      required: true
+      description: ID of Team
+    get:
+      summary: GET /monitorings
+      tags:
+      - Monitorings API
+      responses:
+        '200':
+          description: 200 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  monitorings_count:
+                    type: integer
+                  monitorings:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Monitoring'
+                required:
+                - monitorings_count
+                - monitorings
+        '401':
+          description: 401 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - UNAUTHORIZED
+                required:
+                - error
+        '403':
+          description: 403 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - SUBSCRIPTION_INACTIVE
+                required:
+                - error
+      operationId: get-monitorings
+      description: List all Monitorings, optionally filtered by Pull ID or status. A Monitoring represents an ongoing connection to an insurance account, used for refreshing information on a connected insurance account.
+      parameters:
+      - schema:
+          type: integer
+          default: 100
+        in: query
+        name: limit
+        description: Pagination limit
+      - schema:
+          type: string
+          format: uuid
+        in: query
+        name: before
+        description: Pagination before pointer of a monitoring_id
+      - schema:
+          type: string
+          format: uuid
+        in: query
+        name: pull_id
+        description: Filter used to list Monitorings related to a Pull (cannot be used with account_identifier)
+      - schema:
+          type: string
+        in: query
+        name: account_identifier
+        description: Filter used to list Monitorings related to an Account Identifier (cannot be used with pull_id)
+      - schema:
+          type: string
+          enum:
+          - ACTIVE
+          - STOPPED
+        in: query
+        name: status
+        description: Filter used to list Monitorings of a certain status
+    post:
+      summary: POST /monitorings
+      operationId: post-monitoring
+      responses:
+        '200':
+          description: 200 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: Whether creating the monitoring was successful
+                  monitoring:
+                    $ref: '#/components/schemas/Monitoring'
+                    description: Newly created Monitoring
+                required:
+                - success
+        '400':
+          description: 400 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - INVALID_INPUT
+                    - INCORRECT_API_KEY_TYPE
+                    - PULL_TOO_OLD
+                    - PULL_NOT_SUCCESS
+                    - PULL_NOT_SUPPORTED
+                required:
+                - error
+        '401':
+          description: 401 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - UNAUTHORIZED
+                required:
+                - error
+              examples:
+                Example Response:
+                  value:
+                    error: UNAUTHORIZED
+        '403':
+          description: 403 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - SUBSCRIPTION_INACTIVE
+                required:
+                - error
+              examples:
+                Example Response:
+                  value:
+                    error: SUBSCRIPTION_INACTIVE
+        '404':
+          description: 404 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - NOT_FOUND
+                required:
+                - error
+      description: Refresh the data on an insurance account. Create a Monitoring to refresh insurance account data on a fixed interval, or refresh on-demand.
+      tags:
+      - Monitorings API
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                interval:
+                  type: string
+                  format: ISO-8601-duration
+                  example: P1M
+                  pattern: ^(-?)P(?=\d|T\d)(?:(\d+)Y)?(?:(\d+)M)?(?:(\d+)([DW]))?(?:T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+(?:\.\d+)?)S)?)?$
+                  description: How often the information should be refreshed. Must be >= 30 days. We accept ISO-8601 duration interval value and support days, months, and/or years.
+                next_pull_date:
+                  type: string
+                  description: Optional date the next refresh should occur (Can be used as a start date). Must be >= 30 days after the Pull was created. Defaults to Pull created date + interval.
+                  format: date-time
+                stop_after_date:
+                  type: string
+                  format: date-time
+                  description: Optional date after which monitoring should stop
+                pull_id:
+                  type: string
+                  format: uuid
+                  description: ID of the Pull to be monitored
+              required:
+              - interval
+              - pull_id
+  /teams/{teamId}/monitorings/{monitoringId}:
+    parameters:
+    - schema:
+        type: string
+        format: uuid
+      name: teamId
+      in: path
+      required: true
+      description: ID of Team
+    - schema:
+        type: string
+        format: uuid
+      name: monitoringId
+      in: path
+      required: true
+      description: ID of Monitoring
+    patch:
+      summary: PATCH /monitorings/:monitoringId
+      operationId: patch-monitoring
+      responses:
+        '200':
+          description: 200 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: Whether the update was successful
+                  monitoring:
+                    $ref: '#/components/schemas/Monitoring'
+                    description: The updated Monitoring
+                required:
+                - success
+        '400':
+          description: 400 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - INVALID_MONITORING_ID
+                    - INCORRECT_API_KEY_TYPE
+                    - INVALID_INTERVAL
+                    - INTERVAL_TOO_SHORT
+                    - INVALID_STOP_AFTER
+                required:
+                - error
+        '401':
+          description: 401 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - UNAUTHORIZED
+                required:
+                - error
+              examples:
+                Example Response:
+                  value:
+                    error: UNAUTHORIZED
+        '403':
+          description: 403 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - SUBSCRIPTION_INACTIVE
+                required:
+                - error
+              examples:
+                Example Response:
+                  value:
+                    error: SUBSCRIPTION_INACTIVE
+        '404':
+          description: 404 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - NOT_FOUND
+                required:
+                - error
+      description: Update a Monitoring to change the refresh interval, next refresh date, stop date or status. A Monitoring represents an ongoing connection to an insurance account, used for refreshing information on a connected insurance account.
+      tags:
+      - Monitorings API
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                interval:
+                  type: string
+                  format: ISO-8601-duration
+                  example: P1M
+                  pattern: ^(-?)P(?=\d|T\d)(?:(\d+)Y)?(?:(\d+)M)?(?:(\d+)([DW]))?(?:T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+(?:\.\d+)?)S)?)?$
+                  description: How often the information should be refreshed. Must be >= 30 days. We accept ISO-8601 duration interval value and support days, months, and/or years.
+                next_pull_date:
+                  type: string
+                  description: Optional date the next refresh should occur. Must be >= 30 days after the latest Pull was created. Defaults to Pull created date + interval.
+                  format: date-time
+                stop_after_date:
+                  type: string
+                  format: date-time
+                  description: Optional date after which monitoring should stop
+                status:
+                  type: string
+                  description: Optional status to update the monitoring to
+    delete:
+      summary: DELETE /monitorings/:monitoringId
+      operationId: delete-monitoring
+      responses:
+        '200':
+          description: 200 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: Whether deleting the Monitoring was successful
+                  monitoring:
+                    $ref: '#/components/schemas/Monitoring'
+                    description: The Monitoring that was stopped
+                required:
+                - success
+        '400':
+          description: 400 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - INVALID_MONITORING_ID
+                    - INCORRECT_API_KEY_TYPE
+                required:
+                - error
+        '401':
+          description: 401 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - UNAUTHORIZED
+                required:
+                - error
+              examples:
+                Example Response:
+                  value:
+                    error: UNAUTHORIZED
+        '403':
+          description: 403 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - SUBSCRIPTION_INACTIVE
+                required:
+                - error
+              examples:
+                Example Response:
+                  value:
+                    error: SUBSCRIPTION_INACTIVE
+        '404':
+          description: 404 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - NOT_FOUND
+                required:
+                - error
+      description: Used to stop/pause a Monitoring. A Monitoring represents an ongoing connection to an insurance account, used for refreshing information on a connected insurance account.
+      tags:
+      - Monitorings API
+    get:
+      summary: GET /monitorings/:monitoringId
+      operationId: get-monitoring
+      responses:
+        '200':
+          description: 200 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - monitoring
+                properties:
+                  monitoring:
+                    $ref: '#/components/schemas/Monitoring'
+                  pulls:
+                    type: array
+                    description: Available when `with_pulls` is `true`
+                    items:
+                      type: object
+                      properties:
+                        pull_id:
+                          type: string
+                          format: uuid
+                          description: ID of the Pull
+                        widget_id:
+                          type: string
+                          format: uuid
+                          description: ID of the Widget the Pull belongs to
+                        created_at:
+                          type: string
+                          format: date-time
+                          description: Date the Pull was created
+                        first_name:
+                          type: string
+                          description: First name of policy holder
+                        middle_name:
+                          type: string
+                          description: Middle name of policy holder
+                        last_name:
+                          type: string
+                          description: Last name of policy holder
+                        email:
+                          type: string
+                          format: email
+                          description: Email optionally provided by consumer after submitting bad credentials (`NOT_AUTHENTICATED`)
+                        account_email:
+                          type: string
+                          format: email
+                          description: Policy holder email address
+                        phone:
+                          type: string
+                          description: Preferred contact phone
+                        mobile_phone:
+                          type: string
+                          description: Policy holder mobile phone
+                        home_phone:
+                          type: string
+                          description: Policy holder home phone
+                        work_phone:
+                          type: string
+                          description: Policy holder work phone
+                        work_phone_extension:
+                          type: string
+                          description: Policy holder work phone extension
+                        status:
+                          type: string
+                          description: Status of the Pull
+                        insurance_provider_name:
+                          type: string
+                          description: Policy holder's insurance provider
+                        is_archived:
+                          type: boolean
+                          description: Whether the pull is archived
+                        monitoring_status:
+                          type: string
+                          description: The monitoring status of the pull
+                          enum:
+                          - PROCESSING
+                          - WAITING_FOR_USER
+                          - COMPLETED
+                          - EXPIRED
+        '400':
+          description: 400 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - INVALID_MONITORING_ID
+                    - INCORRECT_API_KEY_TYPE
+                required:
+                - error
+        '401':
+          description: 401 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - UNAUTHORIZED
+                required:
+                - error
+              examples:
+                Example Response:
+                  value:
+                    error: UNAUTHORIZED
+        '403':
+          description: 403 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - SUBSCRIPTION_INACTIVE
+                required:
+                - error
+              examples:
+                Example Response:
+                  value:
+                    error: SUBSCRIPTION_INACTIVE
+        '404':
+          description: 404 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - NOT_FOUND
+                required:
+                - error
+      tags:
+      - Monitorings API
+      description: Fetch a monitoring. A Monitoring represents an ongoing connection to an insurance account, used for refreshing information on a connected insurance account.
+      parameters:
+      - schema:
+          type: boolean
+          enum:
+          - true
+        in: query
+        name: with_pulls
+        description: Whether pulls should be included
+      - schema:
+          type: string
+          default: '100'
+        in: query
+        name: limit
+        description: Pagination limit for the pulls
+      - schema:
+          type: string
+          format: uuid
+        in: query
+        name: before
+        description: Pagination before pointer for a pull_id
+  /teams/{teamId}/monitorings/{monitoringId}/reconnectToken:
+    parameters:
+    - schema:
+        type: string
+        format: uuid
+      name: teamId
+      in: path
+      required: true
+      description: ID of Team
+    - schema:
+        type: string
+        format: uuid
+      name: monitoringId
+      in: path
+      required: true
+      description: ID of Monitoring
+    get:
+      summary: GET /monitorings/:monitoringId/reconnectToken
+      tags:
+      - Monitorings API
+      responses:
+        '200':
+          description: 200 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  pull_id:
+                    type: string
+                    format: uuid
+                  reconnect_url:
+                    type: string
+                  reconnect_token:
+                    type: string
+                required:
+                - pull_id
+                - reconnect_url
+                - reconnect_token
+      operationId: get-monitoring-reconnect-token
+      description: Used to generate a reconnect token for a monitoring
+  /teams/{teamId}/monitorings/{monitoringId}/refresh:
+    parameters:
+    - schema:
+        type: string
+        format: uuid
+      name: teamId
+      in: path
+      required: true
+      description: ID of Team
+    - schema:
+        type: string
+        format: uuid
+      name: monitoringId
+      in: path
+      required: true
+      description: ID of Monitoring
+    post:
+      summary: POST /monitorings/:monitoringId/refresh
+      responses:
+        '200':
+          description: 200 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  pull_id:
+                    type: string
+                    format: uuid
+        '400':
+          description: 400 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    enum:
+                    - CURRENTLY_REFRESHING
+                    - MONITORING_INACTIVE
+                    - PULL_NOT_SUPPORTED
+        '404':
+          description: 404 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    enum:
+                    - NOT_FOUND
+      operationId: post-monitoring-refresh
+      description: Initiate a refresh of the data on a connected insurance account on-demand. A Monitoring represents an ongoing connection to an insurance account, used for refreshing information on a connected insurance account.
+      tags:
+      - Monitorings API
+  /teams/{teamId}/monitorings/{monitoringId}/events:
+    parameters:
+    - schema:
+        type: string
+        format: uuid
+      name: teamId
+      in: path
+      required: true
+      description: ID of Team
+    - schema:
+        type: string
+        format: uuid
+      name: monitoringId
+      in: path
+      required: true
+      description: ID of Monitoring
+    get:
+      summary: GET /monitorings/:monitoringId/events
+      tags:
+      - Monitorings API
+      responses:
+        '200':
+          description: 200 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  previous_pull_id:
+                    type: string
+                    format: uuid
+                    description: The ID of the previous Pull in the Monitoring.
+                  latest_pull_id:
+                    type: string
+                    format: uuid
+                    description: The ID of the most recent Pull in the Monitoring.
+                  events:
+                    type: array
+                    description: An array of events that occurred between the two most recent Pulls in the Monitoring.
+                    items:
+                      $ref: '#/components/schemas/MonitoringEvent'
+              examples:
+                New vehicle added:
+                  value:
+                    previous_pull_id: b2cc89fc-2064-4259-bb61-460924fe115f
+                    latest_pull_id: af9d4a2e-f1f8-476a-a515-e16bbd432c91
+                    events:
+                    - type: ENDORSEMENT
+                      changes:
+                      - schema: POLICY
+                        type: UPDATE
+                        before:
+                          total_premium_cents: 51400
+                        after:
+                          total_premium_cents: 62100
+                      - schema: VEHICLE
+                        type: CREATE
+                        before: null
+                        after:
+                          vehicle_id: 3f7c2f44-51b6-4292-a502-f353ed0404f9
+                      - schema: VEHICLEDRIVER
+                        type: CREATE
+                        before: null
+                        after:
+                          vehicle_driver_id: b1664850-19e6-4dce-a367-3f98234b4b47
+                      documents:
+                      - document_id: 2754c9f8-a5b0-4282-a1a1-0ef29a97dd09
+                Coverage change:
+                  value:
+                    previous_pull_id: b2cc89fc-2064-4259-bb61-460924fe115f
+                    latest_pull_id: af9d4a2e-f1f8-476a-a515-e16bbd432c91
+                    events:
+                    - type: ENDORSEMENT
+                      changes:
+                      - schema: POLICY
+                        type: UPDATE
+                        before:
+                          total_premium_cents: 51400
+                        after:
+                          total_premium_cents: 62100
+                      - schema: VEHICLECOVERAGE
+                        type: CREATE
+                        before: null
+                        after:
+                          vehicle_coverage_id: 3f7c2f44-51b6-4292-a502-f353ed0404f9
+                      documents:
+                      - document_id: 2754c9f8-a5b0-4282-a1a1-0ef29a97dd09
+                Policy renewing with higher premium:
+                  value:
+                    previous_pull_id: b2cc89fc-2064-4259-bb61-460924fe11f
+                    latest_pull_id: af9d4a2e-f1f8-476a-a515-e16bbd432c91
+                    events:
+                    - type: RENEWAL
+                      changes:
+                      - schema: POLICY
+                        type: UPDATE
+                        before:
+                          total_premium_cents: 51400
+                          effective_date: '2024-08-05T04:00:00.000Z'
+                          expiry_date: '2025-02-05T04:00:00.000Z'
+                        after:
+                          total_premium_cents: 62100
+                          effective_date: '2025-02-05T04:00:00.000Z'
+                          expiry_date: '2025-08-05T04:00:00.000Z'
+                      documents:
+                      - document_id: 2754c9f8-a5b0-4282-a1a1-0ef29a97dd09
+                Claim falls off the account:
+                  value:
+                    previous_pull_id: b2cc89fc-2064-4259-bb61-460924fe115f
+                    latest_pull_id: af9d4a2e-f1f8-476a-a515-e16bbd432c91
+                    events:
+                    - type: CLAIM_REMOVED
+                      changes:
+                      - schema: CLAIM
+                        type: DELETE
+                        before:
+                          claim_id: 595fb653-4684-4d81-91b8-1347626c7799
+                        after: null
+                Driving record falls off the account:
+                  value:
+                    previous_pull_id: b2cc89fc-2064-4259-bb61-460924fe115f
+                    latest_pull_id: af9d4a2e-f1f8-476a-a515-e16bbd432c91
+                    events:
+                    - type: DRIVINGRECORD_REMOVED
+                      changes:
+                      - schema: DRIVINGRECORD
+                        type: DELETE
+                        before:
+                          driving_record_id: a087aa85-db55-4100-8684-b21acee37ee2
+                        after: null
+      operationId: get-monitoring-events
+      description: Used to get the events between the two most recent Pulls of a monitored insurance account. Your plan must include monitoring events in order to access this API. For more information, contact your Canopy Connect representative.
+components:
+  schemas:
+    MonitoringEvent:
+      title: MonitoringEvent
+      type: object
+      description: A MonitoringEvent is an event that occurred between the two most recent Pulls in the Monitoring.
+      properties:
+        type:
+          enum:
+          - RENEWAL
+          - EXPIRED
+          - CANCELED
+          - NEW_BUSINESS
+          - REINSTATED
+          - ENDORSEMENT
+          - CLAIM_OPENED
+          - CLAIM_CLOSED
+          - CLAIM_REMOVED
+          - DRIVINGRECORD_ADDED
+          - DRIVINGRECORD_REMOVED
+          description: The type of event that occurred.
+        changes:
+          type: array
+          description: An array of objects representing changes to Schema Objects between the two most recent Pulls in the Monitoring.
+          items:
+            type: object
+            properties:
+              schema:
+                enum:
+                - POLICY
+                - VEHICLE
+                - DRIVER
+                - VEHICLEDRIVER
+                - VEHICLECOVERAGE
+                - DWELLING
+                - DWELLINGCOVERAGE
+                - CLAIM
+                - DRIVINGRECORD
+                - BENEFICIARY
+                description: The type of Schema Object that changed.
+              type:
+                enum:
+                - CREATE
+                - UPDATE
+                - DELETE
+                description: The type of change that occurred.
+              before:
+                type:
+                - object
+                - 'null'
+                description: The key/values from the previous Pull that changed between the current Pull and the previous Pull. For CREATE events, this value is null. DELETE events only contain the UUID of the deleted object and parent object(s).
+              after:
+                type:
+                - object
+                - 'null'
+                description: The key/values from the most recent Pull that changed between the current Pull and the previous Pull. CREATE events only contain the UUID of the created object and parent object(s). For DELETE events, this value is null.
+        documents:
+          type: array
+          description: An array of Documents corresponding with the event.
+          items:
+            type: object
+            properties:
+              document_id:
+                type: string
+                format: uuid
+                description: The ID of the Document corresponding with the event.
+    Monitoring:
+      title: Monitoring
+      type: object
+      description: A Monitoring is an object that manages the synchronization of Pulls
+      properties:
+        monitoring_id:
+          type: string
+          format: uuid
+          description: ID of the Monitoring
+        latest_pull_id:
+          type: string
+          format: uuid
+          description: The latest Pull ID for the Monitored account
+        status:
+          type: string
+          description: Status of the Monitoring
+          enum:
+          - ACTIVE
+          - STOPPED
+        next_pull_date:
+          type:
+          - string
+          - 'null'
+          description: When the Monitoring is active, this will be the next date-time the data will be refreshed
+          example: '2000-12-31T00:00:00.000Z'
+          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$
+          format: date-time
+        interval:
+          type: string
+          example: P1M
+          format: ISO-8601-duration
+          pattern: ^(-?)P(?=\d|T\d)(?:(\d+)Y)?(?:(\d+)M)?(?:(\d+)([DW]))?(?:T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+(?:\.\d+)?)S)?)?$
+          description: How often the information should be refreshed. Must be >= 30 days. We accept ISO-8601 duration interval value and support days, months, and/or years.
+        stop_after_date:
+          type:
+          - string
+          - 'null'
+          description: Optional. Date after which monitoring should stop
+          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$
+          example: '2000-12-31T00:00:00.000Z'
+          format: date-time
+  securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: basic
+      description: HTTP Basic authentication. Use your Canopy Connect Client ID as the username and your Client Secret as the password. The `Authorization` header value is `Basic <base64 of clientId:clientSecret>`. See the [Authentication guide](https://docs.usecanopy.com/reference/authentication-guide) for a full walkthrough, and create or manage your Client ID and Client Secret on the [API Settings page](https://app.usecanopy.com/dashboard/settings/api-settings).
+x-readme:
+  headers: []
+  explorer-enabled: true
+  proxy-enabled: true
+  samples-enabled: true

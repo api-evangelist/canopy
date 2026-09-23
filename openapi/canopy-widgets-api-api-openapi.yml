@@ -1,0 +1,830 @@
+openapi: 3.2.0
+info:
+  title: Reference Widgets API
+  version: 1.0.0
+  description: Canopy Connect Public API Documentation
+  contact:
+    name: Canopy Connect
+    email: support@usecanopy.com
+    url: https://usecanopy.com/
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://app.usecanopy.com/api/v1.0.0
+security:
+- BasicAuth: []
+tags:
+- name: Widgets API
+  description: Get, create, update, and delete Widgets
+paths:
+  /teams/{teamId}/widgets:
+    parameters:
+    - schema:
+        type: string
+        format: uuid
+      name: teamId
+      in: path
+      required: true
+      description: ID of Team
+    get:
+      summary: GET /widgets
+      parameters:
+      - schema:
+          type: number
+          default: 10
+          minimum: 1
+          maximum: 100
+        in: query
+        name: limit
+        description: Pagination limit for the widgets
+      - schema:
+          type: string
+          format: uuid
+        in: query
+        name: before
+        description: Pagination before pointer for a widget_id
+      tags:
+      - Widgets API
+      responses:
+        '200':
+          description: 200 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  widgets:
+                    type: array
+                    description: Available widgets
+                    items:
+                      $ref: '#/components/schemas/Widget'
+                required:
+                - success
+                - widgets
+              examples:
+                Example Response:
+                  value:
+                    success: true
+                    widgets:
+                    - widget_id: d2bb6d56-15ff-4760-a27c-362f9bce645a
+                      public_alias: demo
+                      company_name: Demo Company
+                      logo_src: https://app.usecanopy.com/widget-static/img/widget-logos/d2bb6d56-15ff-4760-a27c-362f9bce645a/x-uuid-x.png
+                      icon_src: https://app.usecanopy.com/widget-static/img/widget-logos/d2bb6d56-15ff-4760-a27c-362f9bce645a/icon-x-uuid-x.png
+                      is_sandbox: false
+                      brand_color_hex: 405dff
+                      public_url: https://app.usecanopy.com/c/demo
+                      agents:
+                      - agent_id: 6dcb460e-19ce-4d75-a280-d33fa37e3557
+                        email: demo@example.com
+                        first_name: John
+                        last_name: Doe
+                        role: ADMIN
+        '400':
+          description: 400 Response Schema
+          content:
+            application/json:
+              examples:
+                Example Response:
+                  value:
+                    error: VALIDATION_ERROR
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - VALIDATION_ERROR
+        '401':
+          description: 401 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - UNAUTHORIZED
+              examples:
+                Example Response:
+                  value:
+                    error: UNAUTHORIZED
+        '403':
+          description: 403 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - SUBSCRIPTION_INACTIVE
+              examples:
+                Example Response:
+                  value:
+                    error: SUBSCRIPTION_INACTIVE
+      operationId: get-widgets
+      description: Used to get all available widgets
+    post:
+      summary: POST /widgets
+      operationId: post-widgets
+      responses:
+        '200':
+          description: 200 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    default: true
+                  widget:
+                    $ref: '#/components/schemas/Widget'
+        '400':
+          description: 400 Response Schema
+          content:
+            application/json:
+              examples:
+                Example Response:
+                  value:
+                    error: INVALID_INPUT
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - INVALID_INPUT
+                    - WIDGET_RESTRICTED_API_KEY
+                    - INVALID_AGENT_ID
+                    - WIDGET_LIMIT_EXCEEDED
+                    - ALREADY_EXISTS
+        '401':
+          description: 401 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - UNAUTHORIZED
+              examples:
+                Example Response:
+                  value:
+                    error: UNAUTHORIZED
+        '403':
+          description: 403 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - SUBSCRIPTION_INACTIVE
+              examples:
+                Example Response:
+                  value:
+                    error: SUBSCRIPTION_INACTIVE
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                intro_title:
+                  type: string
+                  description: The message displayed upon the introduction of the Widget flow.
+                public_alias:
+                  type: string
+                  description: The public identifier for the Widget (eg. demo => https://app.usecanopy.com/c/demo). When not explicitly set, a public_alias will be auto generated.
+                company_name:
+                  type: string
+                  description: The company name presented in the Widget flow.
+                brand_color_hex:
+                  type: string
+                  description: RRGGBB hexadecimal string used for color theming in the Widget flow.
+                success_message:
+                  type: string
+                  description: The message displayed upon successful completion of the Widget flow.
+                on_success_redirect_url:
+                  type:
+                  - string
+                  - 'null'
+                  description: The URL the user is taken to upon successful completion of the Widget flow.
+                cobranded_intro_screen:
+                  type: boolean
+                  description: Whether the enhanced “cobranded” introduction screen is enabled for the Widget flow.
+                agents:
+                  oneOf:
+                  - type: array
+                    items:
+                      type: object
+                      properties:
+                        agent_id:
+                          type: string
+                          format: uuid
+                  - type: array
+                    items:
+                      type: string
+                      format: uuid
+                  description: Optional list of agents to update (either list of agent_ids or agent object with agent_id)
+      tags:
+      - Widgets API
+      description: Used to create a widget
+  /teams/{teamId}/widgets/{widgetId}:
+    parameters:
+    - schema:
+        type: string
+        format: uuid
+      name: teamId
+      in: path
+      required: true
+    - schema:
+        type: string
+        format: uuid
+      name: widgetId
+      in: path
+      required: true
+    get:
+      summary: GET /:widgetId
+      tags:
+      - Widgets API
+      responses:
+        '200':
+          description: 200 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    default: true
+                  widget:
+                    $ref: '#/components/schemas/Widget'
+        '400':
+          description: 400 Response Schema
+          content:
+            application/json:
+              examples:
+                Example Response:
+                  value:
+                    error: INCORRECT_API_KEY_TYPE
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - INCORRECT_API_KEY_TYPE
+        '401':
+          description: 401 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - UNAUTHORIZED
+              examples:
+                Example Response:
+                  value:
+                    error: UNAUTHORIZED
+        '403':
+          description: 403 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - SUBSCRIPTION_INACTIVE
+              examples:
+                Example Response:
+                  value:
+                    error: SUBSCRIPTION_INACTIVE
+        '404':
+          description: 404 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - NOT_FOUND
+                required:
+                - error
+      operationId: get-widgetId
+      description: Used to get a widget
+    patch:
+      summary: PATCH /:widgetId
+      operationId: patch-widgetId
+      responses:
+        '200':
+          description: 200 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    default: true
+                  widget:
+                    $ref: '#/components/schemas/Widget'
+        '400':
+          description: 400 Response Schema
+          content:
+            application/json:
+              examples:
+                Example Response:
+                  value:
+                    error: INVALID_INPUT
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - INCORRECT_API_KEY_TYPE
+                    - INVALID_INPUT
+                    - INVALID_AGENT_ID
+                    - ALREADY_EXISTS
+        '401':
+          description: 401 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - UNAUTHORIZED
+              examples:
+                Example Response:
+                  value:
+                    error: UNAUTHORIZED
+        '403':
+          description: 403 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - SUBSCRIPTION_INACTIVE
+              examples:
+                Example Response:
+                  value:
+                    error: SUBSCRIPTION_INACTIVE
+        '404':
+          description: 404 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - NOT_FOUND
+                required:
+                - error
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                intro_title:
+                  type: string
+                  description: The message displayed upon the introduction of the Widget flow.
+                public_alias:
+                  type: string
+                  description: The public identifier for the Widget (eg. demo => https://app.usecanopy.com/c/demo). When not explicitly set, a public_alias will be auto generated.
+                company_name:
+                  type: string
+                  description: The company name presented in the Widget flow.
+                brand_color_hex:
+                  type: string
+                  description: RRGGBB hexadecimal string used for color theming in the Widget flow.
+                success_message:
+                  type: string
+                  description: The message displayed upon successful completion of the Widget flow.
+                on_success_redirect_url:
+                  type:
+                  - string
+                  - 'null'
+                  description: The URL the user is taken to upon successful completion of the Widget flow.
+                cobranded_intro_screen:
+                  type: boolean
+                  description: Whether the enhanced “cobranded” introduction screen is enabled for the Widget flow.
+                agents:
+                  oneOf:
+                  - type: array
+                    items:
+                      type: object
+                      properties:
+                        agent_id:
+                          type: string
+                          format: uuid
+                  - type: array
+                    items:
+                      type: string
+                      format: uuid
+                  description: Optional list of agents to update (either list of agent_ids or agent object with agent_id)
+      tags:
+      - Widgets API
+      description: Used to edit a widget
+    delete:
+      summary: DELETE /:widgetId
+      operationId: delete-widgetId
+      responses:
+        '200':
+          description: 200 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    default: true
+        '400':
+          description: 400 Response Schema
+          content:
+            application/json:
+              examples:
+                Example Response:
+                  value:
+                    error: INCORRECT_API_KEY_TYPE
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - INCORRECT_API_KEY_TYPE
+        '401':
+          description: 401 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - UNAUTHORIZED
+              examples:
+                Example Response:
+                  value:
+                    error: UNAUTHORIZED
+        '403':
+          description: 403 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - SUBSCRIPTION_INACTIVE
+              examples:
+                Example Response:
+                  value:
+                    error: SUBSCRIPTION_INACTIVE
+        '404':
+          description: 404 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - NOT_FOUND
+                required:
+                - error
+      tags:
+      - Widgets API
+      description: Used to delete a widget
+  /teams/{teamId}/widgets/{widgetId}/logo:
+    parameters:
+    - schema:
+        type: string
+        format: uuid
+      name: teamId
+      in: path
+      required: true
+    - schema:
+        type: string
+        format: uuid
+      name: widgetId
+      in: path
+      required: true
+    put:
+      summary: PUT /:widgetId/logo
+      operationId: put-widgetId-logo
+      responses:
+        '200':
+          description: 200 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    default: true
+                  widget:
+                    $ref: '#/components/schemas/Widget'
+        '400':
+          description: 400 Response Schema
+          content:
+            application/json:
+              examples:
+                Example Response:
+                  value:
+                    error: INVALID_INPUT
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - INCORRECT_API_KEY_TYPE
+                    - INVALID_INPUT
+                    - INVALID_IMAGE
+        '401':
+          description: 401 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - UNAUTHORIZED
+              examples:
+                Example Response:
+                  value:
+                    error: UNAUTHORIZED
+        '403':
+          description: 403 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - SUBSCRIPTION_INACTIVE
+              examples:
+                Example Response:
+                  value:
+                    error: SUBSCRIPTION_INACTIVE
+        '404':
+          description: 404 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - NOT_FOUND
+                required:
+                - error
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                logo:
+                  type: string
+                  format: binary
+            encoding:
+              logo:
+                contentType: image/jpg, image/jpeg, image/png, image/webp
+      description: Used to stream logo upload for a widget
+      tags:
+      - Widgets API
+  /teams/{teamId}/widgets/{widgetId}/icon:
+    parameters:
+    - schema:
+        type: string
+        format: uuid
+      name: teamId
+      in: path
+      required: true
+    - schema:
+        type: string
+        format: uuid
+      name: widgetId
+      in: path
+      required: true
+    put:
+      summary: PUT /:widgetId/icon
+      operationId: put-widgetId-icon
+      responses:
+        '200':
+          description: 200 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    default: true
+                  widget:
+                    $ref: '#/components/schemas/Widget'
+        '400':
+          description: 400 Response Schema
+          content:
+            application/json:
+              examples:
+                Example Response:
+                  value:
+                    error: INVALID_INPUT
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - INCORRECT_API_KEY_TYPE
+                    - INVALID_INPUT
+                    - INVALID_IMAGE
+        '401':
+          description: 401 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - UNAUTHORIZED
+              examples:
+                Example Response:
+                  value:
+                    error: UNAUTHORIZED
+        '403':
+          description: 403 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - SUBSCRIPTION_INACTIVE
+              examples:
+                Example Response:
+                  value:
+                    error: SUBSCRIPTION_INACTIVE
+        '404':
+          description: 404 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - NOT_FOUND
+                required:
+                - error
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                icon:
+                  type: string
+                  format: binary
+            encoding:
+              icon:
+                contentType: image/jpg, image/jpeg, image/png, image/webp
+      description: Used to stream icon upload for a widget
+      tags:
+      - Widgets API
+components:
+  schemas:
+    Widget:
+      title: Widget
+      type: object
+      properties:
+        widget_id:
+          type: string
+          format: uuid
+          description: A unique identifier for the Widget.
+        intro_title:
+          type: string
+          description: The message displayed upon the introduction of the Widget flow.
+        public_alias:
+          type: string
+          description: The public identifier for the Widget (eg. demo => https://app.usecanopy.com/c/demo). When not explicitly set, a public_alias will be auto generated.
+        company_name:
+          type: string
+          description: The company name presented in the Widget flow.
+        success_message:
+          type: string
+          description: The message displayed upon successful completion of the Widget flow.
+        on_success_redirect_url:
+          type:
+          - string
+          - 'null'
+          description: The URL the user is taken to upon successful completion of the Widget flow.
+        is_sandbox:
+          type: boolean
+          description: Whether or not the Widget is in sandbox mode (as opposed to production mode).
+        brand_color_hex:
+          type: string
+          description: RRGGBB hexadecimal string used for color theming in the Widget flow.
+        cobranded_intro_screen:
+          type: boolean
+          description: Whether the enhanced “cobranded” introduction screen is enabled for the Widget flow.
+        public_url:
+          type: string
+          description: The fully qualified public URL for the Widget flow (eg. https://app.usecanopy.com/c/demo).
+        logo_src:
+          type:
+          - string
+          - 'null'
+          description: The fully qualified public URL for the logo image displayed in the Widget flow.
+        icon_src:
+          type:
+          - string
+          - 'null'
+          description: The fully qualified public URL for the icon image shown in the Widget flow when cobranded_intro_screen is enabled.
+        agents:
+          type: array
+          description: List of agents
+          items:
+            $ref: '#/components/schemas/Agent'
+    Agent:
+      title: Agent
+      type: object
+      properties:
+        agent_id:
+          type: string
+          format: uuid
+          description: A unique identifier for the Agent.
+        email:
+          type: string
+          description: Agent's email
+          format: email
+        first_name:
+          type: string
+          description: Agent's first name
+        last_name:
+          type: string
+          description: Agent's last name
+        role:
+          type: string
+          enum:
+          - ADMIN
+          - AGENT
+          description: Agent's Role
+  securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: basic
+      description: HTTP Basic authentication. Use your Canopy Connect Client ID as the username and your Client Secret as the password. The `Authorization` header value is `Basic <base64 of clientId:clientSecret>`. See the [Authentication guide](https://docs.usecanopy.com/reference/authentication-guide) for a full walkthrough, and create or manage your Client ID and Client Secret on the [API Settings page](https://app.usecanopy.com/dashboard/settings/api-settings).
+x-readme:
+  headers: []
+  explorer-enabled: true
+  proxy-enabled: true
+  samples-enabled: true

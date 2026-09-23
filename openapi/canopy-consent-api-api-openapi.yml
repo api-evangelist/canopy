@@ -1,0 +1,163 @@
+openapi: 3.2.0
+info:
+  title: Reference Consent API
+  version: 1.0.0
+  description: Canopy Connect Public API Documentation
+  contact:
+    name: Canopy Connect
+    email: support@usecanopy.com
+    url: https://usecanopy.com/
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://app.usecanopy.com/api/v1.0.0
+security:
+- BasicAuth: []
+tags:
+- name: Consent API
+  description: Collect consent to skip the consent page in the SDK
+paths:
+  /consent:
+    post:
+      summary: POST /consent
+      description: This page will help you get started with Consent API.
+      operationId: post-consent
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - device_identifier
+              - terms_version
+              - consent_language
+              properties:
+                device_identifier:
+                  type: string
+                  description: IP address or device identifier of the user who is agreeing to the Canopy Connect Privacy Policy and Terms of Service
+                terms_version:
+                  type: integer
+                  description: Version of Canopy Connect’s Privacy Policy and Terms of Service
+                  format: int32
+                consent_language:
+                  type: string
+                  description: Text that was displayed to the user when prompting for their consent
+                  maxLength: 1024
+                  example: By clicking <name of button> you agree to the Canopy Connect End User Privacy Policy and Terms of Service
+      responses:
+        '200':
+          description: 200 Response Schema
+          content:
+            application/json:
+              examples:
+                Example Response:
+                  value:
+                    consent_token: b07ef761-5631-44ee-a867-ff06c24eb5ef
+              schema:
+                type: object
+                properties:
+                  consent_token:
+                    type: string
+                    example: b07ef761-5631-44ee-a867-ff06c24eb5ef
+                    description: Consent token that can be passed into the SDK to skip the consent page
+        '400':
+          description: 400 Response Schema
+          content:
+            application/json:
+              examples:
+                Example Response:
+                  value:
+                    error: MISSING_DEVICE_IDENTIFIER
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - MISSING_DEVICE_IDENTIFIER
+                    - INVALID_CONSENT_LANGUAGE
+                    - CONSENT_LANGUAGE_TOO_LONG
+        '401':
+          description: 401 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - UNAUTHORIZED
+              examples:
+                Example Response:
+                  value:
+                    error: UNAUTHORIZED
+        '404':
+          description: 404 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - INVALID_PRIVACY_POLICY_TERM_ID
+              examples:
+                Example Response:
+                  value:
+                    error: INVALID_PRIVACY_POLICY_TERM_ID
+      deprecated: false
+      tags:
+      - Consent API
+  /tos:
+    get:
+      summary: GET /tos
+      description: Used to retrieve the current terms of service version number and the html content of the terms of service. When presenting consent to the customer you may either link to https://usecanopy.com/privacy or show them the terms html.
+      operationId: get-tos
+      responses:
+        '200':
+          description: 200 Response Schema
+          content:
+            application/json:
+              examples:
+                Example Response:
+                  value:
+                    terms_version: 1
+                    terms_html: '<!DOCTYPE html>
+
+                      <html lang="en">...html_content...</html>
+
+                      '
+              schema:
+                type: object
+                properties:
+                  terms_version:
+                    type: integer
+                    example: 1
+                    default: 0
+                    description: The current version for our Terms of Service
+                  terms_html:
+                    type: string
+                    example: '<!DOCTYPE html>
+
+                      <html lang="en">...html_content...</html>
+
+                      '
+                    description: Html content of our Terms of Service which must be made visible to the consumer through an button/link to collect consent
+      deprecated: false
+      security: []
+      tags:
+      - Consent API
+components:
+  securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: basic
+      description: HTTP Basic authentication. Use your Canopy Connect Client ID as the username and your Client Secret as the password. The `Authorization` header value is `Basic <base64 of clientId:clientSecret>`. See the [Authentication guide](https://docs.usecanopy.com/reference/authentication-guide) for a full walkthrough, and create or manage your Client ID and Client Secret on the [API Settings page](https://app.usecanopy.com/dashboard/settings/api-settings).
+x-readme:
+  headers: []
+  explorer-enabled: true
+  proxy-enabled: true
+  samples-enabled: true

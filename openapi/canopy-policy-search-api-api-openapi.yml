@@ -1,0 +1,247 @@
+openapi: 3.2.0
+info:
+  title: Reference Policy Search API
+  version: 1.0.0
+  description: Canopy Connect Public API Documentation
+  contact:
+    name: Canopy Connect
+    email: support@usecanopy.com
+    url: https://usecanopy.com/
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+- url: https://app.usecanopy.com/api/v1.0.0
+security:
+- BasicAuth: []
+tags:
+- name: Policy Search API
+  description: Search verified Auto ID Cards, Auto insurance policies and Home insurance policies from major insurance carriers without the need for login credentials.
+paths:
+  /teams/{teamId}/policySearch:
+    parameters:
+    - schema:
+        type: string
+        format: uuid
+      name: teamId
+      in: path
+      required: true
+      description: ID of the requesting Team
+    post:
+      summary: POST /policySearch
+      description: Initiates a new credential-less insurance policy search. Supports Auto insurance policy search, Home insurance policy search, and Auto ID Card search.
+      operationId: post-policy-search
+      tags:
+      - Policy Search API
+      security:
+      - BasicAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - device_identifier
+              - terms_version
+              - consent_language
+              - public_alias
+              - insurerName
+              - searchType
+              - searchData
+              properties:
+                device_identifier:
+                  type: string
+                  description: User's IP address or other unique end user identifier.
+                terms_version:
+                  type: integer
+                  description: Must correspond to the terms_version that was presented to the user.
+                consent_language:
+                  type: string
+                  maxLength: 1024
+                  description: Text that was displayed to the user when prompting for their consent.
+                public_alias:
+                  type: string
+                  description: The widget alias that the pull will be submitted on.
+                insurerName:
+                  type: string
+                  enum:
+                  - allstate
+                  - amfam
+                  - autoowners
+                  - farmers
+                  - nationwide
+                  - progressive
+                  - usaa
+                  description: Carrier ID to search for policies
+                searchType:
+                  type: string
+                  enum:
+                  - AUTO_ID_CARD
+                  - AUTO_POLICY
+                  - HOME_POLICY
+                  description: Type of search. Supply "AUTO_ID_CARD" for Auto ID Card Search, "AUTO_POLICY" for Auto Policy Search, and "HOME_POLICY" for Home Policy Search
+                searchData:
+                  type: object
+                  description: Key/value pairs corresponding to carrier-specific input requirements
+            examples:
+              Auto-Owners Auto ID Card Search by policy number and zip:
+                value:
+                  device_identifier: 124.321.213.111
+                  terms_version: 1
+                  consent_language: By clicking Continue you agree to the Canopy Connect End User Privacy Policy and Terms of Service
+                  public_alias: <YOUR_PUBLIC_ALIAS>
+                  insurerName: autoowners
+                  searchType: AUTO_ID_CARD
+                  searchData:
+                    policyNumber: '12345678'
+                    zipCode: '90210'
+              Farmers Auto ID Card Search by name, zip, and date of birth:
+                value:
+                  device_identifier: 124.321.213.111
+                  terms_version: 1
+                  consent_language: By clicking Continue you agree to the Canopy Connect End User Privacy Policy and Terms of Service
+                  public_alias: <YOUR_PUBLIC_ALIAS>
+                  insurerName: farmers
+                  searchType: AUTO_ID_CARD
+                  searchData:
+                    firstName: Clark
+                    lastName: Kent
+                    zipCode: '90210'
+                    dateOfBirth: 01/01/1990
+                    policyNumberOrInfo: info
+              Farmers Auto ID Card Search by policy number and zip:
+                value:
+                  device_identifier: 124.321.213.111
+                  terms_version: 1
+                  consent_language: By clicking Continue you agree to the Canopy Connect End User Privacy Policy and Terms of Service
+                  public_alias: <YOUR_PUBLIC_ALIAS>
+                  insurerName: farmers
+                  searchType: AUTO_ID_CARD
+                  searchData:
+                    policyNumber: '12345678'
+                    zipCode: '90210'
+                    policyNumberOrInfo: policyNumber
+              Progressive Auto Policy Search by VIN:
+                value:
+                  device_identifier: 124.321.213.111
+                  terms_version: 1
+                  consent_language: By clicking Continue you agree to the Canopy Connect End User Privacy Policy and Terms of Service
+                  public_alias: <YOUR_PUBLIC_ALIAS>
+                  insurerName: progressive
+                  searchType: AUTO_POLICY
+                  searchData:
+                    vin: 1G2ZG558964193639
+              USAA Home Policy Search by street address, zip, and policy number:
+                value:
+                  device_identifier: 124.321.213.111
+                  terms_version: 1
+                  consent_language: By clicking Continue you agree to the Canopy Connect End User Privacy Policy and Terms of Service
+                  public_alias: <YOUR_PUBLIC_ALIAS>
+                  insurerName: usaa
+                  searchType: HOME_POLICY
+                  searchData:
+                    streetAddress: 123 Main Street
+                    zipCode: '90210'
+                    policyNumber: '12345678'
+      responses:
+        '200':
+          description: 200 Response Schema - Policy Search Initiated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  pull_id:
+                    type: string
+                    format: uuid
+                    description: Pull ID of the Pull with insurance policy or ID card inforrmation matching the search criteria
+                  pull_jwt:
+                    type: string
+                    description: Pull JWT used to authenticate the rest of the Whitelabel API routes
+                required:
+                - pull_id
+                - pull_jwt
+              examples:
+                Success Response:
+                  value:
+                    pull_id: 550e8400-e29b-41d4-a716-446655440000
+                    pull_jwt: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwdWxsX2lkIjoiNTUwZTg0MDAtZTI5Yi00MWQ0LWE3MTYtNDQ2NjU1NDQwMDAwIiwiaWF0IjoxNzA0NjcyMDAwfQ.abc123...
+        '400':
+          description: 400 Response Schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - INVALID_INPUT
+                    - INVALID_PUBLIC_ALIAS
+                    - INCORRECT_API_KEY_TYPE
+                    - INVALID_POLICY_LOOKUP_DATA
+              examples:
+                Invalid Search Type:
+                  description: Returned when searchType is not one of AUTO_ID_CARD, AUTO_POLICY, or HOME_POLICY.
+                  value:
+                    error: INVALID_INPUT
+                Invalid Public Alias:
+                  description: 'Returned when: Widget with the specified public_alias doesn''t exist, Widget doesn''t have the POLICY_LOOKUP flag enabled, Widget belongs to a different team, or API key doesn''t have access to the specified widget.'
+                  value:
+                    error: INVALID_PUBLIC_ALIAS
+                API Key Environment Mismatch:
+                  description: Returned when using a sandbox API key with a production widget (or vice versa).
+                  value:
+                    error: INCORRECT_API_KEY_TYPE
+                Invalid Insurance Provider:
+                  description: Returned when insurerName is not a supported carrier.
+                  value:
+                    error: INVALID_INPUT
+                Invalid Policy Lookup Data:
+                  description: Returned when searchData has missing required fields or unexpected extra fields for the specified carrier and search type.
+                  value:
+                    error: INVALID_POLICY_LOOKUP_DATA
+        '403':
+          description: 403 Response Schema - No Policy Lookup Access
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - FORBIDDEN
+              examples:
+                No Policy Lookup Access:
+                  description: Returned when the team doesn't have access to the specified policy lookup type.
+                  value:
+                    error: FORBIDDEN
+        '500':
+          description: 500 Response Schema - Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    enum:
+                    - INTERNAL_ERROR
+              examples:
+                Internal Server Error:
+                  description: Returned when an unexpected error occurs during processing.
+                  value:
+                    error: INTERNAL_ERROR
+components:
+  securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: basic
+      description: HTTP Basic authentication. Use your Canopy Connect Client ID as the username and your Client Secret as the password. The `Authorization` header value is `Basic <base64 of clientId:clientSecret>`. See the [Authentication guide](https://docs.usecanopy.com/reference/authentication-guide) for a full walkthrough, and create or manage your Client ID and Client Secret on the [API Settings page](https://app.usecanopy.com/dashboard/settings/api-settings).
+x-readme:
+  headers: []
+  explorer-enabled: true
+  proxy-enabled: true
+  samples-enabled: true
