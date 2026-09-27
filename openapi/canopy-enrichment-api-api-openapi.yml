@@ -375,161 +375,6 @@ paths:
         description: Required if DOB is not supplied. The drivers license state of the person.
 components:
   schemas:
-    EnrichmentHousehold:
-      title: EnrichmentHousehold
-      type: object
-      properties:
-        household_id:
-          type: string
-          format: uuid
-          description: Canopy Connect Household lookup ID
-        drivers:
-          type: array
-          items:
-            $ref: '#/components/schemas/EnrichmentDriverLicense/properties/driver_license'
-        vehicles:
-          type: array
-          items:
-            title: EnrichmentVehicleData
-            type: object
-            properties:
-              vin:
-                type:
-                - string
-                - 'null'
-                description: The VIN of the vehicle.
-              year:
-                type:
-                - integer
-                - 'null'
-                description: The model year of the vehicle.
-              make:
-                type:
-                - string
-                - 'null'
-                description: The make of the vehicle.
-              model:
-                type:
-                - string
-                - 'null'
-                description: The model of the vehicle.
-              series:
-                type:
-                - string
-                - 'null'
-                description: The series of the vehicle.
-              series2:
-                type:
-                - string
-                - 'null'
-                description: The series2 of the vehicle.
-              type:
-                type:
-                - string
-                - 'null'
-                description: The type of the vehicle, based on state registration.
-              ownership_type:
-                type:
-                - string
-                - 'null'
-                enum:
-                - OWN
-                - FINANCE
-                - LEASE
-                description: The ownership type of the vehicle.
-              lien_holder:
-                type:
-                - string
-                - 'null'
-                description: The lienholder of the vehicle.
-              purchase_date:
-                type:
-                - string
-                - 'null'
-                format: date-time
-                description: The purchase date of the vehicle.
-    EnrichmentDrivingRecordIq:
-      title: EnrichmentDrivingRecordIq
-      type: object
-      properties:
-        driving_record_iq_id:
-          type: string
-          format: uuid
-          description: Canopy Connect Driving Record IQ lookup ID.
-        driving_record_iq:
-          type: object
-          properties:
-            status:
-              type:
-              - string
-              - 'null'
-              enum:
-              - CLEAN
-              - NO_EVIDENCE
-              - MINOR_VIOLATIONS
-              - MAJOR_VIOLATIONS
-            minor_violations:
-              type: integer
-              default: 0
-            last_minor_violation_date_str:
-              type:
-              - string
-              - 'null'
-            major_violations:
-              type: integer
-              default: 0
-            last_major_violation_date_str:
-              type:
-              - string
-              - 'null'
-    EnrichmentDriverLicense:
-      title: EnrichmentDriverLicense
-      type: object
-      properties:
-        driver_license_id:
-          type: string
-          format: uuid
-          description: Canopy Connect Driver License lookup ID.
-        driver_license:
-          title: EnrichmentDriverData
-          type: object
-          properties:
-            first_name:
-              type: string
-              description: The first name of the person.
-            middle_name:
-              type:
-              - string
-              - 'null'
-              description: The middle name of the person.
-            last_name:
-              type: string
-              description: The last name of the person.
-            date_of_birth_str:
-              type:
-              - string
-              - 'null'
-              description: The date of birth of the person.
-            drivers_license:
-              type:
-              - string
-              - 'null'
-              description: The driver's license number.
-            drivers_license_state:
-              type:
-              - string
-              - 'null'
-              description: The state where the driver's license was issued.
-            gender:
-              type:
-              - string
-              - 'null'
-              description: The reported gender of the driver.
-            marital_status:
-              type:
-              - string
-              - 'null'
-              description: The marital status of the driver.
     EnrichmentPropertyData:
       title: EnrichmentPropertyData
       type: object
@@ -1521,6 +1366,161 @@ components:
               - 'null'
               description: The last update date for the property data
               format: date
+    EnrichmentDriverLicense:
+      title: EnrichmentDriverLicense
+      type: object
+      properties:
+        driver_license_id:
+          type: string
+          format: uuid
+          description: Canopy Connect Driver License lookup ID.
+        driver_license:
+          title: EnrichmentDriverData
+          type: object
+          properties:
+            first_name:
+              type: string
+              description: The first name of the person.
+            middle_name:
+              type:
+              - string
+              - 'null'
+              description: The middle name of the person.
+            last_name:
+              type: string
+              description: The last name of the person.
+            date_of_birth_str:
+              type:
+              - string
+              - 'null'
+              description: The date of birth of the person.
+            drivers_license:
+              type:
+              - string
+              - 'null'
+              description: The driver's license number.
+            drivers_license_state:
+              type:
+              - string
+              - 'null'
+              description: The state where the driver's license was issued.
+            gender:
+              type:
+              - string
+              - 'null'
+              description: The reported gender of the driver.
+            marital_status:
+              type:
+              - string
+              - 'null'
+              description: The marital status of the driver.
+    EnrichmentDrivingRecordIq:
+      title: EnrichmentDrivingRecordIq
+      type: object
+      properties:
+        driving_record_iq_id:
+          type: string
+          format: uuid
+          description: Canopy Connect Driving Record IQ lookup ID.
+        driving_record_iq:
+          type: object
+          properties:
+            status:
+              type:
+              - string
+              - 'null'
+              enum:
+              - CLEAN
+              - NO_EVIDENCE
+              - MINOR_VIOLATIONS
+              - MAJOR_VIOLATIONS
+            minor_violations:
+              type: integer
+              default: 0
+            last_minor_violation_date_str:
+              type:
+              - string
+              - 'null'
+            major_violations:
+              type: integer
+              default: 0
+            last_major_violation_date_str:
+              type:
+              - string
+              - 'null'
+    EnrichmentHousehold:
+      title: EnrichmentHousehold
+      type: object
+      properties:
+        household_id:
+          type: string
+          format: uuid
+          description: Canopy Connect Household lookup ID
+        drivers:
+          type: array
+          items:
+            $ref: '#/components/schemas/EnrichmentDriverLicense/properties/driver_license'
+        vehicles:
+          type: array
+          items:
+            title: EnrichmentVehicleData
+            type: object
+            properties:
+              vin:
+                type:
+                - string
+                - 'null'
+                description: The VIN of the vehicle.
+              year:
+                type:
+                - integer
+                - 'null'
+                description: The model year of the vehicle.
+              make:
+                type:
+                - string
+                - 'null'
+                description: The make of the vehicle.
+              model:
+                type:
+                - string
+                - 'null'
+                description: The model of the vehicle.
+              series:
+                type:
+                - string
+                - 'null'
+                description: The series of the vehicle.
+              series2:
+                type:
+                - string
+                - 'null'
+                description: The series2 of the vehicle.
+              type:
+                type:
+                - string
+                - 'null'
+                description: The type of the vehicle, based on state registration.
+              ownership_type:
+                type:
+                - string
+                - 'null'
+                enum:
+                - OWN
+                - FINANCE
+                - LEASE
+                description: The ownership type of the vehicle.
+              lien_holder:
+                type:
+                - string
+                - 'null'
+                description: The lienholder of the vehicle.
+              purchase_date:
+                type:
+                - string
+                - 'null'
+                format: date-time
+                description: The purchase date of the vehicle.
   securitySchemes:
     BasicAuth:
       type: http
