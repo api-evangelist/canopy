@@ -210,19 +210,6 @@ paths:
       operationId: post-policy-check-team-settings
 components:
   schemas:
-    PolicyCheckDwellingSetting:
-      title: PolicyCheckDwellingSetting
-      type: object
-      properties:
-        DWELLING_POLICY_NOT_ACTIVE:
-          type: boolean
-          description: Verify whether the dwelling policy is active or inactive.
-        LOSS_SETTLEMENT_TYPE_EQUALS_REPLACEMENT_COST:
-          type: boolean
-          description: Verify the dwelling policy uses replacement cost for loss settlement type.
-        REPLACEMENT_COST_EXCEEDS_DWELLING_LIMIT:
-          type: boolean
-          description: Ensure that the replacement cost does not exceed the dwelling coverage limit.
     PolicyCheckVehicleSetting:
       title: PolicyCheckVehicleSetting
       type: object
@@ -287,6 +274,19 @@ components:
               - number
               - 'null'
           description: Verify that the uninsured motorist bodily injury coverage per person and/or per accident is above the specified limits
+    PolicyCheckDwellingSetting:
+      title: PolicyCheckDwellingSetting
+      type: object
+      properties:
+        DWELLING_POLICY_NOT_ACTIVE:
+          type: boolean
+          description: Verify whether the dwelling policy is active or inactive.
+        LOSS_SETTLEMENT_TYPE_EQUALS_REPLACEMENT_COST:
+          type: boolean
+          description: Verify the dwelling policy uses replacement cost for loss settlement type.
+        REPLACEMENT_COST_EXCEEDS_DWELLING_LIMIT:
+          type: boolean
+          description: Ensure that the replacement cost does not exceed the dwelling coverage limit.
   securitySchemes:
     BasicAuth:
       type: http
