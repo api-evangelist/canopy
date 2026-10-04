@@ -3330,1227 +3330,168 @@ paths:
       - Pulls API
 components:
   schemas:
-    LocationOperation:
-      title: LocationOperation
+    PolicyCheck:
+      title: PolicyCheck
       type: object
       properties:
-        location_operation_id:
-          type: string
-          format: uuid
-          description: ID of the location operation
-        class_code:
-          type: string
-          description: Three or four-digit Workers' Compensation class code
-        description:
-          type:
-          - string
-          - 'null'
-          description: Human-readable description of the operation
-        estimated_annual_remunerations_cents:
-          type: integer
-          description: Payroll amount for the given operation, in cents
-        rate_cents:
-          type: integer
-          description: Rate per $100 of remuneration
-        estimated_annual_premium_cents:
-          type: integer
-          description: Total estimated annual premium, in cents<br/><br/>Can be calculated by multiplying `estimated_annual_remunerations_cents` * `rate_cents`<br/><br/>E.g. if `estimated_annual_remunerations_cents` = 100_000_00 ($100k) and `rate_cents` = 500 ($5), then `estimated_annual_premium_cents` = 5_000_00 ($5k)
-    Pull:
-      title: Pull
-      type: object
-      properties:
-        pull_id:
-          type: string
-          format: uuid
-          description: ID of the pull
         status:
-          $ref: '#/components/schemas/WebhookBody/properties/status'
-        account_identifier:
-          type:
-          - string
-          - 'null'
-          description: Unique identifier for online account holder that will stay the same across PULLING_DATA pulls
-        first_name:
-          type:
-          - string
-          - 'null'
-          description: First name of online account holder
-        middle_name:
-          type:
-          - string
-          - 'null'
-          description: Middle name of online account holder
-        last_name:
-          type:
-          - string
-          - 'null'
-          description: Last name of online account holder
-        email:
-          type:
-          - string
-          - 'null'
-          description: Email optionally provided by consumer after submitting bad credentials (`NOT_AUTHENTICATED`)
-          format: email
-        account_email:
-          type:
-          - string
-          - 'null'
-          description: Online account holder email address
-          format: email
-        phone:
-          type:
-          - string
-          - 'null'
-          description: Preferred contact phone
-        mobile_phone:
-          type:
-          - string
-          - 'null'
-          description: Online account holder mobile phone
-        home_phone:
-          type:
-          - string
-          - 'null'
-          description: Online account holder home phone
-        work_phone:
-          type:
-          - string
-          - 'null'
-          description: Online account holder work phone
-        work_phone_extension:
-          type:
-          - string
-          - 'null'
-          description: Online account holder work phone extension
-        insurance_provider_name:
-          type:
-          - string
-          - 'null'
-          description: Online account holder's insurance provider identifier. This is not a user-friendly name.
-        insurance_provider_friendly_name:
-          type:
-          - string
-          - 'null'
-          description: Online account holder's insurance provider name. This is a user-friendly name.
-        team_id:
-          type: string
-          format: uuid
-          description: Team ID this pull is associated with (should match the team id used or api call)
-        widget_id:
-          type: string
-          format: uuid
-          description: Widget/Link Id that the online account holder submitted on
-        meta_data:
-          type:
-          - string
-          - 'null'
-          description: Developer-supplied arbitrary JSON-serializable data as a string
-        is_archived:
-          type: boolean
-          default: false
-          description: Whether the pull is archived
-        created_at:
-          type: string
-          format: date-time
-          description: Time at which the pull was created by online account holder giving consent
-        public_alias:
-          type: string
-          description: Url alias/extension of the Canopy Connect link where the pull was submitted
-        public_url:
-          type: string
-          description: Full public url used to create pull
-        encountered_mfa:
-          type: boolean
-          description: Whether the Pull encountered MFA
-        no_policies:
-          type: boolean
-          description: Whether the account has no policies
-        no_drivers:
-          type: boolean
-          description: Whether the account has no drivers
-        no_documents:
-          type: boolean
-          description: Whether the account has no documents
-        no_claims:
-          type: boolean
-          description: Whether the account has no claims
-        no_loss_events:
-          type: boolean
-          description: Whether the account has no loss events
-        type:
-          type: string
-          enum:
-          - PULLING_DATA
-          - SERVICING
-          - DOCUMENT_UPLOAD
-          - DOCUMENT_PARSING
-          - AGENT
-          - MANUAL_ENTRY
-          - POLICY_LOOKUP
-          - CONTACT_ME
-          description: Pull Type
-        parent_pull_id:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: Internal correlation field linking a pull to its parent pull, when applicable. `null` for top-level pulls. Pulls with a `parent_pull_id` represent internal work and do not fire customer-facing webhooks — only the parent pull's webhooks are delivered externally.
-        policy_check_status:
           type: string
           enum:
           - NONE
           - COMPLIANT
           - NOT_COMPLIANT
           - REVIEW_REQUIRED
-          description: Overview of Policy Check Status
-        policies:
-          type: array
-          uniqueItems: true
-          description: List of policy objects
-          items:
-            $ref: '#/components/schemas/Policy'
-        drivers:
-          type: array
-          uniqueItems: true
-          description: List of driver objects
-          items:
-            $ref: '#/components/schemas/Driver'
-        documents:
-          type: array
-          uniqueItems: true
-          description: List of document objects
-          items:
-            $ref: '#/components/schemas/Document'
-        addresses:
-          type: array
-          uniqueItems: true
-          description: List of address objects
-          items:
-            type: object
-            $ref: '#/components/schemas/Address'
-        claims:
-          type: array
-          description: List of claim objects
-          uniqueItems: true
-          items:
-            $ref: '#/components/schemas/Claim'
-        driving_records:
-          type: array
-          description: List of driving record objects
-          uniqueItems: true
-          items:
-            $ref: '#/components/schemas/DrivingRecord'
-        loss_events:
-          type: array
-          description: List of commercial loss events objects
-          uniqueItems: true
-          items:
-            $ref: '#/components/schemas/LossEvent'
-        agents:
-          type: array
-          description: List of agent objects
-          items:
-            $ref: '#/components/schemas/AgentInfo'
-        answers:
-          type: array
-          description: List of answers to custom fields in the link flow
-          items:
-            $ref: '#/components/schemas/AnswerSection'
-        skipped_product_types:
-          description: Product types for skipped policies due to lack of access
-          type:
-          - array
-          - 'null'
-          items:
-            enum:
-            - personal
-            - commercial
-            - agent
-        funnel:
-          $ref: '#/components/schemas/PullFunnel'
-          description: Information about the Pull’s deal stage
-    ServicingAction:
-      title: ServicingAction
-      examples:
-      - servicing_action_id: a082368f-fa48-48d3-9b0a-f3941c81511d
-        type: ADD_MORTGAGEE
-        payload: {}
-        confirmation_data: {}
-        status: QUEUED
-        validation_error_type: INVALID_POLICY_NUMBER
+          description: Policy Check Status
+        details:
+          type: object
+          description: Detailed breakdown of individual Policy Check items
+          properties:
+            status:
+              type: string
+              enum:
+              - NONE
+              - COMPLIANT
+              - NOT_COMPLIANT
+              - REVIEW_REQUIRED
+              description: Policy Check Status of a check item
+            actual:
+              description: The actual value found during the Policy Check evaluation
+              type: object
+            expected:
+              description: The expected value that the policy should meet for compliance
+              type: object
+    Address:
+      title: Address
       allOf:
-      - type: object
-        properties:
-          servicing_action_id:
+      - properties:
+          address_id:
             type: string
             format: uuid
-            description: ID of the `ServicingAction`.
-          status:
-            enum:
-            - QUEUED
-            - IN_PROGRESS
-            - INTERNAL_ERROR
-            - PROVIDER_ERROR
-            - VALIDATION_ERROR
-            - WAITING_FOR_CONSUMER_CONFIRMATION
-            - SUBMITTING_CONFIRMATION
-            - UNCONFIRMED
-            - VERIFIED
-            - VERIFICATION_FAILED
-            - SUCCESS
-          validation_error_type:
+            description: ID of the address
+          full_address:
+            type:
+            - string
+            - 'null'
+            description: One-line address for convenience
+          address_nature:
             type:
             - string
             - 'null'
             enum:
-            - INVALID_POLICY_NUMBER
-            - INVALID_POLICY_TYPE
-            - INVALID_MORTGAGEE_NAME
-            - INVALID_MORTGAGEE_ADDRESS
-            - DUPLICATE_MORTGAGEE_NAME
-            - DUPLICATE_MORTGAGEE_TYPE
-            - INVALID_MORTGAGEE_TYPE
-            - POLICY_UNAVAILABLE_FOR_SERVICING
-            - VEHICLE_UNAVAILABLE_FOR_SERVICING
-            - REPLACING_VIN_NOT_FOUND
-            - PRIMARY_DRIVER_NOT_FOUND
-            - INVALID_VIN
-            - INVALID_VEHICLE_ACQUISITION_DATE
-            - REGISTERED_OWNER_NOT_FOUND
-            - INVALID_FINANCING_COMPANY
-            - INVALID_GARAGING_ADDRESS
-            - GARAGING_ADDRESS_OUT_OF_STATE
-            - CUSTOMER_SERVICE_REQUIRED
-            - FINANCING_COMPANY_NOT_FOUND
-            - DUPLICATE_FINANCING_COMPANY
-            - OTHER_PARTIES_TO_NOTIFY_NOT_SUPPORTED
-            - CANNOT_ADD_NEW_DRIVER
-            - CANNOT_ADD_NEW_REGISTERED_OWNER
-            - INVALID_SAFETY_RESTRAINT_DEVICE
-            - ANTI_THEFT_DEVICE_REQUIRED
-            - INVALID_COVERAGE_SELECTION
-            - INVALID_PRIMARY_USE_TYPE
-            - MULTIPLE_FINANCING_COMPANIES_NOT_ALLOWED
-            description: Only present if `status` is `VALIDATION_ERROR`.
-        required:
-        - servicing_action_id
-        - status
-      - title: ServicingAction
-        oneOf:
-        - type: object
-          title: AddMortgagee
-          allOf:
-          - title: AddMortgageePayload
-            type: object
-            properties:
-              type:
-                enum:
-                - ADD_MORTGAGEE
-              payload:
-                type: object
-                description: Input required for a `ServicingAction`. Corresponds with the `type`.
-                required:
-                - carrier_policy_number
-                - name
-                - address
-                - loan_number
-                - mortgagee_type
-                properties:
-                  carrier_policy_number:
-                    type: string
-                    example: HO132483
-                  name:
-                    type: string
-                    example: JP MORGAN CHASE BANK NA ISAOA ATIMA
-                  address:
-                    type: string
-                    example: PO BOX 47020, ATLANTA, GA 30362
-                  loan_number:
-                    type: string
-                    example: '1234567890'
-                  mortgagee_type:
-                    enum:
-                    - FIRST
-                    - SECOND
-                    - THIRD
-            required:
-            - type
-            - payload
-          - type: object
-            properties:
-              confirmation_data:
-                type: object
-                properties:
-                  carrier_policy_number:
-                    type: string
-                    example: HO132483
-                  before:
-                    type:
-                    - 'null'
-                  after:
-                    type: object
-                    required:
-                    - name
-                    - address
-                    - loan_number
-                    - mortgagee_type
-                    description: The new mortgagee after the change is applied.
-                    properties:
-                      name:
-                        type: string
-                        example: JP MORGAN CHASE BANK NA ISAOA ATIMA
-                      address:
-                        type: string
-                        example: PO BOX 47020, ATLANTA, GA 30362
-                      loan_number:
-                        type: string
-                        example: '1234567890'
-                      mortgagee_type:
-                        enum:
-                        - FIRST
-                        - SECOND
-                        - THIRD
-                required:
-                - carrier_policy_number
-                - before
-                - after
-                description: Output provided for confirmation. Corresponds with the `type`.
-        - type: object
-          title: EditMortgagee
-          allOf:
-          - title: EditMortgageePayload
-            type: object
-            properties:
-              type:
-                enum:
-                - EDIT_MORTGAGEE
-              payload:
-                type: object
-                description: Input required for a `ServicingAction`. Corresponds with the `type`.
-                required:
-                - carrier_policy_number
-                - name
-                - address
-                - loan_number
-                - mortgagee_type
-                properties:
-                  carrier_policy_number:
-                    type: string
-                    example: HO132483
-                  name:
-                    type: string
-                    example: JP MORGAN CHASE BANK NA ISAOA ATIMA
-                  address:
-                    type: string
-                    example: PO BOX 47020, ATLANTA, GA 30362
-                  loan_number:
-                    type: string
-                    example: '1234567890'
-                  mortgagee_type:
-                    enum:
-                    - FIRST
-                    - SECOND
-                    - THIRD
-            required:
-            - type
-            - payload
-          - type: object
-            properties:
-              confirmation_data:
-                type: object
-                properties:
-                  carrier_policy_number:
-                    type: string
-                    example: HO132483
-                  before:
-                    type: object
-                    required:
-                    - name
-                    - address
-                    - loan_number
-                    - mortgagee_type
-                    description: The old mortgagee before the change is applied.
-                    properties:
-                      name:
-                        type: string
-                        example: JP MORGAN CHASE BANK NA ISAOA ATIMA
-                      address:
-                        type: string
-                        example: PO BOX 47020, ATLANTA, GA 30362
-                      loan_number:
-                        type: string
-                        example: '1234567890'
-                      mortgagee_type:
-                        enum:
-                        - FIRST
-                        - SECOND
-                        - THIRD
-                  after:
-                    type: object
-                    required:
-                    - name
-                    - address
-                    - loan_number
-                    - mortgagee_type
-                    description: The new mortgagee after the change is applied.
-                    properties:
-                      name:
-                        type: string
-                        example: JP MORGAN CHASE BANK NA ISAOA ATIMA
-                      address:
-                        type: string
-                        example: PO BOX 47020, ATLANTA, GA 30362
-                      loan_number:
-                        type: string
-                        example: '1234567890'
-                      mortgagee_type:
-                        enum:
-                        - FIRST
-                        - SECOND
-                        - THIRD
-                required:
-                - carrier_policy_number
-                - before
-                - after
-                description: Output provided for confirmation. Corresponds with the `type`.
-        - type: object
-          title: RemoveMortgagee
-          allOf:
-          - title: RemoveMortgageePayload
-            type: object
-            properties:
-              type:
-                enum:
-                - REMOVE_MORTGAGEE
-              payload:
-                type: object
-                description: Input required for a `ServicingAction`. Corresponds with the `type`.
-                required:
-                - carrier_policy_number
-                - mortgagee_type
-                properties:
-                  carrier_policy_number:
-                    type: string
-                    example: HO132483
-                  mortgagee_type:
-                    enum:
-                    - FIRST
-                    - SECOND
-                    - THIRD
-            required:
-            - type
-            - payload
-          - type: object
-            properties:
-              confirmation_data:
-                type: object
-                properties:
-                  carrier_policy_number:
-                    type: string
-                    example: HO132483
-                  before:
-                    type: object
-                    description: The old mortgagee before the change is applied.
-                    required:
-                    - name
-                    - address
-                    - loan_number
-                    - mortgagee_type
-                    properties:
-                      name:
-                        type: string
-                        example: JP MORGAN CHASE BANK NA ISAOA ATIMA
-                      address:
-                        type: string
-                        example: PO BOX 47020, ATLANTA, GA 30362
-                      loan_number:
-                        type: string
-                        example: '1234567890'
-                      mortgagee_type:
-                        enum:
-                        - FIRST
-                        - SECOND
-                        - THIRD
-                  after:
-                    type:
-                    - 'null'
-                required:
-                - carrier_policy_number
-                - before
-                - after
-                description: Output provided for confirmation. Corresponds with the `type`.
-        - type: object
-          title: AddVehicle
-          allOf:
-          - title: AddVehiclePayload
-            type: object
-            properties:
-              type:
-                enum:
-                - ADD_VEHICLE
-              payload:
-                description: Input required for a `ServicingAction`. Corresponds with the `type`.
-                type: object
-                required:
-                - carrier_policy_number
-                - vehicle
-                - registered_owner_full_name
-                - registered_state
-                - garaging_address
-                - is_customized
-                - primary_use
-                - primary_driver_full_name
-                - annual_mileage
-                - current_mileage
-                - coverage_selections
-                - safety_restraint_device
-                - anti_theft_device
-                - daytime_running_lights
-                - tracking_device
-                - vehicle_acquisition_date
-                - vehicle_ownership
-                properties:
-                  carrier_policy_number:
-                    type: string
-                    example: AU192837
-                  vehicle:
-                    properties:
-                      type:
-                        enum:
-                        - PRIVATE_PASSENGER
-                        - ANTIQUE_AUTO
-                        - BOAT
-                        - COMMERCIAL_AUTO
-                        - MOTORCYCLE_OR_ATV
-                        - RV_MOTORHOME_OR_TRAILER
-                        - MOBILE_HOME
-                        - SNOWMOBILE
-                        - GOLF_CART
-                      model_year:
-                        type: integer
-                        example: 2012
-                      vin:
-                        type: string
-                        example: 3N1AB6AP0CL704240
-                      make:
-                        type: string
-                        example: NISSAN
-                      model:
-                        type: string
-                        example: Sentra
-                    required:
-                    - type
-                    - model_year
-                    - vin
-                    - make
-                    - model
-                    type: object
-                  replacing_vin:
-                    type: string
-                    description: The VIN of the vehicle being replaced, if applicable.
-                    example: 3FAHP0HA8CR128394
-                  registered_owner_full_name:
-                    type: string
-                    example: John Smith
-                  registered_co_owner_full_name:
-                    type: string
-                    example: Alice Smith
-                  registered_state:
-                    enum:
-                    - AL
-                    - AK
-                    - AS
-                    - AZ
-                    - AR
-                    - CA
-                    - CO
-                    - CT
-                    - DE
-                    - DC
-                    - FM
-                    - FL
-                    - GA
-                    - GU
-                    - HI
-                    - ID
-                    - IL
-                    - IN
-                    - IA
-                    - KS
-                    - KY
-                    - LA
-                    - ME
-                    - MH
-                    - MD
-                    - MA
-                    - MI
-                    - MN
-                    - MS
-                    - MO
-                    - MT
-                    - NE
-                    - NV
-                    - NH
-                    - NJ
-                    - NM
-                    - NY
-                    - NC
-                    - ND
-                    - MP
-                    - OH
-                    - OK
-                    - OR
-                    - PW
-                    - PA
-                    - PR
-                    - RI
-                    - SC
-                    - SD
-                    - TN
-                    - TX
-                    - UT
-                    - VT
-                    - VI
-                    - VA
-                    - WA
-                    - WV
-                    - WI
-                    - WY
-                  garaging_address:
-                    type: string
-                    example: 344 Clinton Street, Brooklyn, NY, 11231
-                  is_customized:
-                    type: boolean
-                  primary_use:
-                    oneOf:
-                    - title: Commute, Work, or School
-                      properties:
-                        type:
-                          enum:
-                          - COMMUTE
-                          - WORK
-                          - SCHOOL
-                        days_driven_per_week:
-                          type: integer
-                          maximum: 7
-                          minimum: 1
-                        miles_driven_each_way:
-                          type: integer
-                          minimum: 1
-                      required:
-                      - type
-                      - days_driven_per_week
-                      - miles_driven_each_way
-                    - title: Personal, Pleasure, or Farm
-                      properties:
-                        type:
-                          enum:
-                          - PERSONAL
-                          - PLEASURE
-                          - FARM
-                      required:
-                      - type
-                    type: object
-                  primary_driver_full_name:
-                    type: string
-                  annual_mileage:
-                    type: number
-                    example: 10000
-                  current_mileage:
-                    type: number
-                    example: 2000
-                  coverage_selections:
-                    type: object
-                    required:
-                    - BODILY_INJURY_LIABILITY
-                    - PROPERTY_DAMAGE_LIABILITY
-                    - PERSONAL_INJURY_PROTECTION
-                    - UNINSURED_MOTORISTS
-                    - UNDERINSURED_MOTORISTS
-                    - COLLISION
-                    - COMPREHENSIVE
-                    - EMERGENCY_ROAD_SERVICE
-                    - RENTAL_REIMBURSEMENT
-                    properties:
-                      BODILY_INJURY_LIABILITY:
-                        type: object
-                        required:
-                        - per_person_limit_cents
-                        - per_incident_limit_cents
-                        properties:
-                          per_person_limit_cents:
-                            type: integer
-                            example: 10000000
-                          per_incident_limit_cents:
-                            type: integer
-                            example: 30000000
-                      PROPERTY_DAMAGE_LIABILITY:
-                        type: object
-                        required:
-                        - per_incident_limit_cents
-                        properties:
-                          per_incident_limit_cents:
-                            type: integer
-                            example: 50000
-                      PERSONAL_INJURY_PROTECTION:
-                        anyOf:
-                        - title: Declined
-                          properties:
-                            is_declined:
-                              enum:
-                              - true
-                          required:
-                          - is_declined
-                        - title: Accepted
-                          properties:
-                            is_declined:
-                              enum:
-                              - false
-                            per_person_limit_cents:
-                              type: integer
-                              example: 2500000
-                            deductible_cents:
-                              type: integer
-                              example: 50000
-                          required:
-                          - is_declined
-                          - per_person_limit_cents
-                        type: object
-                      UNINSURED_MOTORISTS:
-                        anyOf:
-                        - title: Declined
-                          properties:
-                            is_declined:
-                              enum:
-                              - true
-                          required:
-                          - is_declined
-                        - title: Accepted
-                          properties:
-                            is_declined:
-                              enum:
-                              - false
-                            per_person_limit_cents:
-                              type: integer
-                              example: 2500000
-                            per_incident_limit_cents:
-                              type: integer
-                              example: 5000000
-                          required:
-                          - is_declined
-                          - per_person_limit_cents
-                          - per_incident_limit_cents
-                        type: object
-                      UNDERINSURED_MOTORISTS:
-                        anyOf:
-                        - title: Declined
-                          properties:
-                            is_declined:
-                              enum:
-                              - true
-                          required:
-                          - is_declined
-                        - title: Accepted
-                          properties:
-                            is_declined:
-                              enum:
-                              - false
-                            per_person_limit_cents:
-                              type: integer
-                              example: 2500000
-                            per_incident_limit_cents:
-                              type: integer
-                              example: 5000000
-                          required:
-                          - is_declined
-                          - per_person_limit_cents
-                          - per_incident_limit_cents
-                        type: object
-                      COLLISION:
-                        anyOf:
-                        - title: Declined
-                          properties:
-                            is_declined:
-                              enum:
-                              - true
-                          required:
-                          - is_declined
-                        - title: Accepted
-                          properties:
-                            is_declined:
-                              enum:
-                              - false
-                            deductible_cents:
-                              type: integer
-                              example: 50000
-                          required:
-                          - is_declined
-                          - deductible_cents
-                        type: object
-                      COMPREHENSIVE:
-                        anyOf:
-                        - title: Declined
-                          properties:
-                            is_declined:
-                              enum:
-                              - true
-                          required:
-                          - is_declined
-                        - title: Accepted
-                          properties:
-                            is_declined:
-                              enum:
-                              - false
-                            deductible_cents:
-                              type: integer
-                              example: 50000
-                          required:
-                          - is_declined
-                          - deductible_cents
-                        type: object
-                      EMERGENCY_ROAD_SERVICE:
-                        type: object
-                        required:
-                        - is_declined
-                        properties:
-                          is_declined:
-                            type: boolean
-                      RENTAL_REIMBURSEMENT:
-                        anyOf:
-                        - title: Declined
-                          properties:
-                            is_declined:
-                              enum:
-                              - true
-                          required:
-                          - is_declined
-                        - title: Accepted
-                          properties:
-                            is_declined:
-                              enum:
-                              - false
-                            per_day_limit_cents:
-                              type: integer
-                              example: 3000
-                            max_days:
-                              type: integer
-                              example: 30
-                          required:
-                          - is_declined
-                          - per_day_limit_cents
-                          - max_days
-                        type: object
-                  safety_restraint_device:
-                    enum:
-                    - NONE
-                    - AUTOMATIC_SEAT_BELTS
-                    - DRIVER_SIDE_AIR_BAG
-                    - FULL_FRONT_AIR_BAG
-                  anti_theft_device:
-                    enum:
-                    - UNKNOWN
-                    - NONE
-                    - ALARM_ONLY
-                    - NON_PASSIVE_DISABLING_DEVICE
-                    - PASSIVE_DISABLING_DEVICE
-                    - VEHICLE_RECOVERY_SYSTEM
-                    - VEHICLE_RECOVERY_SYSTEM_PASSIVE_DISABLING_DEVICE
-                    - ELECTRONIC_HOMING_DEVICE
-                  daytime_running_lights:
-                    type: boolean
-                  tracking_device:
-                    type: boolean
-                  vehicle_acquisition_date:
-                    type: string
-                    format: date
-                    example: '2023-08-16'
-                  vehicle_ownership:
-                    anyOf:
-                    - properties:
-                        type:
-                          enum:
-                          - OWN
-                        financing_companies:
-                          type: array
-                          items:
-                            type: object
-                            properties:
-                              type:
-                                enum:
-                                - LIEN_HOLDER
-                                - OTHER_PARTY_TO_NOTIFY
-                              name:
-                                type: string
-                                example: Metropolis Bank
-                              address:
-                                type: string
-                                example: 620 Atlantic Avenue, Brooklyn, NY, 11217
-                            required:
-                            - type
-                            - name
-                            - address
-                      required:
-                      - type
-                      - financing_companies
-                    - properties:
-                        type:
-                          enum:
-                          - LEASE
-                          - FINANCE
-                        financing_companies:
-                          type: array
-                          items:
-                            type: object
-                            properties:
-                              type:
-                                enum:
-                                - LIEN_HOLDER
-                                - OTHER_PARTY_TO_NOTIFY
-                              name:
-                                type: string
-                                example: Metropolis Bank
-                              address:
-                                type: string
-                                example: 620 Atlantic Avenue, Brooklyn, NY, 11217
-                            required:
-                            - type
-                            - name
-                            - address
-                        loan_duration_months:
-                          type: integer
-                          example: 60
-                      required:
-                      - type
-                      - financing_companies
-                      - loan_duration_months
-                    type: object
-            required:
-            - type
-            - payload
-          - type: object
-            properties:
-              confirmation_data:
-                anyOf:
-                - title: Agent Required
-                  properties:
-                    requires_agent:
-                      enum:
-                      - true
-                      description: Change requires intervention from the policy's agent.
-                    coverage_selections:
-                      type: object
-                      propertyNames:
-                        title: VehicleCoverageTypes
-                        type: string
-                        enum:
-                        - SINGLE_LIMIT_LIABILITY
-                        - BODILY_INJURY_LIABILITY
-                        - PROPERTY_DAMAGE_LIABILITY
-                        - SUPPLEMENTAL_SPOUSAL_LIABILITY
-                        - SUPPLEMENTAL_SPOUSAL_BODILY_INJURY_LIABILITY
-                        - SUPPLEMENTAL_SPOUSAL_PROPERTY_DAMAGE_LIABILITY
-                        - PERSONAL_INJURY_PROTECTION
-                        - COMPREHENSIVE
-                        - FULL_GLASS
-                        - COLLISION_DEDUCTIBLE_WAIVER
-                        - COLLISION
-                        - UNINSURED_MOTORISTS
-                        - UNINSURED_MOTORIST_BODILY_INJURY_LIABILITY
-                        - UNINSURED_MOTORIST_PROPERTY_DAMAGE_LIABILITY
-                        - UNINSURED_MOTORIST_BODILY_INJURY_AND_PROPERTY_DAMAGE_LIABILITY
-                        - UNDERINSURED_MOTORISTS
-                        - UNDERINSURED_MOTORIST_BODILY_INJURY_LIABILITY
-                        - UNDERINSURED_MOTORIST_PROPERTY_DAMAGE_LIABILITY
-                        - UNDERINSURED_MOTORIST_BODILY_INJURY_AND_PROPERTY_DAMAGE_LIABILITY
-                        - UNINSURED_AND_UNDERINSURED_MOTORISTS
-                        - UNINSURED_AND_UNDERINSURED_MOTORIST_BODILY_INJURY_LIABILITY
-                        - UNINSURED_AND_UNDERINSURED_MOTORIST_PROPERTY_DAMAGE_LIABILITY
-                        - UNINSURED_AND_UNDERINSURED_MOTORIST_BODILY_INJURY_AND_PROPERTY_DAMAGE_LIABILITY
-                        - TOWING_AND_LABOR
-                        - LOAN_OR_LEASE_ASSISTANCE
-                        - RIDESHARE_GAP_PROTECTION
-                        - MEDICAL_PAYMENTS
-                        - EMERGENCY_ROAD_SERVICE
-                        - RENTAL_REIMBURSEMENT
-                        - CAR_RENTAL_AND_TRAVEL_EXPENSES
-                        - PORTABLE_ELECTRONICS
-                        - MECHANICAL_BREAKDOWN
-                        - SUPPLEMENTAL_UNINSURED_AND_UNDERINSURED_MOTORISTS
-                        - EMERGENCY_EXPENSE
-                        - REPLACEMENT_COST_PERSONAL_EFFECTS
-                        - VACATION_LIABILITY_COVERAGE
-                        - RV_MEDICAL
-                        - EXTENDED_BENEFITS
-                        - WAGE_EARNER_DISABILITY_BENEFITS
-                        - ESSENTIAL_SERVICES_DISABILITY_BENEFITS
-                        - DEATH_BENEFIT
-                        - CAR_REPLACEMENT_ASSISTANCE
-                        - FULL_TORT
-                        - LIMITED_TORT
-                        - COMBINED_SINGLE_LIMIT
-                        - SPARE_PARTS
-                        - OPTIONAL_BODILY_INJURY_LIABILITY
-                        - MOTOR_CARGO
-                        - ON_HOOK
-                        - FIRST_PARTY_BENEFIT
-                        - FIRST_PARTY_BENEFIT_MEDICAL_EXPENSE
-                        - FIRST_PARTY_BENEFIT_ACCIDENTAL_DEATH
-                        - FIRST_PARTY_BENEFIT_INCOME_LOSS
-                        - FIRST_PARTY_BENEFIT_FUNERAL_EXPENSE
-                        - FIRST_PARTY_BENEFIT_EXTRAORDINARY_MEDICAL
-                        - FIRST_PARTY_BENEFIT_SURVIVORS_LOSS
-                        - CUSTOM_PARTS_AND_EQUIPMENT
-                        - VEHICLE_PROTECTION
-                        - FUNERAL_BENEFIT
-                        - SURVIVORS_LOSS_BENEFIT
-                      additionalProperties:
-                        title: ConfirmedCoverageSelection
-                        type: object
-                        properties:
-                          per_person_limit_cents:
-                            type:
-                            - integer
-                            - 'null'
-                          per_incident_limit_cents:
-                            type:
-                            - integer
-                            - 'null'
-                          per_day_limit_cents:
-                            type:
-                            - integer
-                            - 'null'
-                          max_days:
-                            type:
-                            - integer
-                            - 'null'
-                          deductible_cents:
-                            type:
-                            - integer
-                            - 'null'
-                          premium_cents:
-                            type:
-                            - integer
-                            - 'null'
-                          is_declined:
-                            type:
-                            - boolean
-                            - 'null'
-                          is_policy_level:
-                            type:
-                            - boolean
-                            - 'null'
-                            description: Indicates if the coverage applies to all vehicles on the policy or only the vehicle being added.
-                          is_changed:
-                            type:
-                            - boolean
-                            - 'null'
-                            description: Indicates if the coverage selection was changed from its previous value.
-                      description: The keys may be any of `VehicleCoverageTypes` (see [VehicleCoverage.name](https://docs.usecanopy.com/reference/schemas-vehiclecoverage)).
-                      properties:
-                        BODILY_INJURY_LIABILITY:
-                          $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/3/allOf/1/properties/confirmation_data/anyOf/0/properties/coverage_selections/additionalProperties'
-                        PROPERTY_DAMAGE_LIABILITY:
-                          $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/3/allOf/1/properties/confirmation_data/anyOf/0/properties/coverage_selections/additionalProperties'
-                        PERSONAL_INJURY_PROTECTION:
-                          $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/3/allOf/1/properties/confirmation_data/anyOf/0/properties/coverage_selections/additionalProperties'
-                        UNINSURED_MOTORISTS:
-                          $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/3/allOf/1/properties/confirmation_data/anyOf/0/properties/coverage_selections/additionalProperties'
-                        UNDERINSURED_MOTORISTS:
-                          $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/3/allOf/1/properties/confirmation_data/anyOf/0/properties/coverage_selections/additionalProperties'
-                        COLLISION:
-                          $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/3/allOf/1/properties/confirmation_data/anyOf/0/properties/coverage_selections/additionalProperties'
-                        COMPREHENSIVE:
-                          $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/3/allOf/1/properties/confirmation_data/anyOf/0/properties/coverage_selections/additionalProperties'
-                        EMERGENCY_ROAD_SERVICE:
-                          $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/3/allOf/1/properties/confirmation_data/anyOf/0/properties/coverage_selections/additionalProperties'
-                        RENTAL_REIMBURSEMENT:
-                          $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/3/allOf/1/properties/confirmation_data/anyOf/0/properties/coverage_selections/additionalProperties'
-                    adjusted_policy_premium_cents:
-                      type: integer
-                      example: 86750
-                      description: New total premium for the entire term (not the remainder).
-                  required:
-                  - requires_agent
-                - title: Agent Not Required
-                  properties:
-                    requires_agent:
-                      enum:
-                      - false
-                      description: Change does not require intervention from the policy's agent.
-                    coverage_selections:
-                      type: object
-                      propertyNames:
-                        $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/3/allOf/1/properties/confirmation_data/anyOf/0/properties/coverage_selections/propertyNames'
-                      additionalProperties:
-                        $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/3/allOf/1/properties/confirmation_data/anyOf/0/properties/coverage_selections/additionalProperties'
-                      description: The keys may be any of `VehicleCoverageTypes` (see [VehicleCoverage.name](https://docs.usecanopy.com/reference/schemas-vehiclecoverage)).
-                      properties:
-                        BODILY_INJURY_LIABILITY:
-                          $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/3/allOf/1/properties/confirmation_data/anyOf/0/properties/coverage_selections/additionalProperties'
-                        PROPERTY_DAMAGE_LIABILITY:
-                          $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/3/allOf/1/properties/confirmation_data/anyOf/0/properties/coverage_selections/additionalProperties'
-                        PERSONAL_INJURY_PROTECTION:
-                          $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/3/allOf/1/properties/confirmation_data/anyOf/0/properties/coverage_selections/additionalProperties'
-                        UNINSURED_MOTORISTS:
-                          $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/3/allOf/1/properties/confirmation_data/anyOf/0/properties/coverage_selections/additionalProperties'
-                        UNDERINSURED_MOTORISTS:
-                          $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/3/allOf/1/properties/confirmation_data/anyOf/0/properties/coverage_selections/additionalProperties'
-                        COLLISION:
-                          $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/3/allOf/1/properties/confirmation_data/anyOf/0/properties/coverage_selections/additionalProperties'
-                        COMPREHENSIVE:
-                          $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/3/allOf/1/properties/confirmation_data/anyOf/0/properties/coverage_selections/additionalProperties'
-                        EMERGENCY_ROAD_SERVICE:
-                          $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/3/allOf/1/properties/confirmation_data/anyOf/0/properties/coverage_selections/additionalProperties'
-                        RENTAL_REIMBURSEMENT:
-                          $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/3/allOf/1/properties/confirmation_data/anyOf/0/properties/coverage_selections/additionalProperties'
-                    adjusted_policy_premium_cents:
-                      type: integer
-                      example: 86750
-                      description: New total premium for the entire term (not the remainder).
-                  required:
-                  - requires_agent
-                  - coverage_selections
-                  - adjusted_policy_premium_cents
-                description: Output provided for confirmation. Corresponds with the `type`.
-                type: object
-    PolicyCheckPullVehicleSetting:
-      title: PolicyCheckPullVehicleSetting
+            - MAILING
+            - PHYSICAL
+            - LIENHOLDER
+            - INCIDENT_LOCATION
+            - AGENCY_LOCATION
+            - MORTGAGEE
+            - ADDITIONAL_INTEREST
+            description: The type of adress
+      - $ref: '#/components/schemas/EnrichmentPropertyData/properties/address'
+      type: object
+    LossEvent:
+      title: LossEvent
       type: object
       properties:
-        DRIVER_NAME_MISMATCH:
-          type: array
-          description: Array of driver names that are required to be included in the auto policy
-          uniqueItems: true
-          items:
-            type: string
-        VIN_MISMATCH:
-          type: array
-          description: Array of vehicle VIN numbers that are required to be included in the auto policy
-          uniqueItems: true
-          items:
-            type: string
-    LifePolicy:
-      title: LifePolicy
-      type:
-      - object
-      - 'null'
-      properties:
-        life_policy_details:
+        loss_event_id:
+          type: string
+          format: uuid
+          description: ID of the loss event
+        policy_id:
           type:
-          - object
+          - string
           - 'null'
-          description: Life policy details
-          $ref: '#/components/schemas/LifePolicyDetails'
-        life_policy_riders:
-          type: array
-          description: List of life policy riders
-          items:
-            $ref: '#/components/schemas/LifePolicyRider'
-        life_policy_beneficiaries:
-          type: array
-          description: List of life policy beneficiaries
-          items:
-            $ref: '#/components/schemas/LifePolicyBeneficiary'
+          description: ID of the policy the loss event is related to
+        date_of_occurrence:
+          type:
+          - string
+          - 'null'
+          description: Date the loss event occurred
+          format: date-time
+        type:
+          type:
+          - string
+          - 'null'
+          enum:
+          - BURGLARY_AND_THEFT
+          - WATER_DAMAGE_AND_FREEZING_DAMAGE
+          - WIND_AND_HAIL_DAMAGE
+          - HURRICANE_DAMAGE
+          - FIRE
+          - CUSTOMER_SLIPS_AND_FALLS
+          - CUSTOMER_INJURY_AND_DAMAGE
+          - PERSONAL_AND_ADVERTISING_INJURY
+          - EMPLOYEE_INJURY_OR_ILLNESS
+          - PRODUCT_LIABILITY
+          - STRUCK_BY_AN_OBJECT
+          - REPUTATIONAL_HARM
+          - VEHICULAR_ACCIDENT
+          - WINDSHIELD_DAMAGE
+          - STRIKE_RIOT_OR_CIVIL_COMMOTION
+          - EMERGENCY_ROADSIDE_ASSISTANCE
+          - VANDALISM_AND_MALICIOUS_MISCHIEF
+          - EQUIPMENT_BREAKDOWN
+          description: Loss event type
+        date_of_claim:
+          type:
+          - string
+          - 'null'
+          description: Date of the claim
+          format: date-time
+        amount_paid_cents:
+          type:
+          - integer
+          - 'null'
+          description: Amount paid in cents
+        amount_reserved_cents:
+          type:
+          - integer
+          - 'null'
+          description: Amount reserved in cents
+        is_subrogation:
+          type:
+          - boolean
+          - 'null'
+          description: Whether subrogation was successful
+        is_claim_open:
+          description: Whether the claim is open
+          type:
+          - boolean
+          - 'null'
+    PropertyData:
+      title: PropertyData
+      type: object
+      allOf:
+      - properties:
+          property_data_id:
+            type: string
+            format: uuid
+            description: ID of the property data
+          dwelling_id:
+            type: string
+            format: uuid
+            description: ID of the dwelling this property data belongs to
+      - $ref: '#/components/schemas/EnrichmentPropertyData/properties/data'
+    FileUpload:
+      title: FileUpload
+      type: object
+      properties:
+        name:
+          type: string
+          description: Original filename of the uploaded file
+        size:
+          type: number
+          description: Size of the file in bytes
+        type:
+          type: string
+          description: MIME type of the file, e.g. `application/pdf`
+        file_id:
+          type: string
+          format: uuid
+          description: ID of the uploaded file
+        download_url:
+          type: string
+          description: The API endpoint URL from which the file can be downloaded
+          format: uri
     WebhookBody:
       type: object
       title: Webhook Body
@@ -5762,890 +4703,384 @@ components:
               - 'null'
               description: The last update date for the property data
               format: date
-    PolicyCheckDwellingSetting:
-      title: PolicyCheckDwellingSetting
+    AgentInfo:
+      title: AgentInfo
       type: object
       properties:
-        DWELLING_POLICY_NOT_ACTIVE:
-          type: boolean
-          description: Verify whether the dwelling policy is active or inactive.
-        LOSS_SETTLEMENT_TYPE_EQUALS_REPLACEMENT_COST:
-          type: boolean
-          description: Verify the dwelling policy uses replacement cost for loss settlement type.
-        REPLACEMENT_COST_EXCEEDS_DWELLING_LIMIT:
-          type: boolean
-          description: Ensure that the replacement cost does not exceed the dwelling coverage limit.
-    Claim:
-      title: Claim
-      type: object
-      properties:
-        claim_id:
+        agent_info_id:
           type: string
-          format: uuid
-          description: ID of the claim
-        policy_id:
-          type:
-          - string
-          - 'null'
-          description: ID of the policy the claim is related to
-          format: uuid
-        dwelling_id:
-          type:
-          - string
-          - 'null'
-          description: ID of the dwelling the claim is related to
-          format: uuid
-        vehicle_id:
-          type:
-          - string
-          - 'null'
-          description: ID of the vehicle the claim is related to
+          description: ID of the AgentInfo
           format: uuid
         address_id:
           type:
           - string
           - 'null'
-          description: ID of the address where the incident physically occurred
+          description: Address ID where the agent/agency is located
           format: uuid
+        agency_name:
+          type:
+          - string
+          - 'null'
+          description: Name of the agency (agency_name or agent_full_name required)
+        agent_full_name:
+          type:
+          - string
+          - 'null'
+          description: Name of the agent (agency_name or agent_full_name required)
+        phone_number:
+          type:
+          - string
+          - 'null'
+          description: Phone number for the agent/agency
+        email:
+          type:
+          - string
+          - 'null'
+          description: Email for the agent/agency
+        policy_ids:
+          type: array
+          description: Policy ID's associated to the agent
+          items:
+            type: string
+            format: uuid
+    DrivingRecord:
+      title: DrivingRecord
+      type: object
+      properties:
+        driving_record_id:
+          type: string
+          format: uuid
+          description: ID of the driving record
         driver_id:
           type:
           - string
           - 'null'
-          description: ID of the driver the claim is related to
+          description: ID of the driver the driving record is related to
           format: uuid
-        carrier_claim_identifier:
+        incident_date:
           type:
           - string
           - 'null'
-          description: The carrier's identifier for the claim
-        date_occurred:
-          type:
-          - string
-          - 'null'
-          description: Date the claim occurred
+          description: Date the incident occurred
           format: date-time
-        type:
+        incident_type:
           type:
           - string
           - 'null'
           enum:
-          - WIND_AND_HAIL_DAMAGE
-          - WATER_DAMAGE_AND_FREEZING
-          - FIRE_AND_LIGHTNING_DAMAGE
-          - OTHER_PROPERTY_DAMAGE
-          - PERSONAL_LIABILITY
-          - POWER_OUTAGE_OR_SURGE
-          - THEFT
-          - CAR_ACCIDENT
-          - WINDSHIELD_DAMAGE
-          - ANIMAL_COLLISION
-          - VANDALISM
-          - WEATHER
-          - EMERGENCY_ROADSIDE_ASSISTANCE
-          - MEDICAL
-          - HURRICANE_DAMAGE
-          - SEWAGE_BACKUP
-          description: Claim type
-        status:
+          - ACCIDENT
+          - VIOLATION
+          description: Incident type
+        violation_type:
           type:
           - string
           - 'null'
           enum:
-          - OPEN
-          - CLOSED
-          description: Claim status
-        date_closed:
+          - MOVING
+          - SPEEDING
+          - RECKLESS_DRIVING
+          - DRIVING_WITHOUT_VALID_LICENSE
+          - DRIVING_WITHOUT_INSURANCE
+          - HIT_AND_RUN
+          - DISTRACTED_DRIVING
+          - DRIVING_UNDER_INFLUENCE
+          - FAILURE_TO_YIELD
+          - TAILGATING
+          - OPEN_CONTAINER_OF_ALCOHOL
+          description: Violation type, only exists if `incident_type` = `VIOLATION`
+        is_at_fault:
           type:
-          - string
+          - boolean
           - 'null'
-          description: Date the claim was closed
-          format: date-time
-        payout_cents:
-          type:
-          - integer
-          - 'null'
-          description: Total payout of the claim in cents
-        representative_name:
-          type:
-          - string
-          - 'null'
-          description: Claim representative name
-        representative_phone:
-          type:
-          - string
-          - 'null'
-          description: Claim representative phone number
-        representative_email:
-          type:
-          - string
-          - 'null'
-          description: Claim representative email address
-    LifePolicyDetails:
-      title: LifePolicyDetails
+          description: Whether the driver was at fault
+    NamedInsured:
+      title: NamedInsured
       type: object
       properties:
-        life_policy_details_id:
+        named_insured_id:
           type: string
           format: uuid
-          description: ID of the life policy details record
-        policy_id:
-          type: string
-          format: uuid
-          description: ID of the policy this record belongs to
-        pull_id:
-          type: string
-          description: ID of the pull this record belongs to
-          format: uuid
-        face_amount_cents:
-          type:
-          - integer
-          - 'null'
-          description: Face amount of the life insurance policy in cents
-        death_benefit_amount_cents:
-          type:
-          - integer
-          - 'null'
-          description: Death benefit amount in cents
-        total_cash_value_cents:
-          type:
-          - integer
-          - 'null'
-          description: Total cash value in cents
-        total_loan_balance_cents:
-          type:
-          - integer
-          - 'null'
-          description: Total loan balance in cents
-        dividend_option:
+          description: ID of the named insured
+        first_name:
           type:
           - string
           - 'null'
-          enum:
-          - PAID_UP_ADDITIONS
-          - ACCUMULATE_AT_INTEREST
-          - CASH_OR_CHECK
-          - PREMIUM_REDUCTION
-          - POLICY_LOAN_REDUCTION
-          - OTHER
-          description: Dividend option for the policy
-        total_accumulated_dividend_cents:
-          type:
-          - integer
-          - 'null'
-          description: Total accumulated dividend in cents
-        total_surrender_value_cents:
-          type:
-          - integer
-          - 'null'
-          description: Total surrender value in cents
-        loan_variable_interest_rate_percent:
-          type:
-          - number
-          - 'null'
-          description: Loan variable interest rate as a percentage
-        paid_up_date:
+          description: First name of the insured
+        middle_name:
           type:
           - string
           - 'null'
-          format: date-time
-          description: Date when the policy was paid up
-        total_accumulated_dividend_on_date:
+          description: Middle name of the insured
+        last_name:
           type:
           - string
           - 'null'
-          format: date-time
-          description: Date for the total accumulated dividend amount
-        total_loan_balance_on_date:
+          description: Last name of the insured
+        full_name:
           type:
           - string
           - 'null'
-          format: date-time
-          description: Date for the total loan balance amount
-        total_cash_value_on_date:
+          description: Full name of the insured
+        is_primary_named_insured:
+          type:
+          - boolean
+          - 'null'
+          description: Whether the insured is the primary named insured
+        email:
           type:
           - string
           - 'null'
-          format: date-time
-          description: Date for the total cash value amount
-        total_surrender_value_on_date:
+          description: Email for the insured
+        home_phone:
           type:
           - string
           - 'null'
-          format: date-time
-          description: Date for the total surrender value amount
-        policy_owner_first_name:
+          description: Home phone for the insured
+        mobile_phone:
           type:
           - string
           - 'null'
-          description: Policy owner's first name
-        policy_owner_middle_name:
+          description: Mobile phone for the insured
+        work_phone:
           type:
           - string
           - 'null'
-          description: Policy owner's middle name
-        policy_owner_last_name:
+          description: Work phone for the insured
+        work_phone_extension:
           type:
           - string
           - 'null'
-          description: Policy owner's last name
-        policy_owner_full_name:
-          type:
-          - string
-          - 'null'
-          description: Policy owner's full name
-        policy_payor_first_name:
-          type:
-          - string
-          - 'null'
-          description: Policy payor's first name
-        policy_payor_middle_name:
-          type:
-          - string
-          - 'null'
-          description: Policy payor's middle name
-        policy_payor_last_name:
-          type:
-          - string
-          - 'null'
-          description: Policy payor's last name
-        policy_payor_full_name:
-          type:
-          - string
-          - 'null'
-          description: Policy payor's full name
-        policy_owner_address:
-          type:
-          - 'null'
-          - object
-          $ref: '#/components/schemas/Address'
-          description: Policy owner's address
-        policy_payor_address:
-          type:
-          - 'null'
-          - object
-          $ref: '#/components/schemas/Address'
-          description: Policy payor's address
-    Vehicle:
-      title: Vehicle
+          description: Work phone exension for the insured
+    PolicyCheckPullVehicleSetting:
+      title: PolicyCheckPullVehicleSetting
       type: object
       properties:
-        vehicle_id:
-          type: string
-          format: uuid
-          description: ID of the vehicle
-        year:
-          type:
-          - integer
-          - 'null'
-          description: Vehicle year
-        make:
-          type:
-          - string
-          - 'null'
-          description: Vehicle make
-        model:
-          type:
-          - string
-          - 'null'
-          description: Vehicle model
-        series:
-          type:
-          - string
-          - 'null'
-          description: Vehicle series
-        series2:
-          type:
-          - string
-          - 'null'
-          description: Vehicle series 2
-        type:
-          type:
-          - string
-          - 'null'
-          description: Vehicle type
-        annual_mileage:
-          type:
-          - integer
-          - 'null'
-          description: Vehicle annual mileage
-        current_mileage:
-          type:
-          - integer
-          - 'null'
-          description: Vehicle current mileage at time of pull
-        vin:
-          type:
-          - string
-          - 'null'
-          description: Vehicle identification number
-        hin:
-          type:
-          - string
-          - 'null'
-          description: Boat hull identification number
-        serial_number:
-          type:
-          - string
-          - 'null'
-          description: Vehicle serial number
-        uses:
-          type:
-          - array
-          - 'null'
-          description: Vehicle uses
-          items:
-            enum:
-            - PERSONAL
-            - COMMUTE
-            - WORK
-            - SCHOOL
-            - PLEASURE
-            - FARM
-            - RIDESHARE
-            - BUSINESS
-        purchase_date:
-          type:
-          - string
-          - 'null'
-          description: Vehicle purchase date
-          format: date-time
-        ownership_type:
-          type:
-          - string
-          - 'null'
-          enum:
-          - OWN
-          - FINANCE
-          - LEASE
-          description: Vehicle ownership type
-        features:
-          type:
-          - array
-          - 'null'
-          description: Vehicle features
+        DRIVER_NAME_MISMATCH:
+          type: array
+          description: Array of driver names that are required to be included in the auto policy
+          uniqueItems: true
           items:
             type: string
-        is_removed:
-          type: boolean
-          description: Whether or not the Vehicle is excluded from the Policy
-        lien_holder:
+        VIN_MISMATCH:
+          type: array
+          description: Array of vehicle VIN numbers that are required to be included in the auto policy
+          uniqueItems: true
+          items:
+            type: string
+    Pull:
+      title: Pull
+      type: object
+      properties:
+        pull_id:
+          type: string
+          format: uuid
+          description: ID of the pull
+        status:
+          $ref: '#/components/schemas/WebhookBody/properties/status'
+        account_identifier:
           type:
           - string
           - 'null'
-          description: Vehicle lien holder name
-        garaging_address:
+          description: Unique identifier for online account holder that will stay the same across PULLING_DATA pulls
+        first_name:
           type:
-          - object
+          - string
           - 'null'
-          $ref: '#/components/schemas/Address'
-        lien_holder_address:
+          description: First name of online account holder
+        middle_name:
           type:
-          - object
+          - string
           - 'null'
-          $ref: '#/components/schemas/Address'
-        coverages:
+          description: Middle name of online account holder
+        last_name:
+          type:
+          - string
+          - 'null'
+          description: Last name of online account holder
+        email:
+          type:
+          - string
+          - 'null'
+          description: Email optionally provided by consumer after submitting bad credentials (`NOT_AUTHENTICATED`)
+          format: email
+        account_email:
+          type:
+          - string
+          - 'null'
+          description: Online account holder email address
+          format: email
+        phone:
+          type:
+          - string
+          - 'null'
+          description: Preferred contact phone
+        mobile_phone:
+          type:
+          - string
+          - 'null'
+          description: Online account holder mobile phone
+        home_phone:
+          type:
+          - string
+          - 'null'
+          description: Online account holder home phone
+        work_phone:
+          type:
+          - string
+          - 'null'
+          description: Online account holder work phone
+        work_phone_extension:
+          type:
+          - string
+          - 'null'
+          description: Online account holder work phone extension
+        insurance_provider_name:
+          type:
+          - string
+          - 'null'
+          description: Online account holder's insurance provider identifier. This is not a user-friendly name.
+        insurance_provider_friendly_name:
+          type:
+          - string
+          - 'null'
+          description: Online account holder's insurance provider name. This is a user-friendly name.
+        team_id:
+          type: string
+          format: uuid
+          description: Team ID this pull is associated with (should match the team id used or api call)
+        widget_id:
+          type: string
+          format: uuid
+          description: Widget/Link Id that the online account holder submitted on
+        meta_data:
+          type:
+          - string
+          - 'null'
+          description: Developer-supplied arbitrary JSON-serializable data as a string
+        is_archived:
+          type: boolean
+          default: false
+          description: Whether the pull is archived
+        created_at:
+          type: string
+          format: date-time
+          description: Time at which the pull was created by online account holder giving consent
+        public_alias:
+          type: string
+          description: Url alias/extension of the Canopy Connect link where the pull was submitted
+        public_url:
+          type: string
+          description: Full public url used to create pull
+        encountered_mfa:
+          type: boolean
+          description: Whether the Pull encountered MFA
+        no_policies:
+          type: boolean
+          description: Whether the account has no policies
+        no_drivers:
+          type: boolean
+          description: Whether the account has no drivers
+        no_documents:
+          type: boolean
+          description: Whether the account has no documents
+        no_claims:
+          type: boolean
+          description: Whether the account has no claims
+        no_loss_events:
+          type: boolean
+          description: Whether the account has no loss events
+        type:
+          type: string
+          enum:
+          - PULLING_DATA
+          - SERVICING
+          - DOCUMENT_UPLOAD
+          - DOCUMENT_PARSING
+          - AGENT
+          - MANUAL_ENTRY
+          - POLICY_LOOKUP
+          - CONTACT_ME
+          description: Pull Type
+        parent_pull_id:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: Internal correlation field linking a pull to its parent pull, when applicable. `null` for top-level pulls. Pulls with a `parent_pull_id` represent internal work and do not fire customer-facing webhooks — only the parent pull's webhooks are delivered externally.
+        policy_check_status:
+          type: string
+          enum:
+          - NONE
+          - COMPLIANT
+          - NOT_COMPLIANT
+          - REVIEW_REQUIRED
+          description: Overview of Policy Check Status
+        policies:
           type: array
           uniqueItems: true
-          description: List of vehicle coverage objects
+          description: List of policy objects
           items:
-            $ref: '#/components/schemas/VehicleCoverage'
+            $ref: '#/components/schemas/Policy'
         drivers:
           type: array
           uniqueItems: true
           description: List of driver objects
           items:
-            $ref: '#/components/schemas/VehicleDriver'
-    PolicyForm:
-      title: PolicyForm
-      type: object
-      properties:
-        policy_form_id:
-          type: string
-          description: ID of the policy form. This ID is not specific to a pull so the form's attributes and its PDF content can be stored and reused if the ID matches.
-          format: uuid
-        form_name:
-          type: string
-          description: Name for the policy form.
-          example: Agreement, Definitions & Policy Conditions
-        form_number:
-          type:
-          - string
-          - 'null'
-          description: Number for the policy form. May include the form version.
-          example: HQ-D77 CW (05-17)
-        form_type:
-          type:
-          - string
-          - 'null'
-          enum:
-          - FORM
-          - ENDORSEMENT
-          description: Type of the policy form.
-        endorsement_type:
-          type:
-          - string
-          - 'null'
-          enum:
-          - SINKHOLE_COVERAGE
-          - WATER_OR_STEAM_SEEPAGE_OR_LEAKAGE_COVERAGE
-          - REFRIGERATED_PROPERTY_COVERAGE
-          - SERVICE_LINE_COVERAGE
-          - EXTENDED_REPLACEMENT_COST_COVERAGE
-          - EXTENDED_ROOF_SURFACES_COVERAGE
-          - ROOF_ACTUAL_CASH_VALUE_COVERAGE
-          - ROOF_REPLACEMENT_COST_COVERAGE
-          - SPECIAL_PERSONAL_PROPERTY_COVERAGE
-          - IDENTITY_THEFT_COVERAGE
-          - CREDIT_CARD_FRAUD_CHECK_FORGERY_OR_COUNTERFEIT_MONEY_COVERAGE
-          - HOME_DAYCARE_COVERAGE
-          - ASSISTED_LIVING_CARE_COVERAGE
-          - LOSS_ASSESSEMENT_COVERAGE
-          - SECONDARY_RESIDENCE_COVERAGE
-          - INFLATION_GUARD_COVERAGE
-          - PERSONAL_INJURY_COVERAGE
-          - HOME_COMPUTER_COVERAGE
-          - FUNCTIONAL_REPLACEMENT_COST_LOSS_SETTLEMENT
-          - PERSONAL_PROPERTY_REPLACEMENT_COST_LOSS_SETTLEMENT
-          - GAP_COVERAGE
-          - ORIGINAL_EQUIPMENT_MANUFACTURER_COVERAGE
-          - CUSTOM_EQUIPMENT_COVERAGE
-          - NEW_CAR_REPLACEMENT_COVERAGE
-          - RIDESHARE_COVERAGE
-          - ACCIDENT_FORGIVENESS_COVERAGE
-          - COMMERCIAL_USE_COVERAGE
-          - UNINSURED_AND_UNDERINSURED_MOTORIST_COVERAGE
-          - UNINSURED_MOTORIST_COVERAGE
-          - UNDERINSURED_MOTORIST_COVERAGE
-          - RENTAL_REIMBURSEMENT_COVERAGE
-          - ROADSIDE_ASSISTANCE_COVERAGE
-          - TOWING_AND_LABOR_COVERAGE
-          - PERSONAL_INJURY_PROTECTION_COVERAGE
-          - SINGLE_LIABILITY_LIMIT
-          - ADDITIONAL_INSURED
-          - FINE_ART_COVERAGE
-          - THEFT_OF_MONEY_AND_SECURITIES_ON_PREMISES_COVERAGE
-          - THEFT_OF_MONEY_AND_SECURITIES_OFF_PREMISES_COVERAGE
-          - OTHER_THAN_THEFT_OF_MONEY_AND_SECURITIES_ON_PREMISES_COVERAGE
-          - OTHER_THAN_THEFT_OF_MONEY_AND_SECURITIES_OFF_PREMISES_COVERAGE
-          - ACCOUNTS_RECEIVABLE_COVERAGE
-          - VALUABLE_PAPERS_AND_RECORDS_ON_PREMISES_COVERAGE
-          - VALUABLE_PAPERS_AND_RECORDS_OFF_PREMISES_COVERAGE
-          - ARSON_OR_THEFT_REWARD_COVERAGE
-          - DEBRIS_REMOVAL_COVERAGE
-          - OUTDOOR_SIGNS_COVERAGE
-          - OUTDOOR_PROPERTY_COVERAGE
-          - SPOILAGE_COVERAGE
-          - EMPLOYMENT_PRACTICES_LIABILITY_COVERAGE
-          - EMPLOYEE_BENEFITS_LIABILITY_COVERAGE
-          - FIRE_DEPARTMENT_SERVICE_CHARGE_COVERAGE
-          - LIQUOR_LIABILITY_COVERAGE
-          - BUILDING_GLASS_COVERAGE
-          - HIRED_AUTO_BODILY_INJURY_COVERAGE
-          - HIRED_AUTO_PROPERTY_DAMAGE_COVERAGE
-          - NON_OWNED_AUTO_COVERAGE
-          - HIRED_AUTO_COVERAGE
-          - HIRED_AND_NON_OWNED_AUTO_COVERAGE
-          - DATA_COMPROMISE_COVERAGE
-          - BAILEES_CUSTOMER_COVERAGE
-          - PROPERTY_IN_TRANSIT_COVERAGE
-          - EQUIPMENT_BREAKDOWN_COVERAGE
-          - ORDINANCE_OR_LAW_COVERAGE
-          - WINDSTORM_OR_HAIL_COVERAGE
-          - EARTHQUAKE_COVERAGE
-          - FLOOD_COVERAGE
-          - WATER_BACKUP_COVERAGE
-          - LIMITED_FUNGI_OR_MOLD_COVERAGE
-          - PARTNERS_OFFICERS_AND_OTHER_EXCLUSION
-          - EXPERIENCE_RATING_MODIFICATION_FACTOR
-          - NOTIFICATION_OF_CHANGE_IN_OWNERSHIP
-          - CATASTOPHE_OTHER_THAN_CERTIFIED_ACTS_OF_TERRORISM_PREMIUM
-          - TERRORISM_RISK_INSURANCE_PROGRAM_REAUTHORIZATION_ACT_DISCLOSURE
-          - AUDIT_NONCOMPLIANCE_CHARGE
-          - PENDING_RATE_CHANGE
-          - PREMIUM_DUE_DATE
-          - DESIGNATED_WORKPLACES_EXCLUSIION
-          - WAIVER_OF_RIGHTS_TO_RECOVER_FROM_OTHERS
-          - PREMIUM_DISCOUNT
-          - EMPLOYER_LIABILITY_COVERAGE
-          - TERMINAL_COVERAGE
-          description: Type of endorsement form. Only applicable if the `form_type` is `ENDORSEMENT`.
-        is_exclusion_endorsement:
-          type:
-          - boolean
-          - 'null'
-          description: Indicates whether or not the endorsement is an exclusion. Only applicable if the `form_type` is `ENDORSEMENT`.
-        pdf_available:
-          type: boolean
-          description: Indicates whether or not a PDF is available for the form. A form that does not currently have a PDF available may have one available at a future time.
-    Dwelling:
-      title: Dwelling
-      type: object
-      properties:
-        dwelling_id:
-          type: string
-          format: uuid
-          description: ID of the dwelling
-        address:
-          type: object
-          $ref: '#/components/schemas/Address'
-          description: Address of the dwelling
-        coverages:
+            $ref: '#/components/schemas/Driver'
+        documents:
           type: array
           uniqueItems: true
-          description: List of dwelling coverage objects
+          description: List of document objects
           items:
-            $ref: '#/components/schemas/DwellingCoverage'
-        mortgagees:
+            $ref: '#/components/schemas/Document'
+        addresses:
           type: array
           uniqueItems: true
-          description: List of mortgagee objects
+          description: List of address objects
           items:
-            $ref: '#/components/schemas/Mortgagee'
-        mortgagee_name:
+            type: object
+            $ref: '#/components/schemas/Address'
+        claims:
+          type: array
+          description: List of claim objects
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/Claim'
+        driving_records:
+          type: array
+          description: List of driving record objects
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/DrivingRecord'
+        loss_events:
+          type: array
+          description: List of commercial loss events objects
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/LossEvent'
+        agents:
+          type: array
+          description: List of agent objects
+          items:
+            $ref: '#/components/schemas/AgentInfo'
+        answers:
+          type: array
+          description: List of answers to custom fields in the link flow
+          items:
+            $ref: '#/components/schemas/AnswerSection'
+        skipped_product_types:
+          description: Product types for skipped policies due to lack of access
           type:
-          - string
+          - array
           - 'null'
-          description: '[DEPRECATED] Name of the mortgagee. Please use mortgagees instead.'
-          deprecated: true
-        mortgagee_address:
-          type:
-          - object
-          - 'null'
-          $ref: '#/components/schemas/Address'
-          description: '[DEPRECATED] Address of the mortgagee. Please use mortgagees instead.'
-          deprecated: true
-        mortgage_loan_number:
-          type:
-          - string
-          - 'null'
-          description: '[DEPRECATED] Loan number of the mortgage. Please use mortgagees instead.'
-          deprecated: true
-        replacement_cost_cents:
-          type:
-          - integer
-          - 'null'
-          description: Replacement cost in cents
-        cash_value_cents:
-          type:
-          - integer
-          - 'null'
-          description: Cash value in cents
-        property_data:
-          type:
-          - object
-          - 'null'
-          $ref: '#/components/schemas/PropertyData'
-          description: Dwelling property data. Your plan must include property data in order to access this API in production. For more information, contact your Canopy Connect representative.
-        loss_settlement_type:
-          type:
-          - string
-          - 'null'
-          description: The loss settlement provision for the dwelling
-          enum:
-          - REPLACEMENT_COST
-          - ACTUAL_CASH_VALUE
-        extended_replacement_cost_percent:
-          type:
-          - integer
-          - 'null'
-          description: The increased limit of liability for the DWELLING coverage (Coverage A), in percent
-          maximum: 100
-          minimum: 0
-        total_replacement_cost_cents:
-          type:
-          - integer
-          - 'null'
-          description: 'Total replacement cost in cents, calculated as the base replacement cost plus any extended replacement cost coverage. Formula: replacement_cost_cents * (1 + extended_replacement_cost_percent/100)'
-        is_replacement_cost_cents_derived:
-          type: boolean
-          description: A boolean flag indicating whether the replacement cost amount was derived from the dwelling coverage limit
-    PullFunnel:
-      title: PullFunnel
-      type:
-      - object
-      - 'null'
-      description: Information about the Pull’s deal stage
-      properties:
-        assignee:
-          $ref: '#/components/schemas/PullAssignee'
-          description: Agent to whom the Pull is assigned
-        premium:
-          description: Total premium won (when `stage` is `WON`)
-          type:
-          - number
-          - 'null'
-        stage:
-          description: Reported deal stage that the Pull is in
-          type: string
-          enum:
-          - WORKING
-          - WON
-          - LOST
-    Driver:
-      title: Driver
-      type: object
-      properties:
-        driver_id:
-          type: string
-          format: uuid
-          description: ID of the driver
-        first_name:
-          type:
-          - string
-          - 'null'
-          description: First name of driver
-        middle_name:
-          type:
-          - string
-          - 'null'
-          description: Middle name of driver
-        last_name:
-          type:
-          - string
-          - 'null'
-          description: Last name of driver
-        drivers_license:
-          type:
-          - string
-          - 'null'
-          description: Driver's license number
-        drivers_license_state:
-          type:
-          - string
-          - 'null'
-          description: State of Driver's license
-        date_of_birth_str:
-          type:
-          - string
-          - 'null'
-          description: Driver's date of birth
-        gender:
-          $ref: '#/components/schemas/WebhookBody/properties/data/anyOf/0/properties/updates/items/anyOf/3/properties/data/properties/gender'
-          description: Driver's gender
-        marital_status:
-          $ref: '#/components/schemas/WebhookBody/properties/data/anyOf/0/properties/updates/items/anyOf/3/properties/data/properties/marital_status'
-          description: Driver's marital status
-        relationship_to_insured:
-          type:
-          - string
-          - 'null'
-          enum:
-          - INSURED
-          - SPOUSE
-          - BROTHER
-          - SISTER
-          - FATHER
-          - MOTHER
-          - PARENT
-          - DAUGHTER
-          - SON
-          - CHILD
-          - RELATIVE
-          - DOMESTIC_PARTNERSHIP
-          description: Relationship to the insured
-        age:
-          type:
-          - integer
-          - 'null'
-          description: Driver's age
-        age_on_date:
-          type:
-          - string
-          - 'null'
-          description: Date reference for driver's age
-        education:
-          $ref: '#/components/schemas/WebhookBody/properties/data/anyOf/0/properties/updates/items/anyOf/3/properties/data/properties/education'
-          description: Driver's education
-        occupation:
-          type:
-          - string
-          - 'null'
-          description: Driver's occupation
-        age_licensed:
-          type:
-          - integer
-          - 'null'
-          description: Age at which driver was licensed
-    CommercialNamedInsured:
-      title: CommercialNamedInsured
-      type: object
-      properties:
-        commercial_named_insured_id:
-          type: string
-          format: uuid
-          description: ID of the commercial named insured
-        address_id:
-          type:
-          - string
-          - 'null'
-          description: ID of the address for the insured
-          format: uuid
-        location_id:
-          type:
-          - string
-          - 'null'
-          description: ID of the location for the insured
-          format: uuid
-        name:
-          type:
-          - string
-          - 'null'
-          description: Name of the insured
-        form_of_business:
-          type:
-          - string
-          - 'null'
-          enum:
-          - INDIVIDUAL
-          - PARTNERSHIP
-          - LIMITED_LIABILITY_COMPANY
-          - S_CORPORATION
-          - CORPORATION
-          - JOINT_VENTURE
-          - NOT_FOR_PROFIT_ORGANIZATION
-          - TRUST
-          description: The form of business of the insured
-        gl_code:
-          type:
-          - string
-          - 'null'
-          description: General liability class code
-        sic_code:
-          type:
-          - string
-          - 'null'
-          description: Standard industrial classification code
-        naics_code:
-          type:
-          - string
-          - 'null'
-          description: North american industry classification system code
-        fein:
-          type:
-          - string
-          - 'null'
-          description: Federal employer identification number
-        business_phone:
-          type:
-          - string
-          - 'null'
-          description: Insured's business phone number
-        business_email:
-          type:
-          - string
-          - 'null'
-          description: Insured's business email address
-        website_url:
-          type:
-          - string
-          - 'null'
-          description: Insured's website url
-        is_primary_named_insured:
-          type:
-          - boolean
-          - 'null'
-          description: Whether the insured is the primary insured
-        number_of_employees:
-          type:
-          - integer
-          - 'null'
-          description: Number of employees
-        minimum_premium_cents:
-          type:
-          - integer
-          - 'null'
-          description: Minimum premium, in cents (Workers' Compensation)
-        total_estimated_annual_premium_cents:
-          type:
-          - integer
-          - 'null'
-          description: Total estimated annual premium, in cents (Workers' Compensation)
-    AdditionalInterest:
-      title: AdditionalInterest
-      type: object
-      properties:
-        additional_interest_id:
-          type: string
-          format: uuid
-          description: ID of the additional interest
-        additional_interest_name:
-          type: string
-          description: Name of the additional interest
-        additional_interest_type:
-          type:
-          - string
-          - 'null'
-          enum:
-          - ADDITIONAL_INSURED
-          - LANDLORD
-          - PROPERTY_MANAGER
-          - HOME_ASSOCIATION
-          - CERTIFICATE_HOLDER
-          description: The type of additional interest
-        email:
-          type:
-          - string
-          - 'null'
-          description: Email of the additional interest
-        phone_number:
-          type:
-          - string
-          - 'null'
-          description: Phone number of the additional interest
-        additional_interest_address:
-          type:
-          - object
-          - 'null'
-          $ref: '#/components/schemas/Address'
-          description: Address of the additional interest
-    LifePolicyRider:
-      title: LifePolicyRider
-      type: object
-      properties:
-        life_policy_rider_id:
-          type: string
-          description: ID of the life policy rider record
-          format: uuid
-        policy_id:
-          type: string
-          format: uuid
-          description: ID of the policy this record belongs to
-        pull_id:
-          type: string
-          description: ID of the pull this record belongs to
-          format: uuid
-        name:
-          type: string
-          enum:
-          - GUARANTEED_INSURABILITY
-          - ACCIDENTAL_DEATH
-          - WAIVER_OF_PREMIUM
-          - FAMILY_INCOME_BENEFIT
-          - ACCELERATED_DEATH_BENEFIT
-          - CHILD_TERM
-          - LONG_TERM_CARE
-          - RETURN_OF_PREMIUM
-          - LEVEL_DEATH_BENEFIT
-          - VARIABLE_DEATH_BENEFIT
-          - MILITARY_FUTURE_INSURABILITY
-          description: Name of the rider/benefit
-        friendly_name:
-          type:
-          - string
-          - 'null'
-          description: Human-friendly name of the rider
-        effective_date:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          description: Date when the rider becomes effective
-        expiry_date:
-          type:
-          - string
-          - 'null'
-          format: date-time
-          description: Date when the rider expires
+          items:
+            enum:
+            - personal
+            - commercial
+            - agent
+        funnel:
+          $ref: '#/components/schemas/PullFunnel'
+          description: Information about the Pull’s deal stage
     DwellingCoverage:
       title: DwellingCoverage
       type: object
@@ -6810,6 +5245,277 @@ components:
         is_declined:
           type: boolean
           description: If true, this coverage item was declined
+    AdditionalInterest:
+      title: AdditionalInterest
+      type: object
+      properties:
+        additional_interest_id:
+          type: string
+          format: uuid
+          description: ID of the additional interest
+        additional_interest_name:
+          type: string
+          description: Name of the additional interest
+        additional_interest_type:
+          type:
+          - string
+          - 'null'
+          enum:
+          - ADDITIONAL_INSURED
+          - LANDLORD
+          - PROPERTY_MANAGER
+          - HOME_ASSOCIATION
+          - CERTIFICATE_HOLDER
+          description: The type of additional interest
+        email:
+          type:
+          - string
+          - 'null'
+          description: Email of the additional interest
+        phone_number:
+          type:
+          - string
+          - 'null'
+          description: Phone number of the additional interest
+        additional_interest_address:
+          type:
+          - object
+          - 'null'
+          $ref: '#/components/schemas/Address'
+          description: Address of the additional interest
+    PullAssignee:
+      title: PullAssignee
+      type:
+      - object
+      - 'null'
+      description: Agent to whom the Pull is assigned
+      properties:
+        agent_id:
+          type: string
+          format: uuid
+        email:
+          type: string
+          format: email
+        first_name:
+          type: string
+        last_name:
+          type: string
+    PolicyCheckVehicleSetting:
+      title: PolicyCheckVehicleSetting
+      type: object
+      properties:
+        POLICY_NOT_ACTIVE:
+          type: boolean
+          description: Verify whether the auto policy is active or inactive
+        LIENHOLDER_NAME_MISMATCH:
+          type: array
+          description: Array of lienholder names that are required to be included in the auto policy
+          uniqueItems: true
+          items:
+            type: string
+        DRIVER_REMOVED:
+          type: boolean
+          description: Verify whether any driver was removed from the previous pull in the monitoring
+        VEHICLE_REMOVED:
+          type: boolean
+          description: Verify whether any vehicle was removed from the previous pull in the monitoring
+        NO_COLLISION_COVERAGE:
+          type: boolean
+          description: Verify whether collision coverage is included in the auto policy
+        NO_COMPREHENSIVE_COVERAGE:
+          type: boolean
+          description: Verify whether comprehensive coverage is included in the auto policy
+        MAX_COLLISION_DEDUCTIBLE_CENTS:
+          type:
+          - number
+          - 'null'
+          description: Verify that the collision deductible is below the specified limit
+        MAX_COMPREHENSIVE_DEDUCTIBLE_CENTS:
+          type:
+          - number
+          - 'null'
+          description: Verify that the comprehensive deductible is below the specified limit
+        MIN_PROPERTY_DAMAGE_COVERAGE_CENTS:
+          type:
+          - number
+          - 'null'
+          description: Verify that the property damage liability coverage is above the specified limit
+        MIN_BODILY_INJURY_COVERAGE:
+          type: object
+          properties:
+            per_person_cents:
+              type:
+              - number
+              - 'null'
+            per_accident_cents:
+              type:
+              - number
+              - 'null'
+          description: Verify that the bodily injury liability coverage per person and/or per accident is above the specified limits
+        MIN_UNINSURED_MOTORIST_BODILY_INJURY_COVERAGE:
+          type: object
+          properties:
+            per_person_cents:
+              type:
+              - number
+              - 'null'
+            per_accident_cents:
+              type:
+              - number
+              - 'null'
+          description: Verify that the uninsured motorist bodily injury coverage per person and/or per accident is above the specified limits
+    AnswerSection:
+      title: AnswerSection
+      type: object
+      properties:
+        consumer_flow_section_id:
+          type: string
+          format: uuid
+          description: ID of the section
+        fields:
+          type: array
+          description: The fields contained in the section
+          items:
+            $ref: '#/components/schemas/AnswerField'
+    PolicyCheckDwellingSetting:
+      title: PolicyCheckDwellingSetting
+      type: object
+      properties:
+        DWELLING_POLICY_NOT_ACTIVE:
+          type: boolean
+          description: Verify whether the dwelling policy is active or inactive.
+        LOSS_SETTLEMENT_TYPE_EQUALS_REPLACEMENT_COST:
+          type: boolean
+          description: Verify the dwelling policy uses replacement cost for loss settlement type.
+        REPLACEMENT_COST_EXCEEDS_DWELLING_LIMIT:
+          type: boolean
+          description: Ensure that the replacement cost does not exceed the dwelling coverage limit.
+    VehicleDriver:
+      title: VehicleDriver
+      type: object
+      properties:
+        driver_id:
+          type: string
+          format: uuid
+          description: ID of the driver
+        first_name:
+          type:
+          - string
+          - 'null'
+          description: First name of driver
+        middle_name:
+          type:
+          - string
+          - 'null'
+          description: Middle name of driver
+        last_name:
+          type:
+          - string
+          - 'null'
+          description: Last name of driver
+        drivers_license:
+          type:
+          - string
+          - 'null'
+          description: Driver's license number
+        drivers_license_state:
+          type:
+          - string
+          - 'null'
+          description: State of Driver's license
+        date_of_birth_str:
+          type:
+          - string
+          - 'null'
+          description: Driver's date of birth
+        gender:
+          type:
+          - string
+          - 'null'
+          enum:
+          - MALE
+          - FEMALE
+          - NONBINARY
+          description: Driver's gender
+        marital_status:
+          type:
+          - string
+          - 'null'
+          enum:
+          - SINGLE
+          - MARRIED
+          - DIVORCED
+          - WIDOWED
+          - SEPARATED
+          - CIVIL_UNION
+          - DOMESTIC_PARTNERSHIP
+          description: Driver's marital status
+        relationship_to_insured:
+          type:
+          - string
+          - 'null'
+          enum:
+          - INSURED
+          - SPOUSE
+          - BROTHER
+          - SISTER
+          - FATHER
+          - MOTHER
+          - PARENT
+          - DAUGHTER
+          - SON
+          - CHILD
+          - RELATIVE
+          - DOMESTIC_PARTNERSHIP
+          description: Relationship to the insured
+        age:
+          type:
+          - integer
+          - 'null'
+          description: Driver's age
+        age_on_date:
+          type:
+          - string
+          - 'null'
+          description: Date reference for driver's age
+        education:
+          type:
+          - string
+          - 'null'
+          description: Driver's education
+          enum:
+          - LESS_THAN_HIGH_SCHOOL
+          - HIGH_SCHOOL
+          - SOME_COLLEGE
+          - BACHELORS
+          - DOCTORS
+          - ASSOCIATES
+          - MASTERS
+          - LAW
+          - VOCATIONAL
+          - PHD
+          - HIGH_SCHOOL_GED
+          - COLLEGE_DEGREE
+          - IN_COLLEGE
+          - GRADUATE_WORK
+        occupation:
+          type:
+          - string
+          - 'null'
+          description: Driver's occupation
+        age_licensed:
+          type:
+          - integer
+          - 'null'
+          description: Age at which driver was licensed
+        is_excluded:
+          type: boolean
+          description: Whether or not the Driver is excluded from the Policy or Vehicle
+        is_primary:
+          type:
+          - boolean
+          - 'null'
+          description: Whether the document designates this Driver as the primary/rated driver on the Vehicle. null indicates no signal was found
     VehicleCoverage:
       title: VehicleCoverage
       type: object
@@ -6951,6 +5657,1590 @@ components:
           - integer
           - 'null'
           description: Premium per mile, in tenth of cents
+    LifePolicy:
+      title: LifePolicy
+      type:
+      - object
+      - 'null'
+      properties:
+        life_policy_details:
+          type:
+          - object
+          - 'null'
+          description: Life policy details
+          $ref: '#/components/schemas/LifePolicyDetails'
+        life_policy_riders:
+          type: array
+          description: List of life policy riders
+          items:
+            $ref: '#/components/schemas/LifePolicyRider'
+        life_policy_beneficiaries:
+          type: array
+          description: List of life policy beneficiaries
+          items:
+            $ref: '#/components/schemas/LifePolicyBeneficiary'
+    LocationOperation:
+      title: LocationOperation
+      type: object
+      properties:
+        location_operation_id:
+          type: string
+          format: uuid
+          description: ID of the location operation
+        class_code:
+          type: string
+          description: Three or four-digit Workers' Compensation class code
+        description:
+          type:
+          - string
+          - 'null'
+          description: Human-readable description of the operation
+        estimated_annual_remunerations_cents:
+          type: integer
+          description: Payroll amount for the given operation, in cents
+        rate_cents:
+          type: integer
+          description: Rate per $100 of remuneration
+        estimated_annual_premium_cents:
+          type: integer
+          description: Total estimated annual premium, in cents<br/><br/>Can be calculated by multiplying `estimated_annual_remunerations_cents` * `rate_cents`<br/><br/>E.g. if `estimated_annual_remunerations_cents` = 100_000_00 ($100k) and `rate_cents` = 500 ($5), then `estimated_annual_premium_cents` = 5_000_00 ($5k)
+    Driver:
+      title: Driver
+      type: object
+      properties:
+        driver_id:
+          type: string
+          format: uuid
+          description: ID of the driver
+        first_name:
+          type:
+          - string
+          - 'null'
+          description: First name of driver
+        middle_name:
+          type:
+          - string
+          - 'null'
+          description: Middle name of driver
+        last_name:
+          type:
+          - string
+          - 'null'
+          description: Last name of driver
+        drivers_license:
+          type:
+          - string
+          - 'null'
+          description: Driver's license number
+        drivers_license_state:
+          type:
+          - string
+          - 'null'
+          description: State of Driver's license
+        date_of_birth_str:
+          type:
+          - string
+          - 'null'
+          description: Driver's date of birth
+        gender:
+          $ref: '#/components/schemas/WebhookBody/properties/data/anyOf/0/properties/updates/items/anyOf/3/properties/data/properties/gender'
+          description: Driver's gender
+        marital_status:
+          $ref: '#/components/schemas/WebhookBody/properties/data/anyOf/0/properties/updates/items/anyOf/3/properties/data/properties/marital_status'
+          description: Driver's marital status
+        relationship_to_insured:
+          type:
+          - string
+          - 'null'
+          enum:
+          - INSURED
+          - SPOUSE
+          - BROTHER
+          - SISTER
+          - FATHER
+          - MOTHER
+          - PARENT
+          - DAUGHTER
+          - SON
+          - CHILD
+          - RELATIVE
+          - DOMESTIC_PARTNERSHIP
+          description: Relationship to the insured
+        age:
+          type:
+          - integer
+          - 'null'
+          description: Driver's age
+        age_on_date:
+          type:
+          - string
+          - 'null'
+          description: Date reference for driver's age
+        education:
+          $ref: '#/components/schemas/WebhookBody/properties/data/anyOf/0/properties/updates/items/anyOf/3/properties/data/properties/education'
+          description: Driver's education
+        occupation:
+          type:
+          - string
+          - 'null'
+          description: Driver's occupation
+        age_licensed:
+          type:
+          - integer
+          - 'null'
+          description: Age at which driver was licensed
+    Vehicle:
+      title: Vehicle
+      type: object
+      properties:
+        vehicle_id:
+          type: string
+          format: uuid
+          description: ID of the vehicle
+        year:
+          type:
+          - integer
+          - 'null'
+          description: Vehicle year
+        make:
+          type:
+          - string
+          - 'null'
+          description: Vehicle make
+        model:
+          type:
+          - string
+          - 'null'
+          description: Vehicle model
+        series:
+          type:
+          - string
+          - 'null'
+          description: Vehicle series
+        series2:
+          type:
+          - string
+          - 'null'
+          description: Vehicle series 2
+        type:
+          type:
+          - string
+          - 'null'
+          description: Vehicle type
+        annual_mileage:
+          type:
+          - integer
+          - 'null'
+          description: Vehicle annual mileage
+        current_mileage:
+          type:
+          - integer
+          - 'null'
+          description: Vehicle current mileage at time of pull
+        vin:
+          type:
+          - string
+          - 'null'
+          description: Vehicle identification number
+        hin:
+          type:
+          - string
+          - 'null'
+          description: Boat hull identification number
+        serial_number:
+          type:
+          - string
+          - 'null'
+          description: Vehicle serial number
+        uses:
+          type:
+          - array
+          - 'null'
+          description: Vehicle uses
+          items:
+            enum:
+            - PERSONAL
+            - COMMUTE
+            - WORK
+            - SCHOOL
+            - PLEASURE
+            - FARM
+            - RIDESHARE
+            - BUSINESS
+        purchase_date:
+          type:
+          - string
+          - 'null'
+          description: Vehicle purchase date
+          format: date-time
+        ownership_type:
+          type:
+          - string
+          - 'null'
+          enum:
+          - OWN
+          - FINANCE
+          - LEASE
+          description: Vehicle ownership type
+        features:
+          type:
+          - array
+          - 'null'
+          description: Vehicle features
+          items:
+            type: string
+        is_removed:
+          type: boolean
+          description: Whether or not the Vehicle is excluded from the Policy
+        lien_holder:
+          type:
+          - string
+          - 'null'
+          description: Vehicle lien holder name
+        garaging_address:
+          type:
+          - object
+          - 'null'
+          $ref: '#/components/schemas/Address'
+        lien_holder_address:
+          type:
+          - object
+          - 'null'
+          $ref: '#/components/schemas/Address'
+        coverages:
+          type: array
+          uniqueItems: true
+          description: List of vehicle coverage objects
+          items:
+            $ref: '#/components/schemas/VehicleCoverage'
+        drivers:
+          type: array
+          uniqueItems: true
+          description: List of driver objects
+          items:
+            $ref: '#/components/schemas/VehicleDriver'
+    ServicingAction:
+      title: ServicingAction
+      examples:
+      - servicing_action_id: a082368f-fa48-48d3-9b0a-f3941c81511d
+        type: ADD_MORTGAGEE
+        payload: {}
+        confirmation_data: {}
+        status: QUEUED
+        validation_error_type: INVALID_POLICY_NUMBER
+      allOf:
+      - type: object
+        properties:
+          servicing_action_id:
+            type: string
+            format: uuid
+            description: ID of the `ServicingAction`.
+          status:
+            enum:
+            - QUEUED
+            - IN_PROGRESS
+            - INTERNAL_ERROR
+            - PROVIDER_ERROR
+            - VALIDATION_ERROR
+            - WAITING_FOR_CONSUMER_CONFIRMATION
+            - SUBMITTING_CONFIRMATION
+            - UNCONFIRMED
+            - VERIFIED
+            - VERIFICATION_FAILED
+            - SUCCESS
+          validation_error_type:
+            type:
+            - string
+            - 'null'
+            enum:
+            - INVALID_POLICY_NUMBER
+            - INVALID_POLICY_TYPE
+            - INVALID_MORTGAGEE_NAME
+            - INVALID_MORTGAGEE_ADDRESS
+            - DUPLICATE_MORTGAGEE_NAME
+            - DUPLICATE_MORTGAGEE_TYPE
+            - INVALID_MORTGAGEE_TYPE
+            - POLICY_UNAVAILABLE_FOR_SERVICING
+            - VEHICLE_UNAVAILABLE_FOR_SERVICING
+            - REPLACING_VIN_NOT_FOUND
+            - PRIMARY_DRIVER_NOT_FOUND
+            - INVALID_VIN
+            - INVALID_VEHICLE_ACQUISITION_DATE
+            - REGISTERED_OWNER_NOT_FOUND
+            - INVALID_FINANCING_COMPANY
+            - INVALID_GARAGING_ADDRESS
+            - GARAGING_ADDRESS_OUT_OF_STATE
+            - CUSTOMER_SERVICE_REQUIRED
+            - FINANCING_COMPANY_NOT_FOUND
+            - DUPLICATE_FINANCING_COMPANY
+            - OTHER_PARTIES_TO_NOTIFY_NOT_SUPPORTED
+            - CANNOT_ADD_NEW_DRIVER
+            - CANNOT_ADD_NEW_REGISTERED_OWNER
+            - INVALID_SAFETY_RESTRAINT_DEVICE
+            - ANTI_THEFT_DEVICE_REQUIRED
+            - INVALID_COVERAGE_SELECTION
+            - INVALID_PRIMARY_USE_TYPE
+            - MULTIPLE_FINANCING_COMPANIES_NOT_ALLOWED
+            description: Only present if `status` is `VALIDATION_ERROR`.
+        required:
+        - servicing_action_id
+        - status
+      - title: ServicingAction
+        oneOf:
+        - type: object
+          title: AddMortgagee
+          allOf:
+          - title: AddMortgageePayload
+            type: object
+            properties:
+              type:
+                enum:
+                - ADD_MORTGAGEE
+              payload:
+                type: object
+                description: Input required for a `ServicingAction`. Corresponds with the `type`.
+                required:
+                - carrier_policy_number
+                - name
+                - address
+                - loan_number
+                - mortgagee_type
+                properties:
+                  carrier_policy_number:
+                    type: string
+                    example: HO132483
+                  name:
+                    type: string
+                    example: JP MORGAN CHASE BANK NA ISAOA ATIMA
+                  address:
+                    type: string
+                    example: PO BOX 47020, ATLANTA, GA 30362
+                  loan_number:
+                    type: string
+                    example: '1234567890'
+                  mortgagee_type:
+                    enum:
+                    - FIRST
+                    - SECOND
+                    - THIRD
+            required:
+            - type
+            - payload
+          - type: object
+            properties:
+              confirmation_data:
+                type: object
+                properties:
+                  carrier_policy_number:
+                    type: string
+                    example: HO132483
+                  before:
+                    type:
+                    - 'null'
+                  after:
+                    type: object
+                    required:
+                    - name
+                    - address
+                    - loan_number
+                    - mortgagee_type
+                    description: The new mortgagee after the change is applied.
+                    properties:
+                      name:
+                        type: string
+                        example: JP MORGAN CHASE BANK NA ISAOA ATIMA
+                      address:
+                        type: string
+                        example: PO BOX 47020, ATLANTA, GA 30362
+                      loan_number:
+                        type: string
+                        example: '1234567890'
+                      mortgagee_type:
+                        enum:
+                        - FIRST
+                        - SECOND
+                        - THIRD
+                required:
+                - carrier_policy_number
+                - before
+                - after
+                description: Output provided for confirmation. Corresponds with the `type`.
+        - type: object
+          title: EditMortgagee
+          allOf:
+          - title: EditMortgageePayload
+            type: object
+            properties:
+              type:
+                enum:
+                - EDIT_MORTGAGEE
+              payload:
+                type: object
+                description: Input required for a `ServicingAction`. Corresponds with the `type`.
+                required:
+                - carrier_policy_number
+                - name
+                - address
+                - loan_number
+                - mortgagee_type
+                properties:
+                  carrier_policy_number:
+                    type: string
+                    example: HO132483
+                  name:
+                    type: string
+                    example: JP MORGAN CHASE BANK NA ISAOA ATIMA
+                  address:
+                    type: string
+                    example: PO BOX 47020, ATLANTA, GA 30362
+                  loan_number:
+                    type: string
+                    example: '1234567890'
+                  mortgagee_type:
+                    enum:
+                    - FIRST
+                    - SECOND
+                    - THIRD
+            required:
+            - type
+            - payload
+          - type: object
+            properties:
+              confirmation_data:
+                type: object
+                properties:
+                  carrier_policy_number:
+                    type: string
+                    example: HO132483
+                  before:
+                    type: object
+                    required:
+                    - name
+                    - address
+                    - loan_number
+                    - mortgagee_type
+                    description: The old mortgagee before the change is applied.
+                    properties:
+                      name:
+                        type: string
+                        example: JP MORGAN CHASE BANK NA ISAOA ATIMA
+                      address:
+                        type: string
+                        example: PO BOX 47020, ATLANTA, GA 30362
+                      loan_number:
+                        type: string
+                        example: '1234567890'
+                      mortgagee_type:
+                        enum:
+                        - FIRST
+                        - SECOND
+                        - THIRD
+                  after:
+                    type: object
+                    required:
+                    - name
+                    - address
+                    - loan_number
+                    - mortgagee_type
+                    description: The new mortgagee after the change is applied.
+                    properties:
+                      name:
+                        type: string
+                        example: JP MORGAN CHASE BANK NA ISAOA ATIMA
+                      address:
+                        type: string
+                        example: PO BOX 47020, ATLANTA, GA 30362
+                      loan_number:
+                        type: string
+                        example: '1234567890'
+                      mortgagee_type:
+                        enum:
+                        - FIRST
+                        - SECOND
+                        - THIRD
+                required:
+                - carrier_policy_number
+                - before
+                - after
+                description: Output provided for confirmation. Corresponds with the `type`.
+        - type: object
+          title: RemoveMortgagee
+          allOf:
+          - title: RemoveMortgageePayload
+            type: object
+            properties:
+              type:
+                enum:
+                - REMOVE_MORTGAGEE
+              payload:
+                type: object
+                description: Input required for a `ServicingAction`. Corresponds with the `type`.
+                required:
+                - carrier_policy_number
+                - mortgagee_type
+                properties:
+                  carrier_policy_number:
+                    type: string
+                    example: HO132483
+                  mortgagee_type:
+                    enum:
+                    - FIRST
+                    - SECOND
+                    - THIRD
+            required:
+            - type
+            - payload
+          - type: object
+            properties:
+              confirmation_data:
+                type: object
+                properties:
+                  carrier_policy_number:
+                    type: string
+                    example: HO132483
+                  before:
+                    type: object
+                    description: The old mortgagee before the change is applied.
+                    required:
+                    - name
+                    - address
+                    - loan_number
+                    - mortgagee_type
+                    properties:
+                      name:
+                        type: string
+                        example: JP MORGAN CHASE BANK NA ISAOA ATIMA
+                      address:
+                        type: string
+                        example: PO BOX 47020, ATLANTA, GA 30362
+                      loan_number:
+                        type: string
+                        example: '1234567890'
+                      mortgagee_type:
+                        enum:
+                        - FIRST
+                        - SECOND
+                        - THIRD
+                  after:
+                    type:
+                    - 'null'
+                required:
+                - carrier_policy_number
+                - before
+                - after
+                description: Output provided for confirmation. Corresponds with the `type`.
+        - type: object
+          title: AddVehicle
+          allOf:
+          - title: AddVehiclePayload
+            type: object
+            properties:
+              type:
+                enum:
+                - ADD_VEHICLE
+              payload:
+                description: Input required for a `ServicingAction`. Corresponds with the `type`.
+                type: object
+                required:
+                - carrier_policy_number
+                - vehicle
+                - registered_owner_full_name
+                - registered_state
+                - garaging_address
+                - is_customized
+                - primary_use
+                - primary_driver_full_name
+                - annual_mileage
+                - current_mileage
+                - coverage_selections
+                - safety_restraint_device
+                - anti_theft_device
+                - daytime_running_lights
+                - tracking_device
+                - vehicle_acquisition_date
+                - vehicle_ownership
+                properties:
+                  carrier_policy_number:
+                    type: string
+                    example: AU192837
+                  vehicle:
+                    properties:
+                      type:
+                        enum:
+                        - PRIVATE_PASSENGER
+                        - ANTIQUE_AUTO
+                        - BOAT
+                        - COMMERCIAL_AUTO
+                        - MOTORCYCLE_OR_ATV
+                        - RV_MOTORHOME_OR_TRAILER
+                        - MOBILE_HOME
+                        - SNOWMOBILE
+                        - GOLF_CART
+                      model_year:
+                        type: integer
+                        example: 2012
+                      vin:
+                        type: string
+                        example: 3N1AB6AP0CL704240
+                      make:
+                        type: string
+                        example: NISSAN
+                      model:
+                        type: string
+                        example: Sentra
+                    required:
+                    - type
+                    - model_year
+                    - vin
+                    - make
+                    - model
+                    type: object
+                  replacing_vin:
+                    type: string
+                    description: The VIN of the vehicle being replaced, if applicable.
+                    example: 3FAHP0HA8CR128394
+                  registered_owner_full_name:
+                    type: string
+                    example: John Smith
+                  registered_co_owner_full_name:
+                    type: string
+                    example: Alice Smith
+                  registered_state:
+                    enum:
+                    - AL
+                    - AK
+                    - AS
+                    - AZ
+                    - AR
+                    - CA
+                    - CO
+                    - CT
+                    - DE
+                    - DC
+                    - FM
+                    - FL
+                    - GA
+                    - GU
+                    - HI
+                    - ID
+                    - IL
+                    - IN
+                    - IA
+                    - KS
+                    - KY
+                    - LA
+                    - ME
+                    - MH
+                    - MD
+                    - MA
+                    - MI
+                    - MN
+                    - MS
+                    - MO
+                    - MT
+                    - NE
+                    - NV
+                    - NH
+                    - NJ
+                    - NM
+                    - NY
+                    - NC
+                    - ND
+                    - MP
+                    - OH
+                    - OK
+                    - OR
+                    - PW
+                    - PA
+                    - PR
+                    - RI
+                    - SC
+                    - SD
+                    - TN
+                    - TX
+                    - UT
+                    - VT
+                    - VI
+                    - VA
+                    - WA
+                    - WV
+                    - WI
+                    - WY
+                  garaging_address:
+                    type: string
+                    example: 344 Clinton Street, Brooklyn, NY, 11231
+                  is_customized:
+                    type: boolean
+                  primary_use:
+                    oneOf:
+                    - title: Commute, Work, or School
+                      properties:
+                        type:
+                          enum:
+                          - COMMUTE
+                          - WORK
+                          - SCHOOL
+                        days_driven_per_week:
+                          type: integer
+                          maximum: 7
+                          minimum: 1
+                        miles_driven_each_way:
+                          type: integer
+                          minimum: 1
+                      required:
+                      - type
+                      - days_driven_per_week
+                      - miles_driven_each_way
+                    - title: Personal, Pleasure, or Farm
+                      properties:
+                        type:
+                          enum:
+                          - PERSONAL
+                          - PLEASURE
+                          - FARM
+                      required:
+                      - type
+                    type: object
+                  primary_driver_full_name:
+                    type: string
+                  annual_mileage:
+                    type: number
+                    example: 10000
+                  current_mileage:
+                    type: number
+                    example: 2000
+                  coverage_selections:
+                    type: object
+                    required:
+                    - BODILY_INJURY_LIABILITY
+                    - PROPERTY_DAMAGE_LIABILITY
+                    - PERSONAL_INJURY_PROTECTION
+                    - UNINSURED_MOTORISTS
+                    - UNDERINSURED_MOTORISTS
+                    - COLLISION
+                    - COMPREHENSIVE
+                    - EMERGENCY_ROAD_SERVICE
+                    - RENTAL_REIMBURSEMENT
+                    properties:
+                      BODILY_INJURY_LIABILITY:
+                        type: object
+                        required:
+                        - per_person_limit_cents
+                        - per_incident_limit_cents
+                        properties:
+                          per_person_limit_cents:
+                            type: integer
+                            example: 10000000
+                          per_incident_limit_cents:
+                            type: integer
+                            example: 30000000
+                      PROPERTY_DAMAGE_LIABILITY:
+                        type: object
+                        required:
+                        - per_incident_limit_cents
+                        properties:
+                          per_incident_limit_cents:
+                            type: integer
+                            example: 50000
+                      PERSONAL_INJURY_PROTECTION:
+                        anyOf:
+                        - title: Declined
+                          properties:
+                            is_declined:
+                              enum:
+                              - true
+                          required:
+                          - is_declined
+                        - title: Accepted
+                          properties:
+                            is_declined:
+                              enum:
+                              - false
+                            per_person_limit_cents:
+                              type: integer
+                              example: 2500000
+                            deductible_cents:
+                              type: integer
+                              example: 50000
+                          required:
+                          - is_declined
+                          - per_person_limit_cents
+                        type: object
+                      UNINSURED_MOTORISTS:
+                        anyOf:
+                        - title: Declined
+                          properties:
+                            is_declined:
+                              enum:
+                              - true
+                          required:
+                          - is_declined
+                        - title: Accepted
+                          properties:
+                            is_declined:
+                              enum:
+                              - false
+                            per_person_limit_cents:
+                              type: integer
+                              example: 2500000
+                            per_incident_limit_cents:
+                              type: integer
+                              example: 5000000
+                          required:
+                          - is_declined
+                          - per_person_limit_cents
+                          - per_incident_limit_cents
+                        type: object
+                      UNDERINSURED_MOTORISTS:
+                        anyOf:
+                        - title: Declined
+                          properties:
+                            is_declined:
+                              enum:
+                              - true
+                          required:
+                          - is_declined
+                        - title: Accepted
+                          properties:
+                            is_declined:
+                              enum:
+                              - false
+                            per_person_limit_cents:
+                              type: integer
+                              example: 2500000
+                            per_incident_limit_cents:
+                              type: integer
+                              example: 5000000
+                          required:
+                          - is_declined
+                          - per_person_limit_cents
+                          - per_incident_limit_cents
+                        type: object
+                      COLLISION:
+                        anyOf:
+                        - title: Declined
+                          properties:
+                            is_declined:
+                              enum:
+                              - true
+                          required:
+                          - is_declined
+                        - title: Accepted
+                          properties:
+                            is_declined:
+                              enum:
+                              - false
+                            deductible_cents:
+                              type: integer
+                              example: 50000
+                          required:
+                          - is_declined
+                          - deductible_cents
+                        type: object
+                      COMPREHENSIVE:
+                        anyOf:
+                        - title: Declined
+                          properties:
+                            is_declined:
+                              enum:
+                              - true
+                          required:
+                          - is_declined
+                        - title: Accepted
+                          properties:
+                            is_declined:
+                              enum:
+                              - false
+                            deductible_cents:
+                              type: integer
+                              example: 50000
+                          required:
+                          - is_declined
+                          - deductible_cents
+                        type: object
+                      EMERGENCY_ROAD_SERVICE:
+                        type: object
+                        required:
+                        - is_declined
+                        properties:
+                          is_declined:
+                            type: boolean
+                      RENTAL_REIMBURSEMENT:
+                        anyOf:
+                        - title: Declined
+                          properties:
+                            is_declined:
+                              enum:
+                              - true
+                          required:
+                          - is_declined
+                        - title: Accepted
+                          properties:
+                            is_declined:
+                              enum:
+                              - false
+                            per_day_limit_cents:
+                              type: integer
+                              example: 3000
+                            max_days:
+                              type: integer
+                              example: 30
+                          required:
+                          - is_declined
+                          - per_day_limit_cents
+                          - max_days
+                        type: object
+                  safety_restraint_device:
+                    enum:
+                    - NONE
+                    - AUTOMATIC_SEAT_BELTS
+                    - DRIVER_SIDE_AIR_BAG
+                    - FULL_FRONT_AIR_BAG
+                  anti_theft_device:
+                    enum:
+                    - UNKNOWN
+                    - NONE
+                    - ALARM_ONLY
+                    - NON_PASSIVE_DISABLING_DEVICE
+                    - PASSIVE_DISABLING_DEVICE
+                    - VEHICLE_RECOVERY_SYSTEM
+                    - VEHICLE_RECOVERY_SYSTEM_PASSIVE_DISABLING_DEVICE
+                    - ELECTRONIC_HOMING_DEVICE
+                  daytime_running_lights:
+                    type: boolean
+                  tracking_device:
+                    type: boolean
+                  vehicle_acquisition_date:
+                    type: string
+                    format: date
+                    example: '2023-08-16'
+                  vehicle_ownership:
+                    anyOf:
+                    - properties:
+                        type:
+                          enum:
+                          - OWN
+                        financing_companies:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              type:
+                                enum:
+                                - LIEN_HOLDER
+                                - OTHER_PARTY_TO_NOTIFY
+                              name:
+                                type: string
+                                example: Metropolis Bank
+                              address:
+                                type: string
+                                example: 620 Atlantic Avenue, Brooklyn, NY, 11217
+                            required:
+                            - type
+                            - name
+                            - address
+                      required:
+                      - type
+                      - financing_companies
+                    - properties:
+                        type:
+                          enum:
+                          - LEASE
+                          - FINANCE
+                        financing_companies:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              type:
+                                enum:
+                                - LIEN_HOLDER
+                                - OTHER_PARTY_TO_NOTIFY
+                              name:
+                                type: string
+                                example: Metropolis Bank
+                              address:
+                                type: string
+                                example: 620 Atlantic Avenue, Brooklyn, NY, 11217
+                            required:
+                            - type
+                            - name
+                            - address
+                        loan_duration_months:
+                          type: integer
+                          example: 60
+                      required:
+                      - type
+                      - financing_companies
+                      - loan_duration_months
+                    type: object
+            required:
+            - type
+            - payload
+          - type: object
+            properties:
+              confirmation_data:
+                anyOf:
+                - title: Agent Required
+                  properties:
+                    requires_agent:
+                      enum:
+                      - true
+                      description: Change requires intervention from the policy's agent.
+                    coverage_selections:
+                      type: object
+                      propertyNames:
+                        title: VehicleCoverageTypes
+                        type: string
+                        enum:
+                        - SINGLE_LIMIT_LIABILITY
+                        - BODILY_INJURY_LIABILITY
+                        - PROPERTY_DAMAGE_LIABILITY
+                        - SUPPLEMENTAL_SPOUSAL_LIABILITY
+                        - SUPPLEMENTAL_SPOUSAL_BODILY_INJURY_LIABILITY
+                        - SUPPLEMENTAL_SPOUSAL_PROPERTY_DAMAGE_LIABILITY
+                        - PERSONAL_INJURY_PROTECTION
+                        - COMPREHENSIVE
+                        - FULL_GLASS
+                        - COLLISION_DEDUCTIBLE_WAIVER
+                        - COLLISION
+                        - UNINSURED_MOTORISTS
+                        - UNINSURED_MOTORIST_BODILY_INJURY_LIABILITY
+                        - UNINSURED_MOTORIST_PROPERTY_DAMAGE_LIABILITY
+                        - UNINSURED_MOTORIST_BODILY_INJURY_AND_PROPERTY_DAMAGE_LIABILITY
+                        - UNDERINSURED_MOTORISTS
+                        - UNDERINSURED_MOTORIST_BODILY_INJURY_LIABILITY
+                        - UNDERINSURED_MOTORIST_PROPERTY_DAMAGE_LIABILITY
+                        - UNDERINSURED_MOTORIST_BODILY_INJURY_AND_PROPERTY_DAMAGE_LIABILITY
+                        - UNINSURED_AND_UNDERINSURED_MOTORISTS
+                        - UNINSURED_AND_UNDERINSURED_MOTORIST_BODILY_INJURY_LIABILITY
+                        - UNINSURED_AND_UNDERINSURED_MOTORIST_PROPERTY_DAMAGE_LIABILITY
+                        - UNINSURED_AND_UNDERINSURED_MOTORIST_BODILY_INJURY_AND_PROPERTY_DAMAGE_LIABILITY
+                        - TOWING_AND_LABOR
+                        - LOAN_OR_LEASE_ASSISTANCE
+                        - RIDESHARE_GAP_PROTECTION
+                        - MEDICAL_PAYMENTS
+                        - EMERGENCY_ROAD_SERVICE
+                        - RENTAL_REIMBURSEMENT
+                        - CAR_RENTAL_AND_TRAVEL_EXPENSES
+                        - PORTABLE_ELECTRONICS
+                        - MECHANICAL_BREAKDOWN
+                        - SUPPLEMENTAL_UNINSURED_AND_UNDERINSURED_MOTORISTS
+                        - EMERGENCY_EXPENSE
+                        - REPLACEMENT_COST_PERSONAL_EFFECTS
+                        - VACATION_LIABILITY_COVERAGE
+                        - RV_MEDICAL
+                        - EXTENDED_BENEFITS
+                        - WAGE_EARNER_DISABILITY_BENEFITS
+                        - ESSENTIAL_SERVICES_DISABILITY_BENEFITS
+                        - DEATH_BENEFIT
+                        - CAR_REPLACEMENT_ASSISTANCE
+                        - FULL_TORT
+                        - LIMITED_TORT
+                        - COMBINED_SINGLE_LIMIT
+                        - SPARE_PARTS
+                        - OPTIONAL_BODILY_INJURY_LIABILITY
+                        - MOTOR_CARGO
+                        - ON_HOOK
+                        - FIRST_PARTY_BENEFIT
+                        - FIRST_PARTY_BENEFIT_MEDICAL_EXPENSE
+                        - FIRST_PARTY_BENEFIT_ACCIDENTAL_DEATH
+                        - FIRST_PARTY_BENEFIT_INCOME_LOSS
+                        - FIRST_PARTY_BENEFIT_FUNERAL_EXPENSE
+                        - FIRST_PARTY_BENEFIT_EXTRAORDINARY_MEDICAL
+                        - FIRST_PARTY_BENEFIT_SURVIVORS_LOSS
+                        - CUSTOM_PARTS_AND_EQUIPMENT
+                        - VEHICLE_PROTECTION
+                        - FUNERAL_BENEFIT
+                        - SURVIVORS_LOSS_BENEFIT
+                      additionalProperties:
+                        title: ConfirmedCoverageSelection
+                        type: object
+                        properties:
+                          per_person_limit_cents:
+                            type:
+                            - integer
+                            - 'null'
+                          per_incident_limit_cents:
+                            type:
+                            - integer
+                            - 'null'
+                          per_day_limit_cents:
+                            type:
+                            - integer
+                            - 'null'
+                          max_days:
+                            type:
+                            - integer
+                            - 'null'
+                          deductible_cents:
+                            type:
+                            - integer
+                            - 'null'
+                          premium_cents:
+                            type:
+                            - integer
+                            - 'null'
+                          is_declined:
+                            type:
+                            - boolean
+                            - 'null'
+                          is_policy_level:
+                            type:
+                            - boolean
+                            - 'null'
+                            description: Indicates if the coverage applies to all vehicles on the policy or only the vehicle being added.
+                          is_changed:
+                            type:
+                            - boolean
+                            - 'null'
+                            description: Indicates if the coverage selection was changed from its previous value.
+                      description: The keys may be any of `VehicleCoverageTypes` (see [VehicleCoverage.name](https://docs.usecanopy.com/reference/schemas-vehiclecoverage)).
+                      properties:
+                        BODILY_INJURY_LIABILITY:
+                          $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/3/allOf/1/properties/confirmation_data/anyOf/0/properties/coverage_selections/additionalProperties'
+                        PROPERTY_DAMAGE_LIABILITY:
+                          $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/3/allOf/1/properties/confirmation_data/anyOf/0/properties/coverage_selections/additionalProperties'
+                        PERSONAL_INJURY_PROTECTION:
+                          $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/3/allOf/1/properties/confirmation_data/anyOf/0/properties/coverage_selections/additionalProperties'
+                        UNINSURED_MOTORISTS:
+                          $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/3/allOf/1/properties/confirmation_data/anyOf/0/properties/coverage_selections/additionalProperties'
+                        UNDERINSURED_MOTORISTS:
+                          $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/3/allOf/1/properties/confirmation_data/anyOf/0/properties/coverage_selections/additionalProperties'
+                        COLLISION:
+                          $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/3/allOf/1/properties/confirmation_data/anyOf/0/properties/coverage_selections/additionalProperties'
+                        COMPREHENSIVE:
+                          $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/3/allOf/1/properties/confirmation_data/anyOf/0/properties/coverage_selections/additionalProperties'
+                        EMERGENCY_ROAD_SERVICE:
+                          $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/3/allOf/1/properties/confirmation_data/anyOf/0/properties/coverage_selections/additionalProperties'
+                        RENTAL_REIMBURSEMENT:
+                          $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/3/allOf/1/properties/confirmation_data/anyOf/0/properties/coverage_selections/additionalProperties'
+                    adjusted_policy_premium_cents:
+                      type: integer
+                      example: 86750
+                      description: New total premium for the entire term (not the remainder).
+                  required:
+                  - requires_agent
+                - title: Agent Not Required
+                  properties:
+                    requires_agent:
+                      enum:
+                      - false
+                      description: Change does not require intervention from the policy's agent.
+                    coverage_selections:
+                      type: object
+                      propertyNames:
+                        $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/3/allOf/1/properties/confirmation_data/anyOf/0/properties/coverage_selections/propertyNames'
+                      additionalProperties:
+                        $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/3/allOf/1/properties/confirmation_data/anyOf/0/properties/coverage_selections/additionalProperties'
+                      description: The keys may be any of `VehicleCoverageTypes` (see [VehicleCoverage.name](https://docs.usecanopy.com/reference/schemas-vehiclecoverage)).
+                      properties:
+                        BODILY_INJURY_LIABILITY:
+                          $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/3/allOf/1/properties/confirmation_data/anyOf/0/properties/coverage_selections/additionalProperties'
+                        PROPERTY_DAMAGE_LIABILITY:
+                          $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/3/allOf/1/properties/confirmation_data/anyOf/0/properties/coverage_selections/additionalProperties'
+                        PERSONAL_INJURY_PROTECTION:
+                          $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/3/allOf/1/properties/confirmation_data/anyOf/0/properties/coverage_selections/additionalProperties'
+                        UNINSURED_MOTORISTS:
+                          $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/3/allOf/1/properties/confirmation_data/anyOf/0/properties/coverage_selections/additionalProperties'
+                        UNDERINSURED_MOTORISTS:
+                          $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/3/allOf/1/properties/confirmation_data/anyOf/0/properties/coverage_selections/additionalProperties'
+                        COLLISION:
+                          $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/3/allOf/1/properties/confirmation_data/anyOf/0/properties/coverage_selections/additionalProperties'
+                        COMPREHENSIVE:
+                          $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/3/allOf/1/properties/confirmation_data/anyOf/0/properties/coverage_selections/additionalProperties'
+                        EMERGENCY_ROAD_SERVICE:
+                          $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/3/allOf/1/properties/confirmation_data/anyOf/0/properties/coverage_selections/additionalProperties'
+                        RENTAL_REIMBURSEMENT:
+                          $ref: '#/components/schemas/ServicingAction/allOf/1/oneOf/3/allOf/1/properties/confirmation_data/anyOf/0/properties/coverage_selections/additionalProperties'
+                    adjusted_policy_premium_cents:
+                      type: integer
+                      example: 86750
+                      description: New total premium for the entire term (not the remainder).
+                  required:
+                  - requires_agent
+                  - coverage_selections
+                  - adjusted_policy_premium_cents
+                description: Output provided for confirmation. Corresponds with the `type`.
+                type: object
+    LifePolicyDetails:
+      title: LifePolicyDetails
+      type: object
+      properties:
+        life_policy_details_id:
+          type: string
+          format: uuid
+          description: ID of the life policy details record
+        policy_id:
+          type: string
+          format: uuid
+          description: ID of the policy this record belongs to
+        pull_id:
+          type: string
+          description: ID of the pull this record belongs to
+          format: uuid
+        face_amount_cents:
+          type:
+          - integer
+          - 'null'
+          description: Face amount of the life insurance policy in cents
+        death_benefit_amount_cents:
+          type:
+          - integer
+          - 'null'
+          description: Death benefit amount in cents
+        total_cash_value_cents:
+          type:
+          - integer
+          - 'null'
+          description: Total cash value in cents
+        total_loan_balance_cents:
+          type:
+          - integer
+          - 'null'
+          description: Total loan balance in cents
+        dividend_option:
+          type:
+          - string
+          - 'null'
+          enum:
+          - PAID_UP_ADDITIONS
+          - ACCUMULATE_AT_INTEREST
+          - CASH_OR_CHECK
+          - PREMIUM_REDUCTION
+          - POLICY_LOAN_REDUCTION
+          - OTHER
+          description: Dividend option for the policy
+        total_accumulated_dividend_cents:
+          type:
+          - integer
+          - 'null'
+          description: Total accumulated dividend in cents
+        total_surrender_value_cents:
+          type:
+          - integer
+          - 'null'
+          description: Total surrender value in cents
+        loan_variable_interest_rate_percent:
+          type:
+          - number
+          - 'null'
+          description: Loan variable interest rate as a percentage
+        paid_up_date:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          description: Date when the policy was paid up
+        total_accumulated_dividend_on_date:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          description: Date for the total accumulated dividend amount
+        total_loan_balance_on_date:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          description: Date for the total loan balance amount
+        total_cash_value_on_date:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          description: Date for the total cash value amount
+        total_surrender_value_on_date:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          description: Date for the total surrender value amount
+        policy_owner_first_name:
+          type:
+          - string
+          - 'null'
+          description: Policy owner's first name
+        policy_owner_middle_name:
+          type:
+          - string
+          - 'null'
+          description: Policy owner's middle name
+        policy_owner_last_name:
+          type:
+          - string
+          - 'null'
+          description: Policy owner's last name
+        policy_owner_full_name:
+          type:
+          - string
+          - 'null'
+          description: Policy owner's full name
+        policy_payor_first_name:
+          type:
+          - string
+          - 'null'
+          description: Policy payor's first name
+        policy_payor_middle_name:
+          type:
+          - string
+          - 'null'
+          description: Policy payor's middle name
+        policy_payor_last_name:
+          type:
+          - string
+          - 'null'
+          description: Policy payor's last name
+        policy_payor_full_name:
+          type:
+          - string
+          - 'null'
+          description: Policy payor's full name
+        policy_owner_address:
+          type:
+          - 'null'
+          - object
+          $ref: '#/components/schemas/Address'
+          description: Policy owner's address
+        policy_payor_address:
+          type:
+          - 'null'
+          - object
+          $ref: '#/components/schemas/Address'
+          description: Policy payor's address
+    LifePolicyBeneficiary:
+      title: LifePolicyBeneficiary
+      type: object
+      properties:
+        life_policy_beneficiary_id:
+          type: string
+          description: ID of the life policy beneficiary record
+          format: uuid
+        policy_id:
+          type: string
+          format: uuid
+          description: ID of the policy this record belongs to
+        pull_id:
+          type: string
+          format: uuid
+          description: ID of the pull this record belongs to
+        named_insured_id:
+          type: string
+          format: uuid
+          description: ID of the named insured associated with this beneficiary
+        type:
+          type: string
+          enum:
+          - PRIMARY
+          - SUCCESSOR
+          - FINAL
+          description: Type of beneficiary
+        first_name:
+          type:
+          - string
+          - 'null'
+          description: Beneficiary's first name
+        middle_name:
+          type:
+          - string
+          - 'null'
+          description: Beneficiary's middle name
+        last_name:
+          type:
+          - string
+          - 'null'
+          description: Beneficiary's last name
+        full_name:
+          type:
+          - string
+          - 'null'
+          description: Beneficiary's full name
+        relationship_to_insured:
+          type:
+          - string
+          - 'null'
+          enum:
+          - INSURED
+          - SPOUSE
+          - BROTHER
+          - SISTER
+          - FATHER
+          - MOTHER
+          - PARENT
+          - DAUGHTER
+          - SON
+          - CHILD
+          - RELATIVE
+          - DOMESTIC_PARTNERSHIP
+          description: Relationship of beneficiary to insured
+        designation:
+          type:
+          - string
+          - 'null'
+          enum:
+          - PER_STIRPES
+          - PER_CAPITA
+          description: Beneficiary designation
+        distribution_percent:
+          type:
+          - number
+          - 'null'
+          description: Distribution percentage for the beneficiary
+    Mortgagee:
+      title: Mortgagee
+      type: object
+      properties:
+        mortgagee_id:
+          type: string
+          format: uuid
+          description: ID of the mortgagee
+        mortgagee_name:
+          type:
+          - string
+          - 'null'
+          description: Name of the mortgagee
+        mortgagee_address:
+          type:
+          - object
+          - 'null'
+          $ref: '#/components/schemas/Address'
+          description: Address of the mortgagee
+        mortgagee_type:
+          type:
+          - string
+          - 'null'
+          enum:
+          - FIRST
+          - SECOND
+          - THIRD
+          description: The type of mortgagee
+        mortgage_loan_number:
+          type:
+          - string
+          - 'null'
+          description: Loan number of the mortgage
+    PolicyForm:
+      title: PolicyForm
+      type: object
+      properties:
+        policy_form_id:
+          type: string
+          description: ID of the policy form. This ID is not specific to a pull so the form's attributes and its PDF content can be stored and reused if the ID matches.
+          format: uuid
+        form_name:
+          type: string
+          description: Name for the policy form.
+          example: Agreement, Definitions & Policy Conditions
+        form_number:
+          type:
+          - string
+          - 'null'
+          description: Number for the policy form. May include the form version.
+          example: HQ-D77 CW (05-17)
+        form_type:
+          type:
+          - string
+          - 'null'
+          enum:
+          - FORM
+          - ENDORSEMENT
+          description: Type of the policy form.
+        endorsement_type:
+          type:
+          - string
+          - 'null'
+          enum:
+          - SINKHOLE_COVERAGE
+          - WATER_OR_STEAM_SEEPAGE_OR_LEAKAGE_COVERAGE
+          - REFRIGERATED_PROPERTY_COVERAGE
+          - SERVICE_LINE_COVERAGE
+          - EXTENDED_REPLACEMENT_COST_COVERAGE
+          - EXTENDED_ROOF_SURFACES_COVERAGE
+          - ROOF_ACTUAL_CASH_VALUE_COVERAGE
+          - ROOF_REPLACEMENT_COST_COVERAGE
+          - SPECIAL_PERSONAL_PROPERTY_COVERAGE
+          - IDENTITY_THEFT_COVERAGE
+          - CREDIT_CARD_FRAUD_CHECK_FORGERY_OR_COUNTERFEIT_MONEY_COVERAGE
+          - HOME_DAYCARE_COVERAGE
+          - ASSISTED_LIVING_CARE_COVERAGE
+          - LOSS_ASSESSEMENT_COVERAGE
+          - SECONDARY_RESIDENCE_COVERAGE
+          - INFLATION_GUARD_COVERAGE
+          - PERSONAL_INJURY_COVERAGE
+          - HOME_COMPUTER_COVERAGE
+          - FUNCTIONAL_REPLACEMENT_COST_LOSS_SETTLEMENT
+          - PERSONAL_PROPERTY_REPLACEMENT_COST_LOSS_SETTLEMENT
+          - GAP_COVERAGE
+          - ORIGINAL_EQUIPMENT_MANUFACTURER_COVERAGE
+          - CUSTOM_EQUIPMENT_COVERAGE
+          - NEW_CAR_REPLACEMENT_COVERAGE
+          - RIDESHARE_COVERAGE
+          - ACCIDENT_FORGIVENESS_COVERAGE
+          - COMMERCIAL_USE_COVERAGE
+          - UNINSURED_AND_UNDERINSURED_MOTORIST_COVERAGE
+          - UNINSURED_MOTORIST_COVERAGE
+          - UNDERINSURED_MOTORIST_COVERAGE
+          - RENTAL_REIMBURSEMENT_COVERAGE
+          - ROADSIDE_ASSISTANCE_COVERAGE
+          - TOWING_AND_LABOR_COVERAGE
+          - PERSONAL_INJURY_PROTECTION_COVERAGE
+          - SINGLE_LIABILITY_LIMIT
+          - ADDITIONAL_INSURED
+          - FINE_ART_COVERAGE
+          - THEFT_OF_MONEY_AND_SECURITIES_ON_PREMISES_COVERAGE
+          - THEFT_OF_MONEY_AND_SECURITIES_OFF_PREMISES_COVERAGE
+          - OTHER_THAN_THEFT_OF_MONEY_AND_SECURITIES_ON_PREMISES_COVERAGE
+          - OTHER_THAN_THEFT_OF_MONEY_AND_SECURITIES_OFF_PREMISES_COVERAGE
+          - ACCOUNTS_RECEIVABLE_COVERAGE
+          - VALUABLE_PAPERS_AND_RECORDS_ON_PREMISES_COVERAGE
+          - VALUABLE_PAPERS_AND_RECORDS_OFF_PREMISES_COVERAGE
+          - ARSON_OR_THEFT_REWARD_COVERAGE
+          - DEBRIS_REMOVAL_COVERAGE
+          - OUTDOOR_SIGNS_COVERAGE
+          - OUTDOOR_PROPERTY_COVERAGE
+          - SPOILAGE_COVERAGE
+          - EMPLOYMENT_PRACTICES_LIABILITY_COVERAGE
+          - EMPLOYEE_BENEFITS_LIABILITY_COVERAGE
+          - FIRE_DEPARTMENT_SERVICE_CHARGE_COVERAGE
+          - LIQUOR_LIABILITY_COVERAGE
+          - BUILDING_GLASS_COVERAGE
+          - HIRED_AUTO_BODILY_INJURY_COVERAGE
+          - HIRED_AUTO_PROPERTY_DAMAGE_COVERAGE
+          - NON_OWNED_AUTO_COVERAGE
+          - HIRED_AUTO_COVERAGE
+          - HIRED_AND_NON_OWNED_AUTO_COVERAGE
+          - DATA_COMPROMISE_COVERAGE
+          - BAILEES_CUSTOMER_COVERAGE
+          - PROPERTY_IN_TRANSIT_COVERAGE
+          - EQUIPMENT_BREAKDOWN_COVERAGE
+          - ORDINANCE_OR_LAW_COVERAGE
+          - WINDSTORM_OR_HAIL_COVERAGE
+          - EARTHQUAKE_COVERAGE
+          - FLOOD_COVERAGE
+          - WATER_BACKUP_COVERAGE
+          - LIMITED_FUNGI_OR_MOLD_COVERAGE
+          - PARTNERS_OFFICERS_AND_OTHER_EXCLUSION
+          - EXPERIENCE_RATING_MODIFICATION_FACTOR
+          - NOTIFICATION_OF_CHANGE_IN_OWNERSHIP
+          - CATASTOPHE_OTHER_THAN_CERTIFIED_ACTS_OF_TERRORISM_PREMIUM
+          - TERRORISM_RISK_INSURANCE_PROGRAM_REAUTHORIZATION_ACT_DISCLOSURE
+          - AUDIT_NONCOMPLIANCE_CHARGE
+          - PENDING_RATE_CHANGE
+          - PREMIUM_DUE_DATE
+          - DESIGNATED_WORKPLACES_EXCLUSIION
+          - WAIVER_OF_RIGHTS_TO_RECOVER_FROM_OTHERS
+          - PREMIUM_DISCOUNT
+          - EMPLOYER_LIABILITY_COVERAGE
+          - TERMINAL_COVERAGE
+          description: Type of endorsement form. Only applicable if the `form_type` is `ENDORSEMENT`.
+        is_exclusion_endorsement:
+          type:
+          - boolean
+          - 'null'
+          description: Indicates whether or not the endorsement is an exclusion. Only applicable if the `form_type` is `ENDORSEMENT`.
+        pdf_available:
+          type: boolean
+          description: Indicates whether or not a PDF is available for the form. A form that does not currently have a PDF available may have one available at a future time.
     LocationCoverage:
       title: LocationCoverage
       type: object
@@ -7390,518 +7680,205 @@ components:
         is_declined:
           type: boolean
           description: If true, this coverage item was declined
-    LifePolicyBeneficiary:
-      title: LifePolicyBeneficiary
+    CommercialNamedInsured:
+      title: CommercialNamedInsured
       type: object
       properties:
-        life_policy_beneficiary_id:
-          type: string
-          description: ID of the life policy beneficiary record
-          format: uuid
-        policy_id:
+        commercial_named_insured_id:
           type: string
           format: uuid
-          description: ID of the policy this record belongs to
-        pull_id:
-          type: string
+          description: ID of the commercial named insured
+        address_id:
+          type:
+          - string
+          - 'null'
+          description: ID of the address for the insured
           format: uuid
-          description: ID of the pull this record belongs to
-        named_insured_id:
-          type: string
-          format: uuid
-          description: ID of the named insured associated with this beneficiary
-        type:
-          type: string
-          enum:
-          - PRIMARY
-          - SUCCESSOR
-          - FINAL
-          description: Type of beneficiary
-        first_name:
-          type:
-          - string
-          - 'null'
-          description: Beneficiary's first name
-        middle_name:
-          type:
-          - string
-          - 'null'
-          description: Beneficiary's middle name
-        last_name:
-          type:
-          - string
-          - 'null'
-          description: Beneficiary's last name
-        full_name:
-          type:
-          - string
-          - 'null'
-          description: Beneficiary's full name
-        relationship_to_insured:
-          type:
-          - string
-          - 'null'
-          enum:
-          - INSURED
-          - SPOUSE
-          - BROTHER
-          - SISTER
-          - FATHER
-          - MOTHER
-          - PARENT
-          - DAUGHTER
-          - SON
-          - CHILD
-          - RELATIVE
-          - DOMESTIC_PARTNERSHIP
-          description: Relationship of beneficiary to insured
-        designation:
-          type:
-          - string
-          - 'null'
-          enum:
-          - PER_STIRPES
-          - PER_CAPITA
-          description: Beneficiary designation
-        distribution_percent:
-          type:
-          - number
-          - 'null'
-          description: Distribution percentage for the beneficiary
-    VehicleDriver:
-      title: VehicleDriver
-      type: object
-      properties:
-        driver_id:
-          type: string
-          format: uuid
-          description: ID of the driver
-        first_name:
-          type:
-          - string
-          - 'null'
-          description: First name of driver
-        middle_name:
-          type:
-          - string
-          - 'null'
-          description: Middle name of driver
-        last_name:
-          type:
-          - string
-          - 'null'
-          description: Last name of driver
-        drivers_license:
-          type:
-          - string
-          - 'null'
-          description: Driver's license number
-        drivers_license_state:
-          type:
-          - string
-          - 'null'
-          description: State of Driver's license
-        date_of_birth_str:
-          type:
-          - string
-          - 'null'
-          description: Driver's date of birth
-        gender:
-          type:
-          - string
-          - 'null'
-          enum:
-          - MALE
-          - FEMALE
-          - NONBINARY
-          description: Driver's gender
-        marital_status:
-          type:
-          - string
-          - 'null'
-          enum:
-          - SINGLE
-          - MARRIED
-          - DIVORCED
-          - WIDOWED
-          - SEPARATED
-          - CIVIL_UNION
-          - DOMESTIC_PARTNERSHIP
-          description: Driver's marital status
-        relationship_to_insured:
-          type:
-          - string
-          - 'null'
-          enum:
-          - INSURED
-          - SPOUSE
-          - BROTHER
-          - SISTER
-          - FATHER
-          - MOTHER
-          - PARENT
-          - DAUGHTER
-          - SON
-          - CHILD
-          - RELATIVE
-          - DOMESTIC_PARTNERSHIP
-          description: Relationship to the insured
-        age:
-          type:
-          - integer
-          - 'null'
-          description: Driver's age
-        age_on_date:
-          type:
-          - string
-          - 'null'
-          description: Date reference for driver's age
-        education:
-          type:
-          - string
-          - 'null'
-          description: Driver's education
-          enum:
-          - LESS_THAN_HIGH_SCHOOL
-          - HIGH_SCHOOL
-          - SOME_COLLEGE
-          - BACHELORS
-          - DOCTORS
-          - ASSOCIATES
-          - MASTERS
-          - LAW
-          - VOCATIONAL
-          - PHD
-          - HIGH_SCHOOL_GED
-          - COLLEGE_DEGREE
-          - IN_COLLEGE
-          - GRADUATE_WORK
-        occupation:
-          type:
-          - string
-          - 'null'
-          description: Driver's occupation
-        age_licensed:
-          type:
-          - integer
-          - 'null'
-          description: Age at which driver was licensed
-        is_excluded:
-          type: boolean
-          description: Whether or not the Driver is excluded from the Policy or Vehicle
-        is_primary:
-          type:
-          - boolean
-          - 'null'
-          description: Whether the document designates this Driver as the primary/rated driver on the Vehicle. null indicates no signal was found
-    LossEvent:
-      title: LossEvent
-      type: object
-      properties:
-        loss_event_id:
-          type: string
-          format: uuid
-          description: ID of the loss event
-        policy_id:
-          type:
-          - string
-          - 'null'
-          description: ID of the policy the loss event is related to
-        date_of_occurrence:
-          type:
-          - string
-          - 'null'
-          description: Date the loss event occurred
-          format: date-time
-        type:
-          type:
-          - string
-          - 'null'
-          enum:
-          - BURGLARY_AND_THEFT
-          - WATER_DAMAGE_AND_FREEZING_DAMAGE
-          - WIND_AND_HAIL_DAMAGE
-          - HURRICANE_DAMAGE
-          - FIRE
-          - CUSTOMER_SLIPS_AND_FALLS
-          - CUSTOMER_INJURY_AND_DAMAGE
-          - PERSONAL_AND_ADVERTISING_INJURY
-          - EMPLOYEE_INJURY_OR_ILLNESS
-          - PRODUCT_LIABILITY
-          - STRUCK_BY_AN_OBJECT
-          - REPUTATIONAL_HARM
-          - VEHICULAR_ACCIDENT
-          - WINDSHIELD_DAMAGE
-          - STRIKE_RIOT_OR_CIVIL_COMMOTION
-          - EMERGENCY_ROADSIDE_ASSISTANCE
-          - VANDALISM_AND_MALICIOUS_MISCHIEF
-          - EQUIPMENT_BREAKDOWN
-          description: Loss event type
-        date_of_claim:
-          type:
-          - string
-          - 'null'
-          description: Date of the claim
-          format: date-time
-        amount_paid_cents:
-          type:
-          - integer
-          - 'null'
-          description: Amount paid in cents
-        amount_reserved_cents:
-          type:
-          - integer
-          - 'null'
-          description: Amount reserved in cents
-        is_subrogation:
-          type:
-          - boolean
-          - 'null'
-          description: Whether subrogation was successful
-        is_claim_open:
-          description: Whether the claim is open
-          type:
-          - boolean
-          - 'null'
-    Location:
-      title: Location
-      type: object
-      properties:
         location_id:
-          type: string
+          type:
+          - string
+          - 'null'
+          description: ID of the location for the insured
           format: uuid
-          description: ID of the location
-        address:
-          type: object
-          $ref: '#/components/schemas/Address'
-          description: Address of the location
-        coverages:
-          type: array
-          uniqueItems: true
-          description: List of location coverage objects
-          items:
-            $ref: '#/components/schemas/LocationCoverage'
-        operations:
-          type: array
-          uniqueItems: true
-          description: List of location operation objects
-          items:
-            $ref: '#/components/schemas/LocationOperation'
-        mortgagees:
-          type: array
-          uniqueItems: true
-          description: List of mortgagee objects
-          items:
-            $ref: '#/components/schemas/Mortgagee'
-        property_data:
-          type:
-          - object
-          - 'null'
-          $ref: '#/components/schemas/PropertyData'
-          description: Location property data. Your plan must include property data in order to access this API in production. For more information, contact your Canopy Connect representative.
-        carrier_location_identifier:
+        name:
           type:
           - string
           - 'null'
-          description: Carrier-specific identifier for the location
-        loss_settlement_type:
-          type:
-          - string
-          - 'null'
-          description: The loss settlement provision for the location
-          enum:
-          - REPLACEMENT_COST
-          - ACTUAL_CASH_VALUE
-    Mortgagee:
-      title: Mortgagee
-      type: object
-      properties:
-        mortgagee_id:
-          type: string
-          format: uuid
-          description: ID of the mortgagee
-        mortgagee_name:
-          type:
-          - string
-          - 'null'
-          description: Name of the mortgagee
-        mortgagee_address:
-          type:
-          - object
-          - 'null'
-          $ref: '#/components/schemas/Address'
-          description: Address of the mortgagee
-        mortgagee_type:
+          description: Name of the insured
+        form_of_business:
           type:
           - string
           - 'null'
           enum:
-          - FIRST
-          - SECOND
-          - THIRD
-          description: The type of mortgagee
-        mortgage_loan_number:
+          - INDIVIDUAL
+          - PARTNERSHIP
+          - LIMITED_LIABILITY_COMPANY
+          - S_CORPORATION
+          - CORPORATION
+          - JOINT_VENTURE
+          - NOT_FOR_PROFIT_ORGANIZATION
+          - TRUST
+          description: The form of business of the insured
+        gl_code:
           type:
           - string
           - 'null'
-          description: Loan number of the mortgage
-    PolicyCheck:
-      title: PolicyCheck
-      type: object
-      properties:
-        status:
-          type: string
-          enum:
-          - NONE
-          - COMPLIANT
-          - NOT_COMPLIANT
-          - REVIEW_REQUIRED
-          description: Policy Check Status
-        details:
-          type: object
-          description: Detailed breakdown of individual Policy Check items
-          properties:
-            status:
-              type: string
-              enum:
-              - NONE
-              - COMPLIANT
-              - NOT_COMPLIANT
-              - REVIEW_REQUIRED
-              description: Policy Check Status of a check item
-            actual:
-              description: The actual value found during the Policy Check evaluation
-              type: object
-            expected:
-              description: The expected value that the policy should meet for compliance
-              type: object
-    Document:
-      title: Document
-      type: object
-      properties:
-        document_id:
-          type: string
-          format: uuid
-          description: ID of the document
-        title:
-          type: string
-          description: Title of Document
-        date_added:
+          description: General liability class code
+        sic_code:
           type:
           - string
           - 'null'
-          description: Effective date of Document
-          format: date-time
-        document_type:
+          description: Standard industrial classification code
+        naics_code:
           type:
           - string
           - 'null'
-          enum:
-          - INSURANCE_APPLICATION
-          - INSURANCE_BINDER
-          - DECLARATIONS
-          - ENDORSEMENT
-          - INSURANCE_ID_CARD
-          - VERIFICATION_OF_INSURANCE
-          - LOSS_RUN
-          - ESIGN_PACKET
-          - NOTICE_OF_CANCELLATION
-          - CANCELLATION
-          - NONRENEWAL_NOTICE
-          - ESIGNATURE
-          - QUOTE
-          - NOTES
-          description: Type of Document
-        policy_id:
+          description: North american industry classification system code
+        fein:
           type:
           - string
           - 'null'
-          description: Policy Id that the document belongs to
-          format: uuid
-        mime_type:
-          enum:
-          - application/pdf
-          - image/jpeg
-          description: The file type of the Document
-        download_url:
-          type: string
-          description: The API endpoint URL from which the document can be downloaded
-          format: uri
-    NamedInsured:
-      title: NamedInsured
-      type: object
-      properties:
-        named_insured_id:
-          type: string
-          format: uuid
-          description: ID of the named insured
-        first_name:
+          description: Federal employer identification number
+        business_phone:
           type:
           - string
           - 'null'
-          description: First name of the insured
-        middle_name:
+          description: Insured's business phone number
+        business_email:
           type:
           - string
           - 'null'
-          description: Middle name of the insured
-        last_name:
+          description: Insured's business email address
+        website_url:
           type:
           - string
           - 'null'
-          description: Last name of the insured
-        full_name:
-          type:
-          - string
-          - 'null'
-          description: Full name of the insured
+          description: Insured's website url
         is_primary_named_insured:
           type:
           - boolean
           - 'null'
-          description: Whether the insured is the primary named insured
-        email:
+          description: Whether the insured is the primary insured
+        number_of_employees:
           type:
-          - string
+          - integer
           - 'null'
-          description: Email for the insured
-        home_phone:
+          description: Number of employees
+        minimum_premium_cents:
           type:
-          - string
+          - integer
           - 'null'
-          description: Home phone for the insured
-        mobile_phone:
+          description: Minimum premium, in cents (Workers' Compensation)
+        total_estimated_annual_premium_cents:
           type:
-          - string
+          - integer
           - 'null'
-          description: Mobile phone for the insured
-        work_phone:
-          type:
-          - string
-          - 'null'
-          description: Work phone for the insured
-        work_phone_extension:
-          type:
-          - string
-          - 'null'
-          description: Work phone exension for the insured
-    PullAssignee:
-      title: PullAssignee
-      type:
-      - object
-      - 'null'
-      description: Agent to whom the Pull is assigned
+          description: Total estimated annual premium, in cents (Workers' Compensation)
+    Claim:
+      title: Claim
+      type: object
       properties:
-        agent_id:
+        claim_id:
           type: string
           format: uuid
-        email:
-          type: string
-          format: email
-        first_name:
-          type: string
-        last_name:
-          type: string
+          description: ID of the claim
+        policy_id:
+          type:
+          - string
+          - 'null'
+          description: ID of the policy the claim is related to
+          format: uuid
+        dwelling_id:
+          type:
+          - string
+          - 'null'
+          description: ID of the dwelling the claim is related to
+          format: uuid
+        vehicle_id:
+          type:
+          - string
+          - 'null'
+          description: ID of the vehicle the claim is related to
+          format: uuid
+        address_id:
+          type:
+          - string
+          - 'null'
+          description: ID of the address where the incident physically occurred
+          format: uuid
+        driver_id:
+          type:
+          - string
+          - 'null'
+          description: ID of the driver the claim is related to
+          format: uuid
+        carrier_claim_identifier:
+          type:
+          - string
+          - 'null'
+          description: The carrier's identifier for the claim
+        date_occurred:
+          type:
+          - string
+          - 'null'
+          description: Date the claim occurred
+          format: date-time
+        type:
+          type:
+          - string
+          - 'null'
+          enum:
+          - WIND_AND_HAIL_DAMAGE
+          - WATER_DAMAGE_AND_FREEZING
+          - FIRE_AND_LIGHTNING_DAMAGE
+          - OTHER_PROPERTY_DAMAGE
+          - PERSONAL_LIABILITY
+          - POWER_OUTAGE_OR_SURGE
+          - THEFT
+          - CAR_ACCIDENT
+          - WINDSHIELD_DAMAGE
+          - ANIMAL_COLLISION
+          - VANDALISM
+          - WEATHER
+          - EMERGENCY_ROADSIDE_ASSISTANCE
+          - MEDICAL
+          - HURRICANE_DAMAGE
+          - SEWAGE_BACKUP
+          description: Claim type
+        status:
+          type:
+          - string
+          - 'null'
+          enum:
+          - OPEN
+          - CLOSED
+          description: Claim status
+        date_closed:
+          type:
+          - string
+          - 'null'
+          description: Date the claim was closed
+          format: date-time
+        payout_cents:
+          type:
+          - integer
+          - 'null'
+          description: Total payout of the claim in cents
+        representative_name:
+          type:
+          - string
+          - 'null'
+          description: Claim representative name
+        representative_phone:
+          type:
+          - string
+          - 'null'
+          description: Claim representative phone number
+        representative_email:
+          type:
+          - string
+          - 'null'
+          description: Claim representative email address
     PremiumGroup:
       title: PremiumGroup
       type: object
@@ -7917,236 +7894,6 @@ components:
         vehicle_coverage_ids:
           type: string
           description: IDs of vehicle coverages apart of the premium group
-    PolicyCheckVehicleSetting:
-      title: PolicyCheckVehicleSetting
-      type: object
-      properties:
-        POLICY_NOT_ACTIVE:
-          type: boolean
-          description: Verify whether the auto policy is active or inactive
-        LIENHOLDER_NAME_MISMATCH:
-          type: array
-          description: Array of lienholder names that are required to be included in the auto policy
-          uniqueItems: true
-          items:
-            type: string
-        DRIVER_REMOVED:
-          type: boolean
-          description: Verify whether any driver was removed from the previous pull in the monitoring
-        VEHICLE_REMOVED:
-          type: boolean
-          description: Verify whether any vehicle was removed from the previous pull in the monitoring
-        NO_COLLISION_COVERAGE:
-          type: boolean
-          description: Verify whether collision coverage is included in the auto policy
-        NO_COMPREHENSIVE_COVERAGE:
-          type: boolean
-          description: Verify whether comprehensive coverage is included in the auto policy
-        MAX_COLLISION_DEDUCTIBLE_CENTS:
-          type:
-          - number
-          - 'null'
-          description: Verify that the collision deductible is below the specified limit
-        MAX_COMPREHENSIVE_DEDUCTIBLE_CENTS:
-          type:
-          - number
-          - 'null'
-          description: Verify that the comprehensive deductible is below the specified limit
-        MIN_PROPERTY_DAMAGE_COVERAGE_CENTS:
-          type:
-          - number
-          - 'null'
-          description: Verify that the property damage liability coverage is above the specified limit
-        MIN_BODILY_INJURY_COVERAGE:
-          type: object
-          properties:
-            per_person_cents:
-              type:
-              - number
-              - 'null'
-            per_accident_cents:
-              type:
-              - number
-              - 'null'
-          description: Verify that the bodily injury liability coverage per person and/or per accident is above the specified limits
-        MIN_UNINSURED_MOTORIST_BODILY_INJURY_COVERAGE:
-          type: object
-          properties:
-            per_person_cents:
-              type:
-              - number
-              - 'null'
-            per_accident_cents:
-              type:
-              - number
-              - 'null'
-          description: Verify that the uninsured motorist bodily injury coverage per person and/or per accident is above the specified limits
-    PropertyData:
-      title: PropertyData
-      type: object
-      allOf:
-      - properties:
-          property_data_id:
-            type: string
-            format: uuid
-            description: ID of the property data
-          dwelling_id:
-            type: string
-            format: uuid
-            description: ID of the dwelling this property data belongs to
-      - $ref: '#/components/schemas/EnrichmentPropertyData/properties/data'
-    AnswerSection:
-      title: AnswerSection
-      type: object
-      properties:
-        consumer_flow_section_id:
-          type: string
-          format: uuid
-          description: ID of the section
-        fields:
-          type: array
-          description: The fields contained in the section
-          items:
-            $ref: '#/components/schemas/AnswerField'
-    DrivingRecord:
-      title: DrivingRecord
-      type: object
-      properties:
-        driving_record_id:
-          type: string
-          format: uuid
-          description: ID of the driving record
-        driver_id:
-          type:
-          - string
-          - 'null'
-          description: ID of the driver the driving record is related to
-          format: uuid
-        incident_date:
-          type:
-          - string
-          - 'null'
-          description: Date the incident occurred
-          format: date-time
-        incident_type:
-          type:
-          - string
-          - 'null'
-          enum:
-          - ACCIDENT
-          - VIOLATION
-          description: Incident type
-        violation_type:
-          type:
-          - string
-          - 'null'
-          enum:
-          - MOVING
-          - SPEEDING
-          - RECKLESS_DRIVING
-          - DRIVING_WITHOUT_VALID_LICENSE
-          - DRIVING_WITHOUT_INSURANCE
-          - HIT_AND_RUN
-          - DISTRACTED_DRIVING
-          - DRIVING_UNDER_INFLUENCE
-          - FAILURE_TO_YIELD
-          - TAILGATING
-          - OPEN_CONTAINER_OF_ALCOHOL
-          description: Violation type, only exists if `incident_type` = `VIOLATION`
-        is_at_fault:
-          type:
-          - boolean
-          - 'null'
-          description: Whether the driver was at fault
-    AgentInfo:
-      title: AgentInfo
-      type: object
-      properties:
-        agent_info_id:
-          type: string
-          description: ID of the AgentInfo
-          format: uuid
-        address_id:
-          type:
-          - string
-          - 'null'
-          description: Address ID where the agent/agency is located
-          format: uuid
-        agency_name:
-          type:
-          - string
-          - 'null'
-          description: Name of the agency (agency_name or agent_full_name required)
-        agent_full_name:
-          type:
-          - string
-          - 'null'
-          description: Name of the agent (agency_name or agent_full_name required)
-        phone_number:
-          type:
-          - string
-          - 'null'
-          description: Phone number for the agent/agency
-        email:
-          type:
-          - string
-          - 'null'
-          description: Email for the agent/agency
-        policy_ids:
-          type: array
-          description: Policy ID's associated to the agent
-          items:
-            type: string
-            format: uuid
-    Address:
-      title: Address
-      allOf:
-      - properties:
-          address_id:
-            type: string
-            format: uuid
-            description: ID of the address
-          full_address:
-            type:
-            - string
-            - 'null'
-            description: One-line address for convenience
-          address_nature:
-            type:
-            - string
-            - 'null'
-            enum:
-            - MAILING
-            - PHYSICAL
-            - LIENHOLDER
-            - INCIDENT_LOCATION
-            - AGENCY_LOCATION
-            - MORTGAGEE
-            - ADDITIONAL_INTEREST
-            description: The type of adress
-      - $ref: '#/components/schemas/EnrichmentPropertyData/properties/address'
-      type: object
-    FileUpload:
-      title: FileUpload
-      type: object
-      properties:
-        name:
-          type: string
-          description: Original filename of the uploaded file
-        size:
-          type: number
-          description: Size of the file in bytes
-        type:
-          type: string
-          description: MIME type of the file, e.g. `application/pdf`
-        file_id:
-          type: string
-          format: uuid
-          description: ID of the uploaded file
-        download_url:
-          type: string
-          description: The API endpoint URL from which the file can be downloaded
-          format: uri
     Policy:
       title: Policy
       type: object
@@ -8417,6 +8164,259 @@ components:
           description: List of premium groups
           items:
             $ref: '#/components/schemas/PremiumGroup'
+    Dwelling:
+      title: Dwelling
+      type: object
+      properties:
+        dwelling_id:
+          type: string
+          format: uuid
+          description: ID of the dwelling
+        address:
+          type: object
+          $ref: '#/components/schemas/Address'
+          description: Address of the dwelling
+        coverages:
+          type: array
+          uniqueItems: true
+          description: List of dwelling coverage objects
+          items:
+            $ref: '#/components/schemas/DwellingCoverage'
+        mortgagees:
+          type: array
+          uniqueItems: true
+          description: List of mortgagee objects
+          items:
+            $ref: '#/components/schemas/Mortgagee'
+        mortgagee_name:
+          type:
+          - string
+          - 'null'
+          description: '[DEPRECATED] Name of the mortgagee. Please use mortgagees instead.'
+          deprecated: true
+        mortgagee_address:
+          type:
+          - object
+          - 'null'
+          $ref: '#/components/schemas/Address'
+          description: '[DEPRECATED] Address of the mortgagee. Please use mortgagees instead.'
+          deprecated: true
+        mortgage_loan_number:
+          type:
+          - string
+          - 'null'
+          description: '[DEPRECATED] Loan number of the mortgage. Please use mortgagees instead.'
+          deprecated: true
+        replacement_cost_cents:
+          type:
+          - integer
+          - 'null'
+          description: Replacement cost in cents
+        cash_value_cents:
+          type:
+          - integer
+          - 'null'
+          description: Cash value in cents
+        property_data:
+          type:
+          - object
+          - 'null'
+          $ref: '#/components/schemas/PropertyData'
+          description: Dwelling property data. Your plan must include property data in order to access this API in production. For more information, contact your Canopy Connect representative.
+        loss_settlement_type:
+          type:
+          - string
+          - 'null'
+          description: The loss settlement provision for the dwelling
+          enum:
+          - REPLACEMENT_COST
+          - ACTUAL_CASH_VALUE
+        extended_replacement_cost_percent:
+          type:
+          - integer
+          - 'null'
+          description: The increased limit of liability for the DWELLING coverage (Coverage A), in percent
+          maximum: 100
+          minimum: 0
+        total_replacement_cost_cents:
+          type:
+          - integer
+          - 'null'
+          description: 'Total replacement cost in cents, calculated as the base replacement cost plus any extended replacement cost coverage. Formula: replacement_cost_cents * (1 + extended_replacement_cost_percent/100)'
+        is_replacement_cost_cents_derived:
+          type: boolean
+          description: A boolean flag indicating whether the replacement cost amount was derived from the dwelling coverage limit
+    Location:
+      title: Location
+      type: object
+      properties:
+        location_id:
+          type: string
+          format: uuid
+          description: ID of the location
+        address:
+          type: object
+          $ref: '#/components/schemas/Address'
+          description: Address of the location
+        coverages:
+          type: array
+          uniqueItems: true
+          description: List of location coverage objects
+          items:
+            $ref: '#/components/schemas/LocationCoverage'
+        operations:
+          type: array
+          uniqueItems: true
+          description: List of location operation objects
+          items:
+            $ref: '#/components/schemas/LocationOperation'
+        mortgagees:
+          type: array
+          uniqueItems: true
+          description: List of mortgagee objects
+          items:
+            $ref: '#/components/schemas/Mortgagee'
+        property_data:
+          type:
+          - object
+          - 'null'
+          $ref: '#/components/schemas/PropertyData'
+          description: Location property data. Your plan must include property data in order to access this API in production. For more information, contact your Canopy Connect representative.
+        carrier_location_identifier:
+          type:
+          - string
+          - 'null'
+          description: Carrier-specific identifier for the location
+        loss_settlement_type:
+          type:
+          - string
+          - 'null'
+          description: The loss settlement provision for the location
+          enum:
+          - REPLACEMENT_COST
+          - ACTUAL_CASH_VALUE
+    Document:
+      title: Document
+      type: object
+      properties:
+        document_id:
+          type: string
+          format: uuid
+          description: ID of the document
+        title:
+          type: string
+          description: Title of Document
+        date_added:
+          type:
+          - string
+          - 'null'
+          description: Effective date of Document
+          format: date-time
+        document_type:
+          type:
+          - string
+          - 'null'
+          enum:
+          - INSURANCE_APPLICATION
+          - INSURANCE_BINDER
+          - DECLARATIONS
+          - ENDORSEMENT
+          - INSURANCE_ID_CARD
+          - VERIFICATION_OF_INSURANCE
+          - LOSS_RUN
+          - ESIGN_PACKET
+          - NOTICE_OF_CANCELLATION
+          - CANCELLATION
+          - NONRENEWAL_NOTICE
+          - ESIGNATURE
+          - QUOTE
+          - NOTES
+          description: Type of Document
+        policy_id:
+          type:
+          - string
+          - 'null'
+          description: Policy Id that the document belongs to
+          format: uuid
+        mime_type:
+          enum:
+          - application/pdf
+          - image/jpeg
+          description: The file type of the Document
+        download_url:
+          type: string
+          description: The API endpoint URL from which the document can be downloaded
+          format: uri
+    LifePolicyRider:
+      title: LifePolicyRider
+      type: object
+      properties:
+        life_policy_rider_id:
+          type: string
+          description: ID of the life policy rider record
+          format: uuid
+        policy_id:
+          type: string
+          format: uuid
+          description: ID of the policy this record belongs to
+        pull_id:
+          type: string
+          description: ID of the pull this record belongs to
+          format: uuid
+        name:
+          type: string
+          enum:
+          - GUARANTEED_INSURABILITY
+          - ACCIDENTAL_DEATH
+          - WAIVER_OF_PREMIUM
+          - FAMILY_INCOME_BENEFIT
+          - ACCELERATED_DEATH_BENEFIT
+          - CHILD_TERM
+          - LONG_TERM_CARE
+          - RETURN_OF_PREMIUM
+          - LEVEL_DEATH_BENEFIT
+          - VARIABLE_DEATH_BENEFIT
+          - MILITARY_FUTURE_INSURABILITY
+          description: Name of the rider/benefit
+        friendly_name:
+          type:
+          - string
+          - 'null'
+          description: Human-friendly name of the rider
+        effective_date:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          description: Date when the rider becomes effective
+        expiry_date:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          description: Date when the rider expires
+    PullFunnel:
+      title: PullFunnel
+      type:
+      - object
+      - 'null'
+      description: Information about the Pull’s deal stage
+      properties:
+        assignee:
+          $ref: '#/components/schemas/PullAssignee'
+          description: Agent to whom the Pull is assigned
+        premium:
+          description: Total premium won (when `stage` is `WON`)
+          type:
+          - number
+          - 'null'
+        stage:
+          description: Reported deal stage that the Pull is in
+          type: string
+          enum:
+          - WORKING
+          - WON
+          - LOST
   securitySchemes:
     BasicAuth:
       type: http

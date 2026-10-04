@@ -742,6 +742,30 @@ paths:
       - Widgets API
 components:
   schemas:
+    Agent:
+      title: Agent
+      type: object
+      properties:
+        agent_id:
+          type: string
+          format: uuid
+          description: A unique identifier for the Agent.
+        email:
+          type: string
+          description: Agent's email
+          format: email
+        first_name:
+          type: string
+          description: Agent's first name
+        last_name:
+          type: string
+          description: Agent's last name
+        role:
+          type: string
+          enum:
+          - ADMIN
+          - AGENT
+          description: Agent's Role
     Widget:
       title: Widget
       type: object
@@ -794,30 +818,6 @@ components:
           description: List of agents
           items:
             $ref: '#/components/schemas/Agent'
-    Agent:
-      title: Agent
-      type: object
-      properties:
-        agent_id:
-          type: string
-          format: uuid
-          description: A unique identifier for the Agent.
-        email:
-          type: string
-          description: Agent's email
-          format: email
-        first_name:
-          type: string
-          description: Agent's first name
-        last_name:
-          type: string
-          description: Agent's last name
-        role:
-          type: string
-          enum:
-          - ADMIN
-          - AGENT
-          description: Agent's Role
   securitySchemes:
     BasicAuth:
       type: http

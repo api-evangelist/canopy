@@ -375,6 +375,54 @@ paths:
         description: Required if DOB is not supplied. The drivers license state of the person.
 components:
   schemas:
+    EnrichmentDriverLicense:
+      title: EnrichmentDriverLicense
+      type: object
+      properties:
+        driver_license_id:
+          type: string
+          format: uuid
+          description: Canopy Connect Driver License lookup ID.
+        driver_license:
+          title: EnrichmentDriverData
+          type: object
+          properties:
+            first_name:
+              type: string
+              description: The first name of the person.
+            middle_name:
+              type:
+              - string
+              - 'null'
+              description: The middle name of the person.
+            last_name:
+              type: string
+              description: The last name of the person.
+            date_of_birth_str:
+              type:
+              - string
+              - 'null'
+              description: The date of birth of the person.
+            drivers_license:
+              type:
+              - string
+              - 'null'
+              description: The driver's license number.
+            drivers_license_state:
+              type:
+              - string
+              - 'null'
+              description: The state where the driver's license was issued.
+            gender:
+              type:
+              - string
+              - 'null'
+              description: The reported gender of the driver.
+            marital_status:
+              type:
+              - string
+              - 'null'
+              description: The marital status of the driver.
     EnrichmentHousehold:
       title: EnrichmentHousehold
       type: object
@@ -448,54 +496,6 @@ components:
                 - 'null'
                 format: date-time
                 description: The purchase date of the vehicle.
-    EnrichmentDriverLicense:
-      title: EnrichmentDriverLicense
-      type: object
-      properties:
-        driver_license_id:
-          type: string
-          format: uuid
-          description: Canopy Connect Driver License lookup ID.
-        driver_license:
-          title: EnrichmentDriverData
-          type: object
-          properties:
-            first_name:
-              type: string
-              description: The first name of the person.
-            middle_name:
-              type:
-              - string
-              - 'null'
-              description: The middle name of the person.
-            last_name:
-              type: string
-              description: The last name of the person.
-            date_of_birth_str:
-              type:
-              - string
-              - 'null'
-              description: The date of birth of the person.
-            drivers_license:
-              type:
-              - string
-              - 'null'
-              description: The driver's license number.
-            drivers_license_state:
-              type:
-              - string
-              - 'null'
-              description: The state where the driver's license was issued.
-            gender:
-              type:
-              - string
-              - 'null'
-              description: The reported gender of the driver.
-            marital_status:
-              type:
-              - string
-              - 'null'
-              description: The marital status of the driver.
     EnrichmentPropertyData:
       title: EnrichmentPropertyData
       type: object
