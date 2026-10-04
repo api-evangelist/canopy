@@ -607,6 +607,9 @@ apis:
   - type: Security
     url: https://www.usecanopy.com/security
 common:
+- type: CapabilityMap
+  url: capabilities/canopy-capability-edges.yml
+  name: Canopy Connect Business Capability Map
 - type: Overlay
   url: overlays/canopy-openapi-overlay.yaml
 - type: Packages
