@@ -1431,3 +1431,16 @@
   relationship: carrier-coverage
   status: not-a-workflow
   arazzo: null
+- slug: canopy-vertafore-own
+  label: Vertafore (own)
+  partner: vertafore
+  partner_name: Vertafore (own)
+  category: Integration Partners
+  type: marketplace
+  marketplace: own
+  channel: partner-built
+  evidence: https://www.vertafore.com/canopy-connect
+  source: edge
+  relationship: platform-app
+  status: not-a-workflow
+  arazzo: null

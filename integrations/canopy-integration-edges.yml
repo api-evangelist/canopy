@@ -2,6 +2,7 @@ generated: '2026-10-13'
 method: searched
 checked:
 - https://app.usecanopy.com/api/v1.0.0/carriers
+- vertafore/integrations/vertafore-integration-edges.yml
 marketplace_apps:
 - marketplace: insurance-carrier-coverage-list
   channel: provider-built
@@ -1662,3 +1663,22 @@ edges:
   partner_domain: nationwide.com
   detected_by: sweep-insurance.py
   detected: '2026-10-13'
+- partner_name: Vertafore (own)
+  partner: vertafore
+  partner_match: mirror
+  mirror_match: domain
+  type: marketplace
+  relationship: platform-app
+  direction: third-party
+  channel: partner-built
+  marketplace: own
+  evidence: https://www.vertafore.com/canopy-connect
+  mirror_of: vertafore/integrations/vertafore-integration-edges.yml
+  apps:
+  - Canopy Connect
+  listing_count: 1
+  detected: '2026-10-14'
+  detected_by: mirror-platform-listings.py
+  category: Integration Partners
+source:
+- vertafore/integrations/vertafore-integration-edges.yml
