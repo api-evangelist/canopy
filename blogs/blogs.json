@@ -2,6 +2,13 @@
   "repo": "canopy",
   "feeds": [
     {
+      "source": "https://www.usecanopy.com/blog",
+      "feed_url": "https://www.usecanopy.com/blog",
+      "title": "",
+      "saved": 0,
+      "method": "none"
+    },
+    {
       "source": "https://www.usecanopy.com/terms",
       "feed_url": "https://www.usecanopy.com/terms",
       "title": "",
@@ -9,7 +16,7 @@
       "method": "none"
     }
   ],
-  "fetched": "2026-10-03T12:30:02Z",
+  "fetched": "2026-10-10T13:15:00Z",
   "post_count": 11,
   "agent_pulled": "2026-06-27",
   "feed_nature": "vendor-blog",
