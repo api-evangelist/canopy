@@ -825,6 +825,47 @@ paths:
       description: Used to get the events between the two most recent Pulls of a monitored insurance account. Your plan must include monitoring events in order to access this API. For more information, contact your Canopy Connect representative.
 components:
   schemas:
+    Monitoring:
+      title: Monitoring
+      type: object
+      description: A Monitoring is an object that manages the synchronization of Pulls
+      properties:
+        monitoring_id:
+          type: string
+          format: uuid
+          description: ID of the Monitoring
+        latest_pull_id:
+          type: string
+          format: uuid
+          description: The latest Pull ID for the Monitored account
+        status:
+          type: string
+          description: Status of the Monitoring
+          enum:
+          - ACTIVE
+          - STOPPED
+        next_pull_date:
+          type:
+          - string
+          - 'null'
+          description: When the Monitoring is active, this will be the next date-time the data will be refreshed
+          example: '2000-12-31T00:00:00.000Z'
+          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$
+          format: date-time
+        interval:
+          type: string
+          example: P1M
+          format: ISO-8601-duration
+          pattern: ^(-?)P(?=\d|T\d)(?:(\d+)Y)?(?:(\d+)M)?(?:(\d+)([DW]))?(?:T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+(?:\.\d+)?)S)?)?$
+          description: How often the information should be refreshed. Must be >= 30 days. We accept ISO-8601 duration interval value and support days, months, and/or years.
+        stop_after_date:
+          type:
+          - string
+          - 'null'
+          description: Optional. Date after which monitoring should stop
+          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$
+          example: '2000-12-31T00:00:00.000Z'
+          format: date-time
     MonitoringEvent:
       title: MonitoringEvent
       type: object
@@ -889,47 +930,6 @@ components:
                 type: string
                 format: uuid
                 description: The ID of the Document corresponding with the event.
-    Monitoring:
-      title: Monitoring
-      type: object
-      description: A Monitoring is an object that manages the synchronization of Pulls
-      properties:
-        monitoring_id:
-          type: string
-          format: uuid
-          description: ID of the Monitoring
-        latest_pull_id:
-          type: string
-          format: uuid
-          description: The latest Pull ID for the Monitored account
-        status:
-          type: string
-          description: Status of the Monitoring
-          enum:
-          - ACTIVE
-          - STOPPED
-        next_pull_date:
-          type:
-          - string
-          - 'null'
-          description: When the Monitoring is active, this will be the next date-time the data will be refreshed
-          example: '2000-12-31T00:00:00.000Z'
-          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$
-          format: date-time
-        interval:
-          type: string
-          example: P1M
-          format: ISO-8601-duration
-          pattern: ^(-?)P(?=\d|T\d)(?:(\d+)Y)?(?:(\d+)M)?(?:(\d+)([DW]))?(?:T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+(?:\.\d+)?)S)?)?$
-          description: How often the information should be refreshed. Must be >= 30 days. We accept ISO-8601 duration interval value and support days, months, and/or years.
-        stop_after_date:
-          type:
-          - string
-          - 'null'
-          description: Optional. Date after which monitoring should stop
-          pattern: ^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$
-          example: '2000-12-31T00:00:00.000Z'
-          format: date-time
   securitySchemes:
     BasicAuth:
       type: http
