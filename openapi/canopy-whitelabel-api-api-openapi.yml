@@ -2057,3 +2057,9 @@ x-readme:
   explorer-enabled: true
   proxy-enabled: true
   samples-enabled: true
+x-provenance:
+  method: harvested
+  publisher: Canopy Connect
+  source: https://docs.usecanopy.com/openapi/documentation.json
+  note: split by refine-openapis from the provider's own published document, verified by fetch (openapi/_original/*.fetch.json);
+    stamped by stamp-openapi-provenance.py (roadmap#793)
