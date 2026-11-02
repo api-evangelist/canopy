@@ -1,0 +1,129 @@
+specification: API Commons Plans
+specificationVersion: '0.1'
+schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/Plans
+generated: '2026-09-05'
+method: searched
+source: https://www.usecanopy.com/api/api-plans
+provider: Canopy Connect
+providerId: canopy
+created: '2026-05-04'
+modified: '2026-09-05'
+tags:
+  - Auto Insurance
+  - Casualty
+  - Financial Services
+  - Homeowners Insurance
+  - Insurance
+  - Insurance Verification
+  - Property
+description: >-
+  Canopy Connect's published API plan page (https://www.usecanopy.com/api/api-plans,
+  HTTP 200 on 2026-09-05). Three tiers are named. Exactly ONE carries a price:
+  the API Sandbox tier is free. Both production tiers are "Contact Us" with no
+  published price, no published quota, no published overage rate and no
+  published rate limit. What follows is transcribed from the provider's page;
+  nothing is estimated.
+  This file REPLACES a 2026-05-04 bulk-sweep scaffold that had invented three
+  tiers with fabricated quotas (1,000 and 100,000 requests/month) and
+  fabricated rate limits (10/100/1000 rpm). None of those numbers were ever
+  published by Canopy Connect.
+plan_count: 3
+priced_plan_count: 1
+plans:
+  - id: canopy-api-sandbox
+    name: API Sandbox
+    type: free
+    price: '0.00'
+    currency: USD
+    billing_period: null
+    description: >-
+      "Access to all Canopy Connect API features including our SDK and
+      white-label solution." Free sandbox environment for evaluation and
+      development.
+    quota: null
+    quota_note: No request quota is published for this tier.
+    overage: null
+    rate_limit: null
+    elements:
+      - name: Sandbox credentials
+      - name: Unlimited sandbox API keys
+      - name: Customized links
+      - name: Self-serve documentation support
+      - name: SDK access
+      - name: White-label solution access
+  - id: canopy-api-production
+    name: API Production (Pilot)
+    type: paid
+    price: contact-us
+    currency: USD
+    billing_period: null
+    description: >-
+      For startups with lower or uncertain volume needs. Price is not
+      published; the page shows "Contact Us".
+    quota: null
+    overage: null
+    rate_limit: null
+    elements:
+      - name: Everything in API Sandbox
+      - name: Live production environment
+      - name: Unlimited production API keys
+      - name: Personal and commercial P&C insurance access
+      - name: Auto and home policy editing
+      - name: Property enrichment
+      - name: Account monitoring
+      - name: Standard integrations
+      - name: Email and chat support
+  - id: canopy-api-enterprise
+    name: API Enterprise (Scale)
+    type: enterprise
+    price: contact-us
+    currency: USD
+    billing_period: null
+    description: >-
+      For companies implementing at scale. Price is not published; the page
+      shows "Contact Us".
+    quota: null
+    overage: null
+    overage_note: Volume-based pricing discounts are advertised but no rate card is published.
+    rate_limit: null
+    elements:
+      - name: Everything in API Production
+      - name: Volume-based pricing discounts
+      - name: Premium integrations
+      - name: Customized MSA with SLA
+      - name: Custom data retention support
+      - name: Dedicated integration engineer
+      - name: Single sign-on
+      - name: Early feature access
+gaps:
+  - No price, quota, overage rate or rate limit is published for either paid tier.
+  - A separate agency-facing pricing page exists at https://www.usecanopy.com/agencies/agency-pricing; it prices the agency product, not the API.
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com
+x-canonical:
+  generated: '2026-11-01'
+  vocabulary: engine/economics/plans-canonical.yml
+  models:
+  - free
+  - negotiated
+  units: []
+  plans:
+  - name: API Sandbox
+    access: free
+    model: free
+    model_how: derived
+    units: []
+    periods: []
+  - name: API Production (Pilot)
+    access: paid
+    model: negotiated
+    model_how: derived
+    units: []
+    periods: []
+  - name: API Enterprise (Scale)
+    access: enterprise
+    model: negotiated
+    model_how: derived
+    units: []
+    periods: []
